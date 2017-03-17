@@ -171,9 +171,9 @@ class Galaxy:
 		return colony
 
 	def create_new_construction_project(self, project_building, project_runs, num_of_factories, colony_instance):
-		construction_project = construction_project.ConstructionProject(str(self.world_objects_id['construction_projects']), project_building, project_runs, num_of_factories, colony_instance, self)
+		construction_project_instance = construction_project.ConstructionProject(str(self.world_objects_id['construction_projects']), project_building, project_runs, num_of_factories, colony_instance, self);
 		self.world_objects_id['construction_projects'] += 1
-		return construction_project
+		return construction_project_instance
 
 	def get_object_by_id(self, object_type, object_ids, is_self=False):
 		if is_self:

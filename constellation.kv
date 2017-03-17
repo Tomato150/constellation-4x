@@ -1,16 +1,50 @@
+<GalaxyViewer>
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            id: galaxy_navbar
+            size_hint: 1, None
+        Widget:
+            canvas:
+                Color:
+                    rgb: 1, 0, 0
+                Rectangle:
+                    size: root.width, root.height
+                    pos: 0, 0
+                Color:
+                    rgb: 0, 1, 0
+                Rectangle:
+                    size: 100, 100
+                    pos: 100, 100
+
+
+<GameMenu>:  # Takes over the whole screen galaxy aint clickable (hopefully) since it's literally everywhere.
+    box_layout: box_layout1
+    BoxLayout:
+        id: box_layout1
+        size: root.width - 200, root.height - 200
+        pos: 100, 100
+        orientation: 'vertical'
+        BoxLayout:
+            id: navigation_bar
+            size_hint: 1, 1
+            Button:
+                text: "Navbar"
+        BoxLayout:
+            id: game_content
+            size_hint: 1, 11
+            orientation: 'horizontal'
+            Button:
+                size_hint:3, 1
+                text: "Sidebar"
+            Button
+                size_hint: 9, 1
+                text: 'Game Content'
 
 <ConstellationWidget>:
-    BoxLayout:
-        size: root.width, root.height
-        Button:
-            size_hint: 2, 1
-            text: 'Dank Meme'
-        BoxLayout:
-            size_hint: 3, 1
-            orientation: 'vertical'
-            Button:
-                size_hint:1, 1
-                text: "Double Dank Memes"
-            Button
-                size_hint: 1, 2
-                text: 'DANKEST MEEM'
+    galaxy_viewer: galaxy_viewer_widget
+    game_menu: game_menu_widget
+    GalaxyViewer:
+        id: galaxy_viewer_widget
+    GameMenu:
+        id: game_menu_widget
