@@ -1,46 +1,99 @@
+# Custom Styles of default Widgets
+#:import math math
+<CustomButton>:
+    font_name: "Roboto"
+    font_size: dp(16)
+    color: (0.5, 0.5, 0.5, 1)
+
+    on_state: self.button_pressed()
+
+
+# Custom Widgets
 <GalaxyViewer>
-    navbar: galaxy_navbar
-    BoxLayout:
-        size: root.width, root.height
-        orientation: 'vertical'
-        BoxLayout:
-            id: galaxy_navbar
-            size_hint: 1, None
-            size: self.width, 50
-            Button:
-                text: 'Open/Close Menu'
-                on_press: root.toggle_menu()
-            Button:
-                text: '2'
-            Button:
-                text: '3'
-            Button:
-                text: '4'
+    Widget:
+        size: root.parent.width, root.parent.height
+        canvas:
+            Color:
+                rgba: 1, 0, 0, 0.5
+            Rectangle:
+                size: self.width, root.height
+                pos: 0, 0
+            Color:
+                rgb: 0, 1, 0
+            Rectangle:
+                pos: 100, 100
+
+
+<GalaxyNavbar>:
+    menu_toggle: open_close_menu
+    empire_menu: empire_menu
+    system_menu: system_menu
+    gap_widget: gap_widget
+    galaxy_view: galaxy_view
+    system_view: system_view
+
+    StackLayout:
+        orientation: 'lr-tb'
+        size: root.parent.width, 50
+        pos: root.parent.pos[0], root.parent.height - self.height + root.parent.pos[1]
+
+        canvas:
+            Color:
+                rgba: 0,0,0,0.75
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        CustomButton:
+            id: open_close_menu
+            size_hint_x: None
+            size: self.texture_size[0]+16, 50
+            text: 'Open/Close Menu'
+            font_size: dp(20)
+            background_color: (0,0,0,0)
+
+            on_press: root.toggle_menu()
+        CustomButton:
+            id: empire_menu
+            size_hint_x: None
+            size: self.texture_size[0]+16, 50
+            text: 'Empire Overview'
+            background_color: (0,0,0,0)
+        CustomButton:
+            id: system_menu
+            size_hint_x: None
+            size: self.texture_size[0]+16, 50
+            text: 'System Overview'
+            background_color: (0,0,0,0)
         Widget:
-            size_hint: 1, 1
-            canvas:
-                Color:
-                    rgb: 1, 0, 0
-                Rectangle:
-                    size: self.width, self.height
-                    pos: 0, 0
-                Color:
-                    rgb: 0, 1, 0
-                Rectangle:
-                    pos: 100, 100
+            id: gap_widget
+            size: 145, 50
+            size_hint_x: None
+        CustomButton:
+            id: galaxy_view
+            size_hint_x: None
+            size: self.texture_size[0]+16, 50
+            text: 'Galaxy View'
+            background_color: (0,0,0,0)
+        CustomButton:
+            id:system_view
+            size_hint_x: None
+            size: self.texture_size[0]+16, 50
+            text: 'System View'
+            background_color: (0,0,0,0)
 
 
-<GameMenu>:  # Takes over the whole screen galaxy aint clickable (hopefully) since it's literally everywhere.
+<GameMenu>:
     box_layout: box_layout1
     test_button: button_navbar
     BoxLayout:
         id: box_layout1
-        size: root.width, root.height
-        pos: 0, 0
+        size: root.width - 10, root.height - 10
+        pos: 5, 5
         orientation: 'vertical'
         BoxLayout:
             id: navigation_bar
-            size_hint: 1, 1
+            size_hint: 1, None
+            size: self.width, 50
             Button:
                 id: button_navbar
                 text: "Navbar"
@@ -57,8 +110,12 @@
 
 <ConstellationWidget>:
     galaxy_viewer: galaxy_viewer_widget
+    galaxy_navbar: galaxy_navbar_widget
     game_menu: game_menu_widget
+
     GalaxyViewer:
         id: galaxy_viewer_widget
+    GalaxyNavbar:
+        id: galaxy_navbar_widget
     GameMenu:
         id: game_menu_widget
