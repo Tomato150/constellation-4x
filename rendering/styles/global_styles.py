@@ -8,3 +8,18 @@ colors = {
 	'black': (0, 0, 0, 1),
 	'white': (1, 1, 1, 1)
 }
+
+fonts = {
+	'sizes': {
+		'display_1': 96,
+		'display_2': 88,
+		'display_3': 72,
+		'display_4': 56,
+		'h1': 40,
+		'h2': 32,
+		'h3': 28,
+		'h4': 24,
+		'h5': 20,
+		'standard': 16
+	}
+}

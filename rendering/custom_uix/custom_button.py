@@ -5,7 +5,8 @@ from rendering.styles.global_styles import colors
 
 style_classes = {
 	'link': {
-		'background_color': (0, 0, 0, 0),'font_size': 16
+		'background_color': (0, 0, 0, 0),
+		'font_size': 16
 	},
 	'link_nav_header': {'font_size': 20},
 	'link_primary': {'color': colors['primary']}
