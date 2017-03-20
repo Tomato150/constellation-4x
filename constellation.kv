@@ -1,14 +1,33 @@
-# Custom Styles of default Widgets
 #:import math math
+# Custom Styles of default Widgets
 <CustomButton>:
     font_name: "Roboto"
+    # The following properties are the basic styles
+    size_hint_x: None
+    size: self.texture_size[0]+16, root.height
+
     font_size: dp(16)
-    color: (0.5, 0.5, 0.5, 1)
+    color: (0.7, 0.7, 0.7, 1)
+    # Each button will contain a 'style_classes' property, which will then be called upon in the init
+    style_classes: []
 
     on_state: self.button_pressed()
 
 
 # Custom Widgets
+<Navbar>:
+    StackLayout:
+        orientation: 'lr-tb'
+        size: root.parent.width, 50
+        pos: root.parent.pos[0], root.parent.height - self.height + root.parent.pos[1]
+
+        canvas:
+            Color:
+                rgba: 0,0,0,0.75
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
 <GalaxyViewer>
     Widget:
         size: root.parent.width, root.parent.height
@@ -25,7 +44,7 @@
 
 
 <GalaxyNavbar>:
-    menu_toggle: open_close_menu
+    open_close_menu: open_close_menu
     empire_menu: empire_menu
     system_menu: system_menu
     gap_widget: gap_widget
@@ -45,60 +64,49 @@
                 size: self.size
         CustomButton:
             id: open_close_menu
-            size_hint_x: None
-            size: self.texture_size[0]+16, 50
             text: 'Open/Close Menu'
-            font_size: dp(20)
-            background_color: (0,0,0,0)
+            style_classes: ["link", "link_nav_header", "link_primary"]
 
             on_press: root.toggle_menu()
+
         CustomButton:
             id: empire_menu
-            size_hint_x: None
-            size: self.texture_size[0]+16, 50
             text: 'Empire Overview'
-            background_color: (0,0,0,0)
+            style_classes: ["link"]
+
         CustomButton:
             id: system_menu
-            size_hint_x: None
-            size: self.texture_size[0]+16, 50
             text: 'System Overview'
-            background_color: (0,0,0,0)
+            style_classes: ["link"]
+
         Widget:
             id: gap_widget
             size: 145, 50
             size_hint_x: None
+
         CustomButton:
             id: galaxy_view
-            size_hint_x: None
-            size: self.texture_size[0]+16, 50
             text: 'Galaxy View'
-            background_color: (0,0,0,0)
+            style_classes: ["link"]
+
         CustomButton:
             id:system_view
-            size_hint_x: None
-            size: self.texture_size[0]+16, 50
             text: 'System View'
-            background_color: (0,0,0,0)
+            style_classes: ["link"]
 
 
 <GameMenu>:
-    box_layout: box_layout1
-    test_button: button_navbar
     BoxLayout:
         id: box_layout1
         size: root.width - 10, root.height - 10
         pos: 5, 5
         orientation: 'vertical'
         BoxLayout:
-            id: navigation_bar
             size_hint: 1, None
             size: self.width, 50
             Button:
-                id: button_navbar
                 text: "Navbar"
         BoxLayout:
-            id: game_content
             size_hint: 1, 11
             orientation: 'horizontal'
             Button:
