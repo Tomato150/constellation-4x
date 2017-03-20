@@ -1,7 +1,7 @@
 # The file for the handling of game code.
-from game_modules import player_event_handlers, game_loop
+from game_logic import player_event_handlers, game_loop
 
-from game_modules.stellar_objects import galaxy
+from game_logic.stellar_objects import galaxy
 
 from game_data.constants import construction_constants
 
