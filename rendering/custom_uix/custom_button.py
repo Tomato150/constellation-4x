@@ -1,15 +1,18 @@
 from kivy.uix.button import Button
 import math
 
-from rendering.styles.global_styles import colors
+from rendering.styles.global_styles import colors, fonts
 
 style_classes = {
-	'link': {
-		'background_color': (0, 0, 0, 0),
-		'font_size': 16
+	'button': {
+
 	},
-	'link_nav_header': {'font_size': 20},
-	'link_primary': {'color': colors['primary']}
+	'link': {
+		'background_color': colors['opaque'],
+		'font_size': fonts['sizes']['standard']
+	},
+	'link_nav_header': {'font_size': fonts['sizes']['h5']},
+	'primary': {'color': colors['primary']}
 }
 
 
