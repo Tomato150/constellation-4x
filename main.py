@@ -13,39 +13,27 @@ from kivy.uix.widget import Widget
 from kivy.uix.button import Button
 from kivy.uix.relativelayout import RelativeLayout
 
+from rendering.custom_uix.custom_button import CustomButton
+
 # Window.size = windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)
 
 
-def fourthroot(num):
-	return math.sqrt(math.sqrt(num))
-
-
-class CustomButton(Button):
-	def __init__(self, **kwargs):
-		super(CustomButton, self).__init__(**kwargs)
-		self.up = True
-
-	def button_pressed(self):
-		if self.up:
-			self.up = False
-			self.color = fourthroot(self.color[0]), fourthroot(self.color[1]), fourthroot(self.color[2]), self.color[3]
-		else:
-			self.up = True
-			self.color = self.color[0] ** 4, self.color[1] ** 4, self.color[2] ** 4, self.color[3]
-
-
-class GalaxyViewer(Widget):
+class GalaxyViewer(Widget):  # singleton
 	navbar = ObjectProperty()
 
 	def __init__(self, **kwargs):
 		super(GalaxyViewer, self).__init__(**kwargs)
 		self.size = Window.size[0], Window.size[1]
 
+	def on_load(self):
+		pass
+
 	def resize(self, width, height):
 		self.size = width, height
 
 
-class GalaxyNavbar(Widget):
+class GalaxyNavbar(Widget):  # Singleton
+	open_close_menu = ObjectProperty()
 	empire_menu = ObjectProperty()
 	system_menu = ObjectProperty()
 	gap_widget = ObjectProperty()
@@ -54,6 +42,13 @@ class GalaxyNavbar(Widget):
 
 	def __init__(self, **kwargs):
 		super(GalaxyNavbar, self).__init__(**kwargs)
+
+	def on_load(self):
+		self.open_close_menu.on_load()
+		self.empire_menu.on_load()
+		self.system_menu.on_load()
+		self.galaxy_view.on_load()
+		self.system_view.on_load()
 
 	def toggle_menu(self):
 		self.parent.toggle_menu_app()
@@ -67,7 +62,7 @@ class GalaxyNavbar(Widget):
 			self.gap_widget.width = 0
 
 
-class GameMenu(RelativeLayout):
+class GameMenu(RelativeLayout):  # Singleton
 	box_layout = ObjectProperty(None)
 	test_button = ObjectProperty(None)
 
@@ -79,6 +74,9 @@ class GameMenu(RelativeLayout):
 
 		self.visible = True
 		self.resize(window_size[0], window_size[1])
+
+	def on_load(self):
+		pass
 
 	def resize(self, width, height):
 		self.size = width - self.border * 2, height - (self.border * 2 + self.navbar_height)
@@ -97,16 +95,21 @@ class GameMenu(RelativeLayout):
 			self.pos = Window.size
 
 
-class ConstellationWidget(Widget):
+class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
 	galaxy_viewer = ObjectProperty(None)
 	galaxy_navbar = ObjectProperty(None)
 	game_menu = ObjectProperty(None)
+
+	def on_load(self):
+		self.game_menu.on_load()
+		self.galaxy_navbar.on_load()
+		self.galaxy_viewer.on_load()
 
 	def toggle_menu_app(self):
 		self.game_menu.reposition(True)
 
 
-class ConstellationApp(App):
+class ConstellationApp(App):  # Singleton/app class.
 	constellation_widget = ObjectProperty(None)
 
 	def window_resize(self, window, width, height):
@@ -122,6 +125,7 @@ class ConstellationApp(App):
 
 	def on_start(self):
 		print(Window.size)
+		self.constellation_widget.on_load()
 
 if __name__ == '__main__':
 	LabelBase.register(name="Roboto",
