@@ -1,5 +1,5 @@
-from game_modules.faction_objects import empires, colonies, construction_project
-from game_modules.stellar_objects import galaxy
+from game_logic.faction_objects import empires, colonies, construction_project
+from game_logic.stellar_objects import galaxy
 from game_data.constants import construction_constants
 
 

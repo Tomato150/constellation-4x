@@ -1,7 +1,7 @@
-from game_modules.stellar_objects import stars, planets
-from game_modules.faction_objects import empires, colonies, construction_project
+from game_logic.stellar_objects import stars, planets
+from game_logic.faction_objects import empires, colonies, construction_project
 
-from game_modules import utility_functions
+from game_logic import utility_functions
 
 import random
 import math

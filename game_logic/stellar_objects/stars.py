@@ -1,4 +1,4 @@
-from game_modules import utility_functions
+from game_logic import utility_functions
 
 from game_data.constants import galaxy_generation_constants as constants, general_constants
 
