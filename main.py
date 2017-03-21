@@ -88,9 +88,11 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
 	game_menu = ObjectProperty(None)
 
 	def on_load(self, *args):
-		self.game_menu.on_load()
-		self.galaxy_viewer.on_load()
-		self.galaxy_navbar.on_load()
+		for child in self.children:
+			try:
+				child.on_load()
+			except AttributeError:
+				pass
 
 	def toggle_menu_app(self):
 		self.game_menu.reposition(True)
