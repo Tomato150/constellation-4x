@@ -6,15 +6,36 @@ class CustomNavbar(StackLayout):
 		super(CustomNavbar, self).__init__(**kwargs)
 
 	def on_load(self):
-		pass
+		for child in self.children:
+			try:
+				child.on_load()
+			except AttributeError:
+				pass
+		self.resize()
+		self.reset_navbar_spacing(self.width)
 
 	def reset_navbar_spacing(self, width):
 		self.width = width
-		widget_sizes = self.empire_menu.width + self.system_menu.width + self.galaxy_view.width + self.system_view.width
-		if widget_sizes < self.width:
-			self.gap_widget.width = self.width - widget_sizes - (self.galaxy_view.width + self.system_view.width) + 32
-		else:
-			self.gap_widget.width = 0
+		widget_sizes = 0
+		gap_widget = None
+		extra_widgets_overflow = 0
+		for child in self.children:
+			print('With Child:', child.name)
+			try:
+				if child.gap_widget:
+					print('Assigned as gap widget')
+					gap_widget = child
+					continue
+			except AttributeError:
+				if gap_widget is None:
+					print('Added to extention widget')
+					extra_widgets_overflow += child.width
+				print('Added to total widget sizes')
+				widget_sizes += child.width
+			print('+-----------------------------------------------------+')
+		print('Gap Widget Width =', self.width, '-', widget_sizes)
+		gap_widget.width = self.width - widget_sizes
+
 
 	def resize(self):
 		self.size = self.parent.width, 50

@@ -3,6 +3,7 @@ import os
 import math
 
 from kivy.core.window import Window
+from kivy.clock import Clock
 from kivy.core.text import LabelBase
 from ctypes import windll
 from kivy.config import Config
@@ -14,6 +15,7 @@ from kivy.uix.button import Button
 from kivy.uix.relativelayout import RelativeLayout
 
 from rendering.custom_uix.custom_button import CustomButton
+from rendering.custom_uix.custom_navbar import CustomNavbar
 
 # Window.size = windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)
 
@@ -32,7 +34,7 @@ class GalaxyViewer(Widget):  # singleton
 		self.size = width, height
 
 
-class GalaxyNavbar(Widget):  # Singleton
+class GalaxyNavbar(CustomNavbar):  # Singleton
 	open_close_menu = ObjectProperty()
 	empire_menu = ObjectProperty()
 	system_menu = ObjectProperty()
@@ -43,26 +45,8 @@ class GalaxyNavbar(Widget):  # Singleton
 	def __init__(self, **kwargs):
 		super(GalaxyNavbar, self).__init__(**kwargs)
 
-	def on_load(self):
-		print(self.parent)
-		self.open_close_menu.on_load()
-		self.empire_menu.on_load()
-		self.system_menu.on_load()
-		self.galaxy_view.on_load()
-		self.system_view.on_load()
-		self.size = self.parent.width, 50
-		self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
-
 	def toggle_menu(self):
 		self.parent.toggle_menu_app()
-
-	def reset_navbar_spacing(self, width):
-		self.width = width
-		widget_sizes = self.empire_menu.width + self.system_menu.width + self.galaxy_view.width + self.system_view.width
-		if widget_sizes < self.width:
-			self.gap_widget.width = self.width - widget_sizes - (self.galaxy_view.width + self.system_view.width) + 32
-		else:
-			self.gap_widget.width = 0
 
 
 class GameMenu(RelativeLayout):  # Singleton
@@ -103,10 +87,10 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
 	galaxy_navbar = ObjectProperty(None)
 	game_menu = ObjectProperty(None)
 
-	def on_load(self):
+	def on_load(self, *args):
 		self.game_menu.on_load()
-		self.galaxy_navbar.on_load()
 		self.galaxy_viewer.on_load()
+		self.galaxy_navbar.on_load()
 
 	def toggle_menu_app(self):
 		self.game_menu.reposition(True)
@@ -127,8 +111,8 @@ class ConstellationApp(App):  # Singleton/app class.
 		return self.constellation_widget
 
 	def on_start(self):
-		print(Window.size)
-		self.constellation_widget.on_load()
+		print('Window Size', Window.size)
+		Clock.schedule_once(self.constellation_widget.on_load, )
 
 if __name__ == '__main__':
 	LabelBase.register(name="Roboto",

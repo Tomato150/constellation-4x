@@ -29,6 +29,8 @@ class CustomButton(Button):
 		for style_class in self.style_classes:
 			for style, value in style_classes[style_class].items():
 				self.__setattr__(style, value)
+		self.texture_update()
+		self.size = self.texture_size[0]+16, self.parent.height
 
 	def button_pressed(self):
 		if self.up:

@@ -1,10 +1,9 @@
 #:import math math
 # Custom Styles of default Widgets
-<CustomButton>:
+<CustomButton@Button>:
     font_name: "Roboto"
     # The following properties are the basic styles
     size_hint_x: None
-    size: self.texture_size[0]+16, root.height
 
     font_size: dp(16)
     color: (0.7, 0.7, 0.7, 1)
@@ -50,38 +49,44 @@
     galaxy_view: galaxy_view
     system_view: system_view
 
-    CustomNavbar:
-        CustomButton:
-            id: open_close_menu
-            text: 'Open/Close Menu'
-            style_classes: ["link", "link_nav_header", "primary"]
+    CustomButton:
+        id: open_close_menu
+        name: 'open_close_menu'
+        text: 'Open/Close Menu'
+        style_classes: ["link", "link_nav_header", "primary"]
 
-            on_press: root.toggle_menu()
+        on_press: root.toggle_menu()
 
-        CustomButton:
-            id: empire_menu
-            text: 'Empire Overview'
-            style_classes: ["link"]
+    CustomButton:
+        id: empire_menu
+        name: 'empire_menu'
+        text: 'Empire Overview'
+        style_classes: ["link"]
 
-        CustomButton:
-            id: system_menu
-            text: 'System Overview'
-            style_classes: ["link"]
+    CustomButton:
+        id: system_menu
+        name: 'system_menu'
+        text: 'System Overview'
+        style_classes: ["link"]
 
-        Widget:
-            id: gap_widget
-            size: 145, 50
-            size_hint_x: None
+    Widget:
+        id: gap_widget
+        name: 'gap_widget'
+        size: 0, 50
+        size_hint_x: None
+        gap_widget: True
 
-        CustomButton:
-            id: galaxy_view
-            text: 'Galaxy View'
-            style_classes: ["link"]
+    CustomButton:
+        id: galaxy_view
+        name: 'galaxy_view'
+        text: 'Galaxy View'
+        style_classes: ["link"]
 
-        CustomButton:
-            id:system_view
-            text: 'System View'
-            style_classes: ["link"]
+    CustomButton:
+        id:system_view
+        name: 'system_view'
+        text: 'System View'
+        style_classes: ["link"]
 
 
 <GameMenu>:
