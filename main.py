@@ -44,11 +44,14 @@ class GalaxyNavbar(Widget):  # Singleton
 		super(GalaxyNavbar, self).__init__(**kwargs)
 
 	def on_load(self):
+		print(self.parent)
 		self.open_close_menu.on_load()
 		self.empire_menu.on_load()
 		self.system_menu.on_load()
 		self.galaxy_view.on_load()
 		self.system_view.on_load()
+		self.size = self.parent.width, 50
+		self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
 
 	def toggle_menu(self):
 		self.parent.toggle_menu_app()

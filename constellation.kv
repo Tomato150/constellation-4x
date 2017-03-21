@@ -15,18 +15,17 @@
 
 
 # Custom Widgets
-<Navbar>:
-    StackLayout:
-        orientation: 'lr-tb'
-        size: root.parent.width, 50
-        pos: root.parent.pos[0], root.parent.height - self.height + root.parent.pos[1]
+<CustomNavbar@StackLayout>:
+    orientation: 'lr-tb'
+    size: self.parent.width, 50
+    pos: self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
 
-        canvas:
-            Color:
-                rgba: 0,0,0,0.75
-            Rectangle:
-                pos: self.pos
-                size: self.size
+    canvas:
+        Color:
+            rgba: 0,0,0,0.75
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
 <GalaxyViewer>
     Widget:
@@ -51,21 +50,11 @@
     galaxy_view: galaxy_view
     system_view: system_view
 
-    StackLayout:
-        orientation: 'lr-tb'
-        size: root.parent.width, 50
-        pos: root.parent.pos[0], root.parent.height - self.height + root.parent.pos[1]
-
-        canvas:
-            Color:
-                rgba: 0,0,0,0.75
-            Rectangle:
-                pos: self.pos
-                size: self.size
+    CustomNavbar:
         CustomButton:
             id: open_close_menu
             text: 'Open/Close Menu'
-            style_classes: ["link", "link_nav_header", "link_primary"]
+            style_classes: ["link", "link_nav_header", "primary"]
 
             on_press: root.toggle_menu()
 
@@ -97,10 +86,17 @@
 
 <GameMenu>:
     BoxLayout:
-        id: box_layout1
         size: root.width - 10, root.height - 10
         pos: 5, 5
         orientation: 'vertical'
+
+        canvas:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
         BoxLayout:
             size_hint: 1, None
             size: self.width, 50
