@@ -15,13 +15,16 @@
 
 # Custom Widgets
 <CustomNavbar@StackLayout>:
+    name: ''
     orientation: 'lr-tb'
     size: self.parent.width, 50
     pos: self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
 
+    canvas_color: None
+
     canvas:
         Color:
-            rgba: 0,0,0,0.75
+            rgba: 0,0,0,0.80
         Rectangle:
             pos: self.pos
             size: self.size
@@ -42,12 +45,14 @@
 
 
 <GalaxyNavbar>:
+    name: 'Global Navbar'
     open_close_menu: open_close_menu
     empire_menu: empire_menu
     system_menu: system_menu
     gap_widget: gap_widget
     galaxy_view: galaxy_view
     system_view: system_view
+    style_classes: ['navbar_dark']
 
     CustomButton:
         id: open_close_menu
@@ -90,32 +95,57 @@
 
 
 <GameMenu>:
+    custom_navbar_game_menu: custom_navbar_game_menu
+    orientation: 'vertical'
+
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    CustomNavbar:
+        name: 'Game Menu Navbar'
+        id: custom_navbar_game_menu
+        style_classes: ['navbar_dark']
+
+        CustomButton:
+            text: 'Dank'
+            name: 'Button1'
+            style_classes: ["link", "link_nav_header", "primary"]
+
+        CustomButton:
+            text: 'Buttons'
+            name: 'Button2'
+            style_classes: ["link"]
+
+        CustomButton:
+            text: 'Are'
+            name: 'Button3'
+            style_classes: ["link"]
+
+        Widget:
+            id: gap_widget
+            name: 'gap_widget'
+            size: 0, 50
+            size_hint_x: None
+            gap_widget: True
+
+        CustomButton:
+            text: 'Dank'
+            name: 'Button4'
+            style_classes: ["link"]
+
     BoxLayout:
-        size: root.width - 10, root.height - 10
-        pos: 5, 5
-        orientation: 'vertical'
-
-        canvas:
-            Color:
-                rgba: 1, 1, 1, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
-        BoxLayout:
-            size_hint: 1, None
-            size: self.width, 50
-            Button:
-                text: "Navbar"
-        BoxLayout:
-            size_hint: 1, 11
-            orientation: 'horizontal'
-            Button:
-                size_hint:3, 1
-                text: "Sidebar"
-            Button
-                size_hint: 9, 1
-                text: 'Game Content'
+        size_hint: 1, 11
+        orientation: 'horizontal'
+        Button:
+            size_hint:3, 1
+            text: "Sidebar"
+        Button
+            size_hint: 9, 1
+            text: 'Game Content'
 
 <ConstellationWidget>:
     galaxy_viewer: galaxy_viewer_widget

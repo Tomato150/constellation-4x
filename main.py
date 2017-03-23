@@ -13,11 +13,50 @@ from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProper
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
 from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.boxlayout import BoxLayout
 
 from rendering.custom_uix.custom_button import CustomButton
 from rendering.custom_uix.custom_navbar import CustomNavbar
 
+from rendering.styles.css_manager import CSSManager
+
 # Window.size = windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)
+
+
+def load_styles(app, window, widget):
+	try:
+		widget.css.load_styles()
+	except AttributeError:
+		pass
+	for child in widget.children:
+		load_styles(app, window, child)
+
+
+def widget_on_load(app, window, widget):
+	try:
+		widget.on_load(app, window)
+	except AttributeError:
+		pass
+	for child in widget.children:
+		widget_on_load(app, window, child)
+
+
+def update_and_apply_styles(app, window, widget):
+	try:
+		widget.css.apply_styles()
+	except AttributeError as e:
+		print(e)
+	for child in widget.children:
+		update_and_apply_styles(app, window, child)
+
+
+def resize_widgets(app, window, widget):
+	for child in widget.children:
+		resize_widgets(app, window, child)
+	try:
+		widget.resize(window, window.size[0], window.size[1])
+	except AttributeError:
+		pass
 
 
 class GalaxyViewer(Widget):  # singleton
@@ -27,11 +66,15 @@ class GalaxyViewer(Widget):  # singleton
 		super(GalaxyViewer, self).__init__(**kwargs)
 		self.size = Window.size[0], Window.size[1]
 
-	def on_load(self):
-		pass
+	def on_load(self, app, window):
+		try:
+			super(GalaxyViewer, self).on_load(app, window)
+		except AttributeError:
+			pass
+		window.bind(on_resize=self.resize)
 
-	def resize(self, width, height):
-		self.size = width, height
+	def resize(self, window, width, height):
+		self.size = window.size
 
 
 class GalaxyNavbar(CustomNavbar):  # Singleton
@@ -42,16 +85,12 @@ class GalaxyNavbar(CustomNavbar):  # Singleton
 	galaxy_view = ObjectProperty()
 	system_view = ObjectProperty()
 
-	def __init__(self, **kwargs):
-		super(GalaxyNavbar, self).__init__(**kwargs)
-
 	def toggle_menu(self):
 		self.parent.toggle_menu_app()
 
 
-class GameMenu(RelativeLayout):  # Singleton
-	box_layout = ObjectProperty(None)
-	test_button = ObjectProperty(None)
+class GameMenu(BoxLayout):  # Singleton
+	custom_navbar_game_menu = ObjectProperty(None)
 
 	def __init__(self, **kwargs):
 		super(GameMenu, self).__init__(**kwargs)
@@ -60,12 +99,16 @@ class GameMenu(RelativeLayout):  # Singleton
 		self.navbar_height = 50
 
 		self.visible = True
-		self.resize(window_size[0], window_size[1])
+		self.resize(None, window_size[0], window_size[1])
 
-	def on_load(self):
-		pass
+	def on_load(self, app, window):
+		try:
+			super(GameMenu, self).on_load(app, window)
+		except AttributeError:
+			pass
+		window.bind(on_resize=self.resize)
 
-	def resize(self, width, height):
+	def resize(self, window, width, height):
 		self.size = width - self.border * 2, height - (self.border * 2 + self.navbar_height)
 		self.reposition()
 
@@ -87,12 +130,9 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
 	galaxy_navbar = ObjectProperty(None)
 	game_menu = ObjectProperty(None)
 
-	def on_load(self, *args):
-		for child in self.children:
-			try:
-				child.on_load()
-			except AttributeError:
-				pass
+	def __init__(self, **kwargs):
+		super(ConstellationWidget, self).__init__(**kwargs)
+		self.css = CSSManager(self, True)
 
 	def toggle_menu_app(self):
 		self.game_menu.reposition(True)
@@ -101,25 +141,24 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
 class ConstellationApp(App):  # Singleton/app class.
 	constellation_widget = ObjectProperty(None)
 
-	def window_resize(self, window, width, height):
-		self.constellation_widget.game_menu.resize(width, height)
-		self.constellation_widget.galaxy_viewer.resize(width, height)
-		self.constellation_widget.galaxy_navbar.reset_navbar_spacing(width)
-
 	def build(self):
-		Window.bind(on_resize=self.window_resize)
 		self.constellation_widget = ConstellationWidget()
 
 		return self.constellation_widget
 
 	def on_start(self):
 		print('Window Size', Window.size)
-		Clock.schedule_once(self.constellation_widget.on_load, )
+		load_styles(self, Window, self.constellation_widget)
+		widget_on_load(self, Window, self.constellation_widget)
+		update_and_apply_styles(self, Window, self.constellation_widget)
+		resize_widgets(self, Window, self.constellation_widget)
 
 if __name__ == '__main__':
-	LabelBase.register(name="Roboto",
-					   fn_regular="sources/font/Roboto/Roboto-Light.ttf",
-					   fn_italic="sources/font/Roboto/Roboto-LightItalic.ttf",
-					   fn_bold="sources/font/Roboto/Roboto-Medium.ttf",
-					   fn_bolditalic="sources/font/Roboto/Roboto-MediumItalic.ttf")
+	LabelBase.register(
+		name="Roboto",
+		fn_regular="sources/font/Roboto/Roboto-Light.ttf",
+		fn_italic="sources/font/Roboto/Roboto-LightItalic.ttf",
+		fn_bold="sources/font/Roboto/Roboto-Medium.ttf",
+		fn_bolditalic="sources/font/Roboto/Roboto-MediumItalic.ttf"
+	)
 	ConstellationApp().run()
