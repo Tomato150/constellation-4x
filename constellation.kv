@@ -20,6 +20,13 @@
     size: self.parent.width, 50
     pos: self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
 
+<CustomSidebar@StackLayout>:
+    name: ''
+    orientation: 'tb-lr'
+    size_hint_x: None
+    size: 350, self.parent.height
+    pos: self.parent.pos
+
 <GalaxyViewer>
     Widget:
         size: root.parent.width, root.parent.height
@@ -131,11 +138,8 @@
 
     BoxLayout:
         orientation: 'horizontal'
-        Button:
-            size_hint:3, 1
-            text: "Sidebar"
+        CustomSidebar:
         Button
-            size_hint: 9, 1
             text: 'Game Content'
 
 <ConstellationWidget>:
