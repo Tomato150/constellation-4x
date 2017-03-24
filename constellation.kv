@@ -6,7 +6,7 @@
     size_hint_x: None
 
     font_size: dp(16)
-    color: (0.7, 0.7, 0.7, 1)
+    color: (0, 1, 0, 1)
     # Each button will contain a 'style_classes' property, which will then be called upon in the init
     style_classes: []
 
@@ -21,13 +21,6 @@
     pos: self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
 
     canvas_color: None
-
-    canvas:
-        Color:
-            rgba: 0,0,0,0.80
-        Rectangle:
-            pos: self.pos
-            size: self.size
 
 <GalaxyViewer>
     Widget:
@@ -108,7 +101,7 @@
     CustomNavbar:
         name: 'Game Menu Navbar'
         id: custom_navbar_game_menu
-        style_classes: ['navbar_dark']
+        style_classes: ['navbar_light']
 
         CustomButton:
             text: 'Dank'

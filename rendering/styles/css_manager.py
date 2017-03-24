@@ -1,7 +1,8 @@
 import sys
 
 global_styles = {
-	'color': (1, 1, 1, 1)
+	'color': (1, 1, 1, 1),
+	'canvas_color': (1, 1, 0, 1)
 }
 
 
@@ -23,7 +24,6 @@ class CSSManager:
 			self.container.__setattr__(style, value)
 
 	def update_styles(self):
-		# TODO move from parent to parent, and get the styles.
 		try:
 			for style, value in self.styles.items():
 				if value == 'inherit':

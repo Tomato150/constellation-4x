@@ -16,10 +16,11 @@ class CustomButton(Button):
 		},
 		'link': {
 			'background_color': colors['opaque'],
-			'font_size': fonts['sizes']['standard']
+			'font_size': fonts['sizes']['standard'],
+			'color': 'inherit'
 		},
 		'link_nav_header': {'font_size': fonts['sizes']['h5']},
-		'primary': {'color': 'inherit'}
+		'primary': {'color': colors['primary']}
 	}
 
 	def __init__(self, **kwargs):
@@ -28,9 +29,9 @@ class CustomButton(Button):
 		self.up = True
 
 	def on_load(self, app, window):
-		for style_class in self.style_classes:
-			for style, value in self.local_styles[style_class].items():
-				self.__setattr__(style, value)
+		pass
+
+	def resize(self, *args):
 		self.texture_update()
 		self.size = self.texture_size[0]+16, self.parent.height
 

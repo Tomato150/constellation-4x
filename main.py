@@ -23,6 +23,13 @@ from rendering.styles.css_manager import CSSManager
 # Window.size = windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)
 
 
+def big_on_load(app, window, widget):
+	load_styles(app, window, widget)
+	widget_on_load(app, window, widget)
+	update_and_apply_styles(app, window, widget)
+	resize_widgets(app, window, widget)
+
+
 def load_styles(app, window, widget):
 	try:
 		widget.css.load_styles()
@@ -32,15 +39,6 @@ def load_styles(app, window, widget):
 		load_styles(app, window, child)
 
 
-def widget_on_load(app, window, widget):
-	try:
-		widget.on_load(app, window)
-	except AttributeError:
-		pass
-	for child in widget.children:
-		widget_on_load(app, window, child)
-
-
 def update_and_apply_styles(app, window, widget):
 	try:
 		widget.css.apply_styles()
@@ -48,6 +46,15 @@ def update_and_apply_styles(app, window, widget):
 		print(e)
 	for child in widget.children:
 		update_and_apply_styles(app, window, child)
+
+
+def widget_on_load(app, window, widget):
+	try:
+		widget.on_load(app, window)
+	except AttributeError:
+		pass
+	for child in widget.children:
+		widget_on_load(app, window, child)
 
 
 def resize_widgets(app, window, widget):

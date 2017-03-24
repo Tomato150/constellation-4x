@@ -1,13 +1,18 @@
 from kivy.uix.stacklayout import StackLayout
+from kivy.graphics.instructions import InstructionGroup
+from kivy.graphics import Color, Rectangle
 from rendering.styles.css_manager import CSSManager
 
 
 class CustomNavbar(StackLayout):
 	local_styles = {
-		'navbar_light': {'canvas_color': (1, 1, 1, 0.8)},
+		'navbar_light': {
+			'canvas_color': (0, 1, 0, 0.8),
+			'color': (0.1, 0.1, 0.1, 1)
+		},
 		'navbar_dark': {
-			'canvas_colour': (0, 0, 0, 0.8),
-			'color': (0,1,0,1)
+			'canvas_colour': (0, 1, 0, 0.8),
+			'color': (0.9, 0.9, 0.9, 1)
 		}
 	}
 
@@ -18,26 +23,21 @@ class CustomNavbar(StackLayout):
 
 	def on_load(self, app, window):
 		window.bind(on_resize=self.resize)
-
-	def update_styles(self):
-		for style_class in self.style_classes:
-			for style, value in self.local_styles[style_class].items():
-				self.css.add_style(style, value)
+		canvas_color = tuple(self.canvas_color)
+		self.canvas.add(Color(*canvas_color))
+		self.canvas.add(Rectangle(size=(50, 50), pos=(5, 5)))
 
 	def resize(self, *args):
 		print(self.name)
 		self.resize_navbar()
 		widget_sizes = 0
 		gap_widget = None
-		extra_widgets_overflow = 0
 		for child in self.children:
 			try:
 				if child.gap_widget:
 					gap_widget = child
 					continue
 			except AttributeError:
-				if gap_widget is None:
-					extra_widgets_overflow += child.width
 				widget_sizes += child.width
 
 		gap_widget_size = self.width - widget_sizes
