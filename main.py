@@ -17,6 +17,7 @@ from kivy.uix.boxlayout import BoxLayout
 
 from rendering.custom_uix.custom_button import CustomButton
 from rendering.custom_uix.custom_navbar import CustomNavbar
+from rendering.custom_uix.custom_sidebar import CustomSidebar
 
 from rendering.styles.css_manager import CSSManager
 
@@ -105,9 +106,6 @@ class GalaxyNavbar(CustomNavbar):  # Singleton
             'toggle_GameMenu': self.parent.ui_events['toggle_GameMenu']
         }
 
-    def toggle_game_menu(self):
-        self.parent.toggle_menu()
-
 
 class GameMenu(BoxLayout):  # Singleton
     custom_navbar_game_menu = ObjectProperty(None)
@@ -119,7 +117,7 @@ class GameMenu(BoxLayout):  # Singleton
         self.navbar_height = 50
 
         self.visible = True
-        self.resize(None, window_size[0], window_size[1])
+        self.resize(Window)
 
     def on_load(self, app, window):
         try:
@@ -129,20 +127,20 @@ class GameMenu(BoxLayout):  # Singleton
         window.bind(on_resize=self.resize)
 
     # TODO which is then recived from the base widgets here.
-    def toggle_menu(self, window=Window, width=Window.size[0], height=Window.size[1]):
+    def toggle_menu(self, window=Window, width=Window.width, height=Window.height):
         if self.visible:
             self.visible = False
         else:
             self.visible = True
-        self.resize(window, width, height)
         for child in self.children:
             try:
                 child.toggle_visibility(self.visible)
             except AttributeError as e:
                 print(e)
+        self.resize(window)
 
-    def resize(self, window, width, height):
-        self.size = width - self.border * 2, height - (self.border * 2 + self.navbar_height)
+    def resize(self, window, *args):
+        self.size = window.width - self.border * 2, window.height - (self.border * 2 + self.navbar_height)
 
         if self.visible:
             self.pos = self.border, self.border

@@ -7,11 +7,11 @@ from rendering.styles.css_manager import CSSManager
 class CustomNavbar(StackLayout):
     local_styles = {
         'navbar_light': {
-            'canvas_color': (0.5, 0.5, 0.5, 0.5),
+            'canvas_color': (0.9, 0.9, 0.9, 0.7),
             'color': (0.1, 0.1, 0.1, 1)
         },
         'navbar_dark': {
-            'canvas_color': (0, 0, 1, 1),
+            'canvas_color': (0.1, 0.1, 0.1, 0.7),
             'color': (0.9, 0.9, 0.9, 1)
         }
     }

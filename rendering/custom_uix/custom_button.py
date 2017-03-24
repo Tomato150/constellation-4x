@@ -5,10 +5,6 @@ from rendering.styles.global_styles import colors, fonts
 from rendering.styles.css_manager import CSSManager
 
 
-def fourthroot(num):
-    return math.sqrt(math.sqrt(num))
-
-
 class CustomButton(Button):
     local_styles = {
         'button': {
@@ -39,8 +35,8 @@ class CustomButton(Button):
         print(self.color)
         if self.up:
             self.up = False
-            self.color = fourthroot(self.color[0]), fourthroot(self.color[1]), fourthroot(self.color[2]), self.color[3]
+            self.color = min(1, self.color[0] + 0.2), min(1, self.color[1] + 0.2), min(1, self.color[2] + 0.2), self.color[3]
         else:
             self.up = True
-            self.color = self.color[0] ** 4, self.color[1] ** 4, self.color[2] ** 4, self.color[3]
+            self.color = self.css.styles['color']
         print(self.color)
