@@ -7,11 +7,11 @@ from rendering.styles.css_manager import CSSManager
 class CustomNavbar(StackLayout):
 	local_styles = {
 		'navbar_light': {
-			'canvas_color': (0, 1, 0, 0.8),
+			'canvas_color': (0.5, 0.5, 0.5, 0.5),
 			'color': (0.1, 0.1, 0.1, 1)
 		},
 		'navbar_dark': {
-			'canvas_colour': (0, 1, 0, 0.8),
+			'canvas_color': (0, 0, 1, 1),
 			'color': (0.9, 0.9, 0.9, 1)
 		}
 	}
@@ -23,9 +23,12 @@ class CustomNavbar(StackLayout):
 
 	def on_load(self, app, window):
 		window.bind(on_resize=self.resize)
-		canvas_color = tuple(self.canvas_color)
-		self.canvas.add(Color(*canvas_color))
-		self.canvas.add(Rectangle(size=(50, 50), pos=(5, 5)))
+		try:
+			with self.canvas.before:
+				Color(*self.canvas_color)
+				Rectangle(size=self.size, pos=self.pos)
+		except Exception as e:
+			print('CANVAS ERROR:', e)
 
 	def resize(self, *args):
 		print(self.name)
@@ -48,6 +51,19 @@ class CustomNavbar(StackLayout):
 			pass
 		print('Gap Widget Width =', self.width, '-', widget_sizes, '=', gap_widget.width)
 
+	def toggle_visibility(self, visibility):
+		if visibility:
+			self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
+		else:
+			self.pos = 5000, 5000
+		self.toggle_canvas_visibility(visibility)
+
 	def resize_navbar(self):
-		self.size = self.parent.width, 50
-		self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
+		self.canvas.before.children[2].size = self.size = self.parent.width, 50
+		self.canvas.before.children[2].pos = self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
+
+	def toggle_canvas_visibility(self, visibility):
+		if visibility:
+			self.canvas.before.children[2].pos = self.pos
+		else:
+			self.canvas.before.children[2].pos = 5000, 5000

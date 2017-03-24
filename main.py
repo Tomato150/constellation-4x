@@ -23,10 +23,11 @@ from rendering.styles.css_manager import CSSManager
 # Window.size = windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)
 
 
+# TODO Implement this when not a lazy fuck
 def big_on_load(app, window, widget):
 	load_styles(app, window, widget)
-	widget_on_load(app, window, widget)
 	update_and_apply_styles(app, window, widget)
+	widget_on_load(app, window, widget)
 	resize_widgets(app, window, widget)
 
 
@@ -92,8 +93,19 @@ class GalaxyNavbar(CustomNavbar):  # Singleton
 	galaxy_view = ObjectProperty()
 	system_view = ObjectProperty()
 
-	def toggle_menu(self):
-		self.parent.toggle_menu_app()
+	def __init__(self, **kwargs):
+		super(GalaxyNavbar, self).__init__(**kwargs)
+		self.ui_events = dict()
+
+	def on_load(self, app, window):
+		super(GalaxyNavbar, self).on_load(app, window)
+		# TODO Implement this into every class, for communication to the base widget.
+		self.ui_events = {
+			'toggle_GameMenu': self.parent.ui_events['toggle_GameMenu']
+		}
+
+	def toggle_game_menu(self):
+		self.parent.toggle_menu()
 
 
 class GameMenu(BoxLayout):  # Singleton
@@ -115,16 +127,21 @@ class GameMenu(BoxLayout):  # Singleton
 			pass
 		window.bind(on_resize=self.resize)
 
+	# TODO which is then recived from the base widgets here.
+	def toggle_menu(self, window=Window, width=Window.size[0], height=Window.size[1]):
+		if self.visible:
+			self.visible = False
+		else:
+			self.visible = True
+		self.resize(window, width, height)
+		for child in self.children:
+			try:
+				child.toggle_visibility(self.visible)
+			except AttributeError as e:
+				print(e)
+
 	def resize(self, window, width, height):
 		self.size = width - self.border * 2, height - (self.border * 2 + self.navbar_height)
-		self.reposition()
-
-	def reposition(self, change=False):
-		if change:
-			if self.visible:
-				self.visible = False
-			else:
-				self.visible = True
 
 		if self.visible:
 			self.pos = self.border, self.border
@@ -141,8 +158,10 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
 		super(ConstellationWidget, self).__init__(**kwargs)
 		self.css = CSSManager(self, True)
 
-	def toggle_menu_app(self):
-		self.game_menu.reposition(True)
+		# TODO after spits it back out to other widgets defind from here.
+		self.ui_events = {
+			'toggle_GameMenu': self.game_menu.toggle_menu
+		}
 
 
 class ConstellationApp(App):  # Singleton/app class.
@@ -156,8 +175,9 @@ class ConstellationApp(App):  # Singleton/app class.
 	def on_start(self):
 		print('Window Size', Window.size)
 		load_styles(self, Window, self.constellation_widget)
-		widget_on_load(self, Window, self.constellation_widget)
 		update_and_apply_styles(self, Window, self.constellation_widget)
+		widget_on_load(self, Window, self.constellation_widget)
+		print('Completed On Load')
 		resize_widgets(self, Window, self.constellation_widget)
 
 if __name__ == '__main__':
