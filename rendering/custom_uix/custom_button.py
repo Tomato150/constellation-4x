@@ -29,7 +29,7 @@ class CustomButton(Button):
 
     def resize(self, *args):
         self.texture_update()
-        self.size = self.texture_size[0] + 16, self.parent.height
+        self.size = self.texture_size[0] + 16, 50
 
     def button_pressed(self):
         print(self.color)

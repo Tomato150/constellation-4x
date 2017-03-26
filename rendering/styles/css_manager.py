@@ -39,7 +39,8 @@ class CSSManager:
                                 parent_css = None
                         except AttributeError:
                             parent_css = None
-        except:
-            e = sys.exc_info()[0]
+                        except NameError:
+                            parent_css = None
+        except Exception as e:
             print('ERROR ENCOUNTERED')
             print(e)

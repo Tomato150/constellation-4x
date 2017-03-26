@@ -1,5 +1,4 @@
 from kivy.uix.stacklayout import StackLayout
-from kivy.graphics.instructions import InstructionGroup
 from kivy.graphics import Color, Rectangle
 from rendering.styles.css_manager import CSSManager
 
@@ -23,12 +22,9 @@ class CustomNavbar(StackLayout):
 
     def on_load(self, app, window):
         window.bind(on_resize=self.resize)
-        try:
-            with self.canvas.before:
-                Color(*self.canvas_color)
-                Rectangle(size=self.size, pos=self.pos)
-        except Exception as e:
-            print('CANVAS ERROR:', e)
+        with self.canvas.before:
+            Color(*self.canvas_color)
+            Rectangle(size=self.size, pos=self.pos)
 
     def resize(self, *args):
         print(self.name)
