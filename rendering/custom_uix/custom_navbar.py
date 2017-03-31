@@ -19,12 +19,13 @@ class CustomNavbar(StackLayout):
         super(CustomNavbar, self).__init__(**kwargs)
         self.style_classes = []
         self.css = CSSManager(self)
+        self.background_canvas = None
 
     def on_load(self, app, window):
         window.bind(on_resize=self.resize)
         with self.canvas.before:
             Color(*self.canvas_color)
-            Rectangle(size=self.size, pos=self.pos)
+            self.background_canvas = Rectangle(size=self.size, pos=self.pos)
 
     def resize(self, *args):
         print(self.name)
@@ -55,12 +56,11 @@ class CustomNavbar(StackLayout):
         self.toggle_canvas_visibility(visibility)
 
     def resize_navbar(self):
-        self.canvas.before.children[2].size = self.size = self.parent.width, 50
-        self.canvas.before.children[2].pos = self.pos = self.parent.pos[0], self.parent.height - self.height + \
-                                                        self.parent.pos[1]
+        self.background_canvas.size = self.size = self.parent.width, 50
+        self.background_canvas.pos = self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
 
     def toggle_canvas_visibility(self, visibility):
         if visibility:
-            self.canvas.before.children[2].pos = self.pos
+            self.background_canvas.pos = self.pos
         else:
-            self.canvas.before.children[2].pos = 5000, 5000
+            self.background_canvas.pos = 5000, 5000

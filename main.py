@@ -61,6 +61,10 @@ def widget_on_load(app, window, widget):
 
 
 def resize_widgets(app, window, widget):
+    try:
+        widget.resize(window, window.size[0], window.size[1])
+    except AttributeError:
+        pass
     for child in widget.children:
         resize_widgets(app, window, child)
     try:

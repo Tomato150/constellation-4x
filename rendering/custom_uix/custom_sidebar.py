@@ -34,3 +34,8 @@ class CustomSidebar(StackLayout):
         print(self.parent.height, self.parent.width)
         self.height = self.parent.height
         self.pos = self.parent.pos
+        self.resize_canvas()
+
+    def resize_canvas(self):
+        self.background_canvas.pos = self.pos
+        self.background_canvas.size = self.size
