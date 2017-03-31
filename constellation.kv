@@ -1,9 +1,17 @@
 #:import math math
 # Custom Styles of default Widgets
+<Widget>:
+    canvas.after:
+        Line:
+            rectangle: self.x+1,self.y+1,self.width-1,self.height-1
+            dash_offset: 5
+            dash_length: 3
+
+
 <CustomButton@Button>:
     font_name: "Roboto"
     # The following properties are the basic styles
-    size_hint_x: None
+    size_hint: None, None
 
     font_size: dp(16)
     color: (0, 1, 0, 1)
@@ -26,6 +34,7 @@
     size_hint_x: None
     size: 350, self.parent.height
     pos: self.parent.pos
+    padding: 10
 
 <GalaxyViewer>
     Widget:
@@ -143,6 +152,10 @@
             CustomButton:
                 name: 'but1'
                 text: 'Sidebar link 1'
+                style_classes: ['link']
+            CustomButton:
+                name: 'but2'
+                text: 'Sidebar link 2'
                 style_classes: ['link']
         Button
             text: 'Game Content'

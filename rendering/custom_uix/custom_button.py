@@ -25,11 +25,14 @@ class CustomButton(Button):
         self.up = True
 
     def on_load(self, app, window):
-        pass
+        window.bind(on_resize=self.resize)
 
     def resize(self, *args):
         self.texture_update()
-        self.size = self.texture_size[0] + 16, 50
+        height = 50
+        if self.parent.__class__.__name__ == 'CustomSidebar':
+            height = self.texture_size[1] + 16
+        self.size = self.texture_size[0] + 16, height
 
     def button_pressed(self):
         print(self.color)

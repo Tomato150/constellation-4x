@@ -176,11 +176,20 @@ class ConstellationApp(App):  # Singleton/app class.
         return self.constellation_widget
 
     def on_start(self):
+        Clock.schedule_once(self.on_load, 0)
+
+    def on_load(self, *args):
+        Window.size = 800, 800
         print('Window Size', Window.size)
         load_styles(self, Window, self.constellation_widget)
         update_and_apply_styles(self, Window, self.constellation_widget)
         widget_on_load(self, Window, self.constellation_widget)
         print('Completed On Load')
+        Clock.schedule_once(
+            self.resize_widgets, 0
+        )
+
+    def resize_widgets(self, *args):
         resize_widgets(self, Window, self.constellation_widget)
 
 

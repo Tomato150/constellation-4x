@@ -10,7 +10,7 @@ class CustomSidebar(StackLayout):
             'color': (0.1, 0.1, 0.1, 1)
         },
         'sidebar_dark': {
-            'canvas_color': (0.1, 1, 0.1, 1),
+            'canvas_color': (0.1, 0.1, 0.1, 0.7),
             'color': (0.9, 0.9, 0.9, 1)
         }
     }
