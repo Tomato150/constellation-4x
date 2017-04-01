@@ -1,3 +1,5 @@
+import player_world
+
 from kivy.app import App
 import os
 import math
@@ -19,19 +21,17 @@ from rendering.custom_uix.custom_button import CustomButton
 from rendering.custom_uix.custom_navbar import CustomNavbar
 from rendering.custom_uix.custom_sidebar import CustomSidebar
 
+from rendering.custom_uix.named.game_menu import GameMenu
+from rendering.custom_uix.named.galaxy_navbar import GalaxyNavbar
+from rendering.custom_uix.named.galaxy_viewer import GalaxyViewer
+
 from rendering.styles.css_manager import CSSManager
 
 
 # Window.size = windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)
 
-
-# TODO Implement this when not a lazy fuck
-def big_on_load(app, window, widget):
-    load_styles(app, window, widget)
-    update_and_apply_styles(app, window, widget)
-    widget_on_load(app, window, widget)
-    resize_widgets(app, window, widget)
-
+player_world = player_world.PlayerWorld()
+player_world.generate_mock_game()
 
 def load_styles(app, window, widget):
     try:
@@ -73,85 +73,6 @@ def resize_widgets(app, window, widget):
         pass
 
 
-class GalaxyViewer(Widget):  # singleton
-    navbar = ObjectProperty()
-
-    def __init__(self, **kwargs):
-        super(GalaxyViewer, self).__init__(**kwargs)
-        self.size = Window.size[0], Window.size[1]
-
-    def on_load(self, app, window):
-        try:
-            super(GalaxyViewer, self).on_load(app, window)
-        except AttributeError:
-            pass
-        window.bind(on_resize=self.resize)
-
-    def resize(self, window, width, height):
-        self.size = window.size
-
-
-class GalaxyNavbar(CustomNavbar):  # Singleton
-    open_close_menu = ObjectProperty()
-    empire_menu = ObjectProperty()
-    system_menu = ObjectProperty()
-    gap_widget = ObjectProperty()
-    galaxy_view = ObjectProperty()
-    system_view = ObjectProperty()
-
-    def __init__(self, **kwargs):
-        super(GalaxyNavbar, self).__init__(**kwargs)
-        self.ui_events = dict()
-
-    def on_load(self, app, window):
-        super(GalaxyNavbar, self).on_load(app, window)
-        # TODO Implement this into every class, for communication to the base widget.
-        self.ui_events = {
-            'toggle_GameMenu': self.parent.ui_events['toggle_GameMenu']
-        }
-
-
-class GameMenu(BoxLayout):  # Singleton
-    custom_navbar_game_menu = ObjectProperty(None)
-
-    def __init__(self, **kwargs):
-        super(GameMenu, self).__init__(**kwargs)
-        window_size = Window.size
-        self.border = 20
-        self.navbar_height = 50
-
-        self.visible = True
-        self.resize(Window)
-
-    def on_load(self, app, window):
-        try:
-            super(GameMenu, self).on_load(app, window)
-        except AttributeError:
-            pass
-        window.bind(on_resize=self.resize)
-
-    # TODO which is then recived from the base widgets here.
-    def toggle_menu(self, window=Window, width=Window.width, height=Window.height):
-        if self.visible:
-            self.visible = False
-        else:
-            self.visible = True
-        for child in self.children:
-            try:
-                child.toggle_visibility(self.visible)
-            except AttributeError as e:
-                print(e)
-        self.resize(window)
-
-    def resize(self, window, *args):
-        self.size = window.width - self.border * 2, window.height - (self.border * 2 + self.navbar_height)
-
-        if self.visible:
-            self.pos = self.border, self.border
-        else:
-            self.pos = Window.size
-
-
 class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
     galaxy_viewer = ObjectProperty(None)
     galaxy_navbar = ObjectProperty(None)
@@ -179,8 +100,6 @@ class ConstellationApp(App):  # Singleton/app class.
         Clock.schedule_once(self.on_load, 0)
 
     def on_load(self, *args):
-        Window.size = 800, 800
-        print('Window Size', Window.size)
         load_styles(self, Window, self.constellation_widget)
         update_and_apply_styles(self, Window, self.constellation_widget)
         widget_on_load(self, Window, self.constellation_widget)
@@ -194,8 +113,7 @@ class ConstellationApp(App):  # Singleton/app class.
 
 
 if __name__ == '__main__':
-    LabelBase.register(
-        name="Roboto",
+    LabelBase.register(name="Roboto",
         fn_regular="sources/font/Roboto/Roboto-Light.ttf",
         fn_italic="sources/font/Roboto/Roboto-LightItalic.ttf",
         fn_bold="sources/font/Roboto/Roboto-Medium.ttf",

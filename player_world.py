@@ -23,7 +23,3 @@ class PlayerWorld:
 
     def handle_player_input(self, name, target_object_ids, args):
         return self.player_command_mapping[name](self.galaxy, target_object_ids, args)
-
-
-player_world = PlayerWorld()
-player_world.generate_mock_game()
