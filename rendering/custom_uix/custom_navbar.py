@@ -6,11 +6,11 @@ from rendering.styles.css_manager import CSSManager
 class CustomNavbar(StackLayout):
     local_styles = {
         'navbar_light': {
-            'canvas_color': (0.9, 0.9, 0.9, 0.7),
+            'canvas_color': (0.9, 0.9, 0.9, 0.9),
             'color': (0.1, 0.1, 0.1, 1)
         },
         'navbar_dark': {
-            'canvas_color': (0.1, 0.1, 0.1, 0.7),
+            'canvas_color': (0, 0, 0, 0.9),
             'color': (0.9, 0.9, 0.9, 1)
         }
     }
@@ -29,7 +29,8 @@ class CustomNavbar(StackLayout):
 
     def resize(self, *args):
         print(self.name)
-        self.resize_navbar()
+        self.background_canvas.size = self.size = self.parent.width, 50
+        self.background_canvas.pos = self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
         widget_sizes = 0
         gap_widget = None
         for child in self.children:
@@ -53,14 +54,5 @@ class CustomNavbar(StackLayout):
             self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
         else:
             self.pos = 5000, 5000
-        self.toggle_canvas_visibility(visibility)
+        self.background_canvas.pos = self.pos
 
-    def resize_navbar(self):
-        self.background_canvas.size = self.size = self.parent.width, 50
-        self.background_canvas.pos = self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
-
-    def toggle_canvas_visibility(self, visibility):
-        if visibility:
-            self.background_canvas.pos = self.pos
-        else:
-            self.background_canvas.pos = 5000, 5000
