@@ -1,11 +1,6 @@
 #:import math math
 # Custom Styles of default Widgets
-<Widget>:
-    canvas.after:
-        Line:
-            rectangle: self.x+1,self.y+1,self.width-1,self.height-1
-            dash_offset: 5
-            dash_length: 3
+
 
 
 <CustomButton@Button>:
@@ -36,18 +31,6 @@
     pos: self.parent.pos
 
 <GalaxyViewer>
-    Widget:
-        size: root.parent.width, root.parent.height
-        canvas:
-            Color:
-                rgba: 1, 0, 0, 0.5
-            Rectangle:
-                size: self.width, root.height
-                pos: 0, 0
-            Color:
-                rgb: 0, 1, 0
-            Rectangle:
-                pos: 100, 100
 
 
 <GalaxyNavbar>:

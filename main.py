@@ -33,6 +33,9 @@ from rendering.styles.css_manager import CSSManager
 player_world = player_world.PlayerWorld()
 player_world.generate_mock_game()
 
+Config.set('input', 'mouse', 'mouse,disable_multitouch')
+Config.update()
+
 def load_styles(app, window, widget):
     try:
         widget.css.load_styles()
@@ -103,6 +106,7 @@ class ConstellationApp(App):  # Singleton/app class.
         load_styles(self, Window, self.constellation_widget)
         update_and_apply_styles(self, Window, self.constellation_widget)
         widget_on_load(self, Window, self.constellation_widget)
+        self.constellation_widget.galaxy_viewer.load_stars(player_world.galaxy.world_objects['stars'])
         print('Completed On Load')
         Clock.schedule_once(
             self.resize_widgets, 0
