@@ -37,33 +37,6 @@ Config.set('input', 'mouse', 'mouse,disable_multitouch')
 Config.update()
 
 
-def load_styles(app, window, widget):
-    try:
-        widget.css.load_styles()
-    except AttributeError:
-        pass
-    for child in widget.children:
-        load_styles(app, window, child)
-
-
-def update_and_apply_styles(app, window, widget):
-    try:
-        widget.css.apply_styles()
-    except AttributeError as e:
-        print(e)
-    for child in widget.children:
-        update_and_apply_styles(app, window, child)
-
-
-def widget_on_load(app, window, widget):
-    try:
-        widget.on_load(app, window)
-    except AttributeError:
-        pass
-    for child in widget.children:
-        widget_on_load(app, window, child)
-
-
 def resize_widgets(app, window, widget):
     try:
         widget.resize(window, window.size[0], window.size[1])
@@ -85,7 +58,6 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
     def __init__(self, **kwargs):
         super(ConstellationWidget, self).__init__(**kwargs)
         self.css = CSSManager(self, True)
-
         # TODO after spits it back out to other widgets defind from here.
         self.ui_events = {
             'toggle_GameMenu': self.game_menu.toggle_menu
@@ -104,9 +76,9 @@ class ConstellationApp(App):  # Singleton/app class.
         Clock.schedule_once(self.on_load, 0)
 
     def on_load(self, *args):
-        load_styles(self, Window, self.constellation_widget)
-        update_and_apply_styles(self, Window, self.constellation_widget)
-        widget_on_load(self, Window, self.constellation_widget)
+        self.load_styles()
+        self.update_and_apply_styles()
+        self.widget_on_load()
         self.constellation_widget.galaxy_viewer.load_stars(player_world.galaxy.world_objects['stars'])
         print('Completed On Load')
         Clock.schedule_once(
@@ -114,7 +86,51 @@ class ConstellationApp(App):  # Singleton/app class.
         )
 
     def resize_widgets(self, *args):
-        resize_widgets(self, Window, self.constellation_widget)
+        self.resize_widgets()
+        
+    def load_styles(self, widget=None):
+        if widget is None:
+            self.load_styles(self.constellation_widget)
+        try:
+            widget.css.load_styles()
+        except AttributeError:
+            pass
+        for child in widget.children:
+            self.load_styles(Window, child)
+            
+    def update_and_apply_styles(self, widget=None):
+        if widget is None:
+            self.load_styles(self.constellation_widget)
+        try:
+            widget.css.apply_styles()
+        except AttributeError as e:
+            print(e)
+        for child in widget.children:
+            self.update_and_apply_styles(child)
+            
+    def widget_on_load(self, widget=None):
+        if widget is None:
+            self.widget_on_load(self.constellation_widget)
+        try:
+            widget.on_load(app, window)
+        except AttributeError:
+            pass
+        for child in widget.children:
+            self.widget_on_load(child)
+            
+    def resize_widgets(self, widget=None):
+        if widget is None:
+            self.resize_widgets(self.constellation_widget)
+        try:
+            widget.resize(window, window.size[0], window.size[1])
+        except AttributeError:
+            pass
+        for child in widget.children:
+            self.resize_widgets(child)
+        try:
+            widget.resize(window, window.size[0], window.size[1])
+        except AttributeError:
+            pass
 
 
 if __name__ == '__main__':
