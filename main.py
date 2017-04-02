@@ -37,19 +37,6 @@ Config.set('input', 'mouse', 'mouse,disable_multitouch')
 Config.update()
 
 
-def resize_widgets(app, window, widget):
-    try:
-        widget.resize(window, window.size[0], window.size[1])
-    except AttributeError:
-        pass
-    for child in widget.children:
-        resize_widgets(app, window, child)
-    try:
-        widget.resize(window, window.size[0], window.size[1])
-    except AttributeError:
-        pass
-
-
 class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
     galaxy_viewer = ObjectProperty(None)
     galaxy_navbar = ObjectProperty(None)
