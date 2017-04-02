@@ -39,8 +39,8 @@ class GalaxyViewer(RelativeLayout):  # singleton
         self.old = touch.pos
         print('touched down')
         if touch.device == 'mouse' and touch.button == 'scrollup':
-            # Actually the equivalent of scrolling down a web page
-            print('WOWOWOWOWOW UP IT GOES')
+            # Actually the equivalent of scrolling down a web page, and zooming out of game
+            pass
 
     def on_touch_move(self, touch):
         print('Touched moved')

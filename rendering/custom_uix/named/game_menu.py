@@ -1,5 +1,6 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
+from kivy.core.window import Window
 
 
 class GameMenu(BoxLayout):  # Singleton
@@ -16,7 +17,7 @@ class GameMenu(BoxLayout):  # Singleton
         window.bind(on_resize=self.resize)
 
     # TODO which is then recived from the base widgets here.
-    def toggle_menu(self, window, *args):
+    def toggle_menu(self, window=Window, *args):
         if self.visible:
             self.visible = False
         else:

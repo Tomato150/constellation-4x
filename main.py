@@ -36,6 +36,7 @@ player_world.generate_mock_game()
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
 Config.update()
 
+
 def load_styles(app, window, widget):
     try:
         widget.css.load_styles()
