@@ -60,9 +60,24 @@ class ConstellationApp(App):  # Singleton/app class.
         return self.constellation_widget
 
     def on_start(self):
+        """
+        Schedules an event for the next frame, allowing Kivy to finish it's load functions.
+        """
         Clock.schedule_once(self.on_load, 0)
 
     def on_load(self, *args):
+        """
+        Arguments: Accepts no arguments.
+        
+        Completes the initialisation of Kivy apps once the .kv file has loaded all previous presets.
+        
+        Completes these functions in order:
+        - self.load_styles()
+        - self.update_and_apply_styles()
+        - self.widgets_on_load()
+        - ... galaxy_viewer.load_stars()
+        - self.resize_widgets()
+        """
         self.load_styles()
         self.update_and_apply_styles()
         self.widget_on_load()
@@ -73,9 +88,20 @@ class ConstellationApp(App):  # Singleton/app class.
         )
 
     def resize_widgets(self, *args):
+        """
+        Arguments: Accepts no arguments.
+        
+        Fires a resize widget function for the clock.
+        """
         self.resize_widgets()
         
     def load_styles(self, widget=None):
+        """
+        Keyword arguments:
+        - widget=None: Takes a widget to cycle through.
+        
+        A recursive function that goes through and calls the load function for any CSS component it finds.
+        """
         if widget is None:
             self.load_styles(self.constellation_widget)
         try:
