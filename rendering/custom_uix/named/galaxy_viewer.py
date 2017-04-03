@@ -12,8 +12,8 @@ class GalaxyViewer(RelativeLayout):  # singleton
         self.old = (0, 0)
 
     def on_load(self, app, window):
-        self.size = 6000, 6000
-        self.pos = -3000, -3000
+        self.size = 6400, 6400
+        self.pos = -3200 + (window.size[0]/2), -3200 + (window.size[1]/2)
         window.bind(on_resize=self.resize)
 
     def resize(self, window, *args):
