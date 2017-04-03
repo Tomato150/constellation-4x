@@ -28,8 +28,7 @@ class GalaxyViewer(RelativeLayout):  # singleton
                 pos=(star.coordinates[0] * 32 + 3032, star.coordinates[1] * 32 + 3032),
                 size=(32, 32), size_hint=(None, None)
             )
-            star_image.nocache = True
-            star_image.mipmap = False
+            star_image.mipmap = True
             self.add_widget(star_image)
             count += 1
             if count % 10000 == 0:
@@ -37,15 +36,18 @@ class GalaxyViewer(RelativeLayout):  # singleton
 
     def on_touch_down(self, touch):
         self.old = touch.pos
-        print('touched down')
-        if touch.device == 'mouse' and touch.button == 'scrollup':
-            # Actually the equivalent of scrolling down a web page, and zooming out of game
-            pass
+        if touch.device == 'mouse':
+            if touch.button == 'scrollup':
+                # Actually the equivalent of scrolling down a web page, and zooming out of game
+                self.size = (self.size[0]/2), (self.size[1]/2)
+                pass
+            if touch.button == 'left':
+                print('Dank meme')
 
     def on_touch_move(self, touch):
-        print('Touched moved')
-        if touch.device == 'mouse' and touch.button == 'middle':
-            self.middle_mouse_drag(touch)
+        if touch.device == 'mouse':
+            if touch.button == 'middle':
+                self.middle_mouse_drag(touch)
 
     def middle_mouse_drag(self, touch):
         change = (
@@ -59,5 +61,4 @@ class GalaxyViewer(RelativeLayout):  # singleton
         self.old = touch.pos
 
     def on_touch_up(self, touch):
-        self.mouse_pos = False
-        print('Touch Up')
+        pass

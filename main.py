@@ -84,10 +84,10 @@ class ConstellationApp(App):  # Singleton/app class.
         self.constellation_widget.galaxy_viewer.load_stars(player_world.galaxy.world_objects['stars'])
         print('Completed On Load')
         Clock.schedule_once(
-            self.resize_widgets, 0
+            self.resize_widgets_clock_caller, 0
         )
 
-    def resize_widgets(self, *args):
+    def resize_widgets_clock_caller(self, *args):
         """
         Arguments: Accepts no arguments.
         
@@ -104,16 +104,18 @@ class ConstellationApp(App):  # Singleton/app class.
         """
         if widget is None:
             self.load_styles(self.constellation_widget)
+            return
         try:
             widget.css.load_styles()
-        except AttributeError:
-            pass
+        except AttributeError as e:
+            print(e)
         for child in widget.children:
-            self.load_styles(Window, child)
+            self.load_styles(child)
             
     def update_and_apply_styles(self, widget=None):
         if widget is None:
-            self.load_styles(self.constellation_widget)
+            self.update_and_apply_styles(self.constellation_widget)
+            return
         try:
             widget.css.apply_styles()
         except AttributeError as e:
@@ -124,8 +126,9 @@ class ConstellationApp(App):  # Singleton/app class.
     def widget_on_load(self, widget=None):
         if widget is None:
             self.widget_on_load(self.constellation_widget)
+            return
         try:
-            widget.on_load(app, window)
+            widget.on_load(self, Window)
         except AttributeError:
             pass
         for child in widget.children:
@@ -134,20 +137,22 @@ class ConstellationApp(App):  # Singleton/app class.
     def resize_widgets(self, widget=None):
         if widget is None:
             self.resize_widgets(self.constellation_widget)
+            return
         try:
-            widget.resize(window, window.size[0], window.size[1])
+            widget.resize(Window, Window.size[0], Window.size[1])
         except AttributeError:
             pass
         for child in widget.children:
             self.resize_widgets(child)
         try:
-            widget.resize(window, window.size[0], window.size[1])
+            widget.resize(Window, Window.size[0], Window.size[1])
         except AttributeError:
             pass
 
 
 if __name__ == '__main__':
-    LabelBase.register(name="Roboto",
+    LabelBase.register(
+        name="Roboto",
         fn_regular="sources/font/Roboto/Roboto-Light.ttf",
         fn_italic="sources/font/Roboto/Roboto-LightItalic.ttf",
         fn_bold="sources/font/Roboto/Roboto-Medium.ttf",
