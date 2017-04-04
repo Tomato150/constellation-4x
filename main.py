@@ -81,19 +81,20 @@ class ConstellationApp(App):  # Singleton/app class.
         self.load_styles()
         self.update_and_apply_styles()
         self.widget_on_load()
-        self.constellation_widget.galaxy_viewer.load_stars(player_world.galaxy.world_objects['stars'])
+        Clock.schedule_once(self.delayed_on_load, 0)
         print('Completed On Load')
-        Clock.schedule_once(
-            self.resize_widgets_clock_caller, 0
-        )
 
-    def resize_widgets_clock_caller(self, *args):
+    def delayed_on_load(self, *args):
         """
         Arguments: Accepts no arguments.
         
         Fires a resize widget function for the clock.
         """
         self.resize_widgets()
+        Clock.schedule_once(self.delayed_further_on_load, 0)
+
+    def delayed_further_on_load(self, args):
+        self.constellation_widget.galaxy_viewer.load_stars(player_world.galaxy.world_objects['stars'])
         
     def load_styles(self, widget=None):
         """
