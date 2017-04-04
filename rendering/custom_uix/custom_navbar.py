@@ -4,6 +4,9 @@ from rendering.styles.css_manager import CSSManager
 
 
 class CustomNavbar(StackLayout):
+    """
+    A custom navbar widget for use in any other parent widget.
+    """
     local_styles = {
         'navbar_light': {
             'canvas_color': (0.9, 0.9, 0.9, 0.9),
@@ -16,19 +19,34 @@ class CustomNavbar(StackLayout):
     }
 
     def __init__(self, **kwargs):
+        """
+        initialisation for the widget, creating components necessary for it.
+
+        :param kwargs: Any keyword args to pass back to the parent class.
+        """
         super(CustomNavbar, self).__init__(**kwargs)
         self.style_classes = []
         self.css = CSSManager(self)
         self.background_canvas = None
 
     def on_load(self, app, window):
+        """
+        Creates necessary bindings and other information that couldn't be created during init due to the .KV file
+
+        :param app: Kivy App
+        :param window: Kivy Window object
+        """
         window.bind(on_resize=self.resize)
         with self.canvas.before:
             Color(*self.canvas_color)
             self.background_canvas = Rectangle(size=self.size, pos=self.pos)
 
     def resize(self, *args):
-        print(self.name)
+        """
+        Resizes the widget appropriately for it's needs
+
+        :param args: Deals with any arguments handed by the kivy binding.
+        """
         self.background_canvas.size = self.size = self.parent.width, 50
         self.background_canvas.pos = self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
         widget_sizes = 0
@@ -47,9 +65,13 @@ class CustomNavbar(StackLayout):
         else:
             # TODO Make the thing here for that drop down navbar
             pass
-        print('Gap Widget Width =', self.width, '-', widget_sizes, '=', gap_widget.width)
 
     def toggle_visibility(self, visibility):
+        """
+        Toggles the visibility of widget, clearing away the canvas as well if it's present.
+
+        :param visibility: What state the visibility is in from the parent widget.
+        """
         if visibility:
             self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
         else:

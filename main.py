@@ -38,11 +38,19 @@ Config.update()
 
 
 class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
+    """
+    A singleton class that gets returned as the base widget in the kivy app
+    """
     galaxy_viewer = ObjectProperty(None)
     galaxy_navbar = ObjectProperty(None)
     game_menu = ObjectProperty(None)
 
     def __init__(self, **kwargs):
+        """
+        initialisation for the base widget, creating components necessary for it.
+
+        :param kwargs: Any keyword args to pass back to the parent class.
+        """
         super(ConstellationWidget, self).__init__(**kwargs)
         self.css = CSSManager(self, True)
         # TODO after spits it back out to other widgets defind from here.
@@ -51,10 +59,16 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
         }
 
 
-class ConstellationApp(App):  # Singleton/app class.
+class ConstellationApp(App):
+    """
+    A singleton class that is the app for the entire kivy project.
+    """
     constellation_widget = ObjectProperty(None)
 
     def build(self):
+        """
+        Builds the app, loading the window. Fires the local on_start method
+        """
         self.constellation_widget = ConstellationWidget()
 
         return self.constellation_widget
@@ -67,16 +81,9 @@ class ConstellationApp(App):  # Singleton/app class.
 
     def on_load(self, *args):
         """
-        Arguments: Accepts no arguments.
-        
-        Completes the initialisation of Kivy apps once the .kv file has loaded all previous presets.
-        
-        Completes these functions in order:
-        - self.load_styles()
-        - self.update_and_apply_styles()
-        - self.widgets_on_load()
-        - ... galaxy_viewer.load_stars()
-        - self.resize_widgets()
+        Starts the recursive functions to handle creating and initialising objects
+
+        :param args: Handles any args given by the Kivy Clock scheduling.
         """
         self.load_styles()
         self.update_and_apply_styles()
@@ -86,22 +93,19 @@ class ConstellationApp(App):  # Singleton/app class.
 
     def delayed_on_load(self, *args):
         """
-        Arguments: Accepts no arguments.
-        
-        Fires a resize widget function for the clock.
+        Other on loads that need to be called a frame in advance
+
+        :param args:
         """
         self.resize_widgets()
-        Clock.schedule_once(self.delayed_further_on_load, 0)
-
-    def delayed_further_on_load(self, args):
         self.constellation_widget.galaxy_viewer.load_stars(player_world.galaxy)
-        
+
     def load_styles(self, widget=None):
         """
-        Keyword arguments:
-        - widget=None: Takes a widget to cycle through.
-        
-        A recursive function that goes through and calls the load function for any CSS component it finds.
+        recursive function to load all the styles into each widget's CSS component.
+
+        :param widget: = None, allows for recursion through widgets, and also set to none to allow for targeting the
+        constellation_widget if not otherwise specified.
         """
         if widget is None:
             self.load_styles(self.constellation_widget)
@@ -114,6 +118,13 @@ class ConstellationApp(App):  # Singleton/app class.
             self.load_styles(child)
             
     def update_and_apply_styles(self, widget=None):
+        """
+        recursive function to reload any special keywords (inherit, etc.) with their actual values, and then applies all
+        the data needed.
+
+        :param widget: = None, allows for recursion through widgets, and also set to none to allow for targeting the
+        constellation_widget if not otherwise specified.
+        """
         if widget is None:
             self.update_and_apply_styles(self.constellation_widget)
             return
@@ -125,6 +136,12 @@ class ConstellationApp(App):  # Singleton/app class.
             self.update_and_apply_styles(child)
             
     def widget_on_load(self, widget=None):
+        """
+        recursive function to fire the widget's on_load functions.
+
+        :param widget: = None, allows for recursion through widgets, and also set to none to allow for targeting the
+        constellation_widget if not otherwise specified.
+        """
         if widget is None:
             self.widget_on_load(self.constellation_widget)
             return
@@ -136,13 +153,15 @@ class ConstellationApp(App):  # Singleton/app class.
             self.widget_on_load(child)
             
     def resize_widgets(self, widget=None):
+        """
+        Recursive function to allow for resizing widgets in a correct manner
+
+        :param widget: = None, allows for recursion through widgets, and also set to none to allow for targeting the
+        constellation_widget if not otherwise specified.
+        """
         if widget is None:
             self.resize_widgets(self.constellation_widget)
             return
-        try:
-            widget.resize(Window, Window.size[0], Window.size[1])
-        except AttributeError:
-            pass
         for child in widget.children:
             self.resize_widgets(child)
         try:
