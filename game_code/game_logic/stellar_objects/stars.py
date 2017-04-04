@@ -16,9 +16,7 @@ class Star:
         self.coordinates = [int(x), int(y)]
 
         # Star type information
-        star = random.choice(constants.STARS[0])
-        self.star_type = star[0]
-        self.file_path = random.choice(star[1])
+        self.star_type = random.choice(constants.STARS)
 
         # System Contents information:
         self.planets = {}  # A dict of {id's: instances} of planet keys.
