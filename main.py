@@ -94,7 +94,7 @@ class ConstellationApp(App):  # Singleton/app class.
         Clock.schedule_once(self.delayed_further_on_load, 0)
 
     def delayed_further_on_load(self, args):
-        self.constellation_widget.galaxy_viewer.load_stars(player_world.galaxy.world_objects['stars'])
+        self.constellation_widget.galaxy_viewer.load_stars(player_world.galaxy)
         
     def load_styles(self, widget=None):
         """

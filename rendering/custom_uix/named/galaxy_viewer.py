@@ -1,6 +1,10 @@
 from kivy.uix.scatterlayout import ScatterLayout
+from kivy.graphics import Rectangle
 from kivy.uix.image import Image
 from kivy.properties import ObjectProperty
+
+import random
+import math
 
 
 class GalaxyViewer(ScatterLayout):  # singleton
@@ -8,7 +12,7 @@ class GalaxyViewer(ScatterLayout):  # singleton
 
     def __init__(self, **kwargs):
         super(GalaxyViewer, self).__init__(**kwargs)
-        self.stars_dict = None
+        self.galaxy = None
         self.old = None
 
     def on_load(self, app, window):
@@ -19,20 +23,29 @@ class GalaxyViewer(ScatterLayout):  # singleton
     def resize(self, window, *args):
         pass
 
-    def load_stars(self, stars_dict):
-        self.stars_dict = stars_dict
+    def load_stars(self, galaxy):
+        self.galaxy = galaxy
         count = 0
-        for star in self.stars_dict.values():
-            star_image = Image(
-                source=star.file_path,
-                pos=(star.coordinates[0] * 32 + (3000*32), star.coordinates[1] * 32 + (3000*32)),
-                size=(32, 32), size_hint=(None, None)
-            )
-            star_image.mipmap = True
-            self.add_widget(star_image)
-            count += 1
-            if count % 10000 == 0:
-                print(count)
+        textures = {
+            'Blue Dwarf': [Image(source='sources/images/stars/B_D_1.png').texture],
+            'Blue Giant': [Image(source='sources/images/stars/B_G_1.png').texture],
+            'Blue Main': [Image(source='sources/images/stars/B_M_1.png').texture],
+            'Red Dwarf': [Image(source='sources/images/stars/R_D_1.png').texture],
+            'Red Giant': [Image(source='sources/images/stars/R_G_1.png').texture],
+            'Red Main': [Image(source='sources/images/stars/R_M_1.png').texture],
+            'Red Super Giant': [Image(source='sources/images/stars/R_SG_1.png').texture],
+            'Yellow Main': [Image(source='sources/images/stars/Y_M_1.png').texture]
+        }
+        with self.canvas.before:
+            for star in self.galaxy.world_objects['stars'].values():
+                Rectangle(
+                    texture=random.choice(textures[star.star_type]),
+                    pos=(star.coordinates[0] * 32 + (3000*32), star.coordinates[1] * 32 + (3000*32)),
+                    size=[32, 32]
+                )
+                count += 1
+                if count % 10000 == 0:
+                    print(count)
 
     def on_touch_down(self, touch):
         self.old = touch.pos
@@ -42,7 +55,14 @@ class GalaxyViewer(ScatterLayout):  # singleton
             elif touch.button == 'scrolldown':
                 self.scroll_on_galaxy('zoom_in', touch)
             elif touch.button == 'left':
-                pass
+                mouse_pos = [
+                    math.floor((-self.pos[0] + touch.pos[0]) / 32) - 3000,
+                    math.floor((-self.pos[1] + touch.pos[1]) / 32) - 3000
+                ]
+                for star in self.galaxy.world_objects['stars'].values():
+                    if star.coordinates == mouse_pos:
+                        # Do stuff with star
+                        break
 
     def scroll_on_galaxy(self, scroll_type, touch):
         old_scale = self.scale
