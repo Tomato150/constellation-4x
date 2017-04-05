@@ -1,3 +1,7 @@
+"""
+The galaxy_navbar file, hosts relevant classes.
+"""
+
 from rendering.custom_uix.custom_navbar import CustomNavbar
 from kivy.properties import ObjectProperty
 

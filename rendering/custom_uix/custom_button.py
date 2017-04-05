@@ -1,3 +1,7 @@
+"""
+The custom_button file, hosts the relevant class.
+"""
+
 from kivy.uix.button import Button
 import math
 

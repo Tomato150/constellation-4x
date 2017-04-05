@@ -1,3 +1,7 @@
+"""
+The CustomNavbar file. Hosts the CustomNavbar class.
+"""
+
 from kivy.uix.stacklayout import StackLayout
 from kivy.graphics import Color, Rectangle
 from rendering.styles.css_manager import CSSManager

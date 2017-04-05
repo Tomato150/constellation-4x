@@ -1,3 +1,7 @@
+"""
+The CustomSidebar file, hosts the CustomSidebar class.
+"""
+
 from kivy.uix.stacklayout import StackLayout
 from kivy.graphics import Color, Rectangle
 from rendering.styles.css_manager import CSSManager

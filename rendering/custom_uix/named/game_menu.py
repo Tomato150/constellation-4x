@@ -1,3 +1,7 @@
+"""
+The game_menu file, hosts the relevant class.
+"""
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.core.window import Window

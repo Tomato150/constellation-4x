@@ -1,3 +1,7 @@
+"""
+The main file to host the Kivy app.
+"""
+
 import player_world
 
 from kivy.app import App

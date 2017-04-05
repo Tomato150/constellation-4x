@@ -1,3 +1,7 @@
+"""
+The GalaxyViewer file, hosts the class
+"""
+
 from kivy.uix.scatterlayout import ScatterLayout
 from kivy.graphics import Rectangle
 from kivy.uix.image import Image
