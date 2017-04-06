@@ -8,11 +8,11 @@ from kivy.graphics import Color, Rectangle
 
 from kivy.uix.stacklayout import StackLayout
 
-from rendering.helper_classes import background_canvas_resize, handle_visibility
+from rendering.helper_classes import CanvasEnabled
 from rendering.styles.css_manager import CSSManager
 
 
-class CustomSidebar(StackLayout):
+class CustomSidebar(StackLayout, CanvasEnabled):
     """
     A custom sidebar widget, for use in any other parent widget
     """
@@ -36,7 +36,6 @@ class CustomSidebar(StackLayout):
         super(CustomSidebar, self).__init__(**kwargs)
         self.style_classes = []
         self.css = CSSManager(self)
-        self.background_canvas = None
         self.visibility = True
 
     def on_load(self):
@@ -63,15 +62,3 @@ class CustomSidebar(StackLayout):
 
         Clock.schedule_once(self.background_canvas_resize, 0)
 
-    def toggle_visibility(self, visibility):
-        """
-        Toggles the visibility of widget, clearing away the canvas as well if it's present.
-
-        :param visibility: What state the visibility is in from the parent widget.
-        """
-        if visibility:
-            self.resize()
-        else:
-            self.background_canvas.pos = self.pos = 5000, 5000
-
-CustomSidebar.background_canvas_resize = background_canvas_resize

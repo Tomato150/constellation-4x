@@ -8,11 +8,11 @@ from kivy.graphics import Color, Rectangle
 
 from kivy.uix.stacklayout import StackLayout
 
-from rendering.helper_classes import background_canvas_resize, handle_visibility
+from rendering.helper_classes import CanvasEnabled
 from rendering.styles.css_manager import CSSManager
 
 
-class CustomNavbar(StackLayout):
+class CustomNavbar(StackLayout, CanvasEnabled):
     """
     A custom navbar widget for use in any other parent widget.
     """
@@ -56,8 +56,11 @@ class CustomNavbar(StackLayout):
 
         :param args: Deals with any arguments handed by the kivy binding.
         """
+        # TODO fix the resizing.
         self.size = self.parent.width, 50
-        self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
+        self.pos = self.parent.top - self.height, self.parent.pos[1]
+
+        print('Resized')
 
         widget_sizes = 0
         gap_widget = None
@@ -74,18 +77,3 @@ class CustomNavbar(StackLayout):
             gap_widget.width = gap_widget_size
 
         Clock.schedule_once(self.background_canvas_resize, 0)
-
-    def toggle_visibility(self, visibility):
-        """
-        Toggles the visibility of widget, clearing away the canvas as well if it's present.
-
-        :param visibility: What state the visibility is in from the parent widget.
-        """
-        if visibility:
-            self.resize()
-        else:
-            self.pos = Window.size
-
-        Clock.schedule_once(self.background_canvas_resize, 0)
-
-CustomNavbar.background_canvas_resize = background_canvas_resize
