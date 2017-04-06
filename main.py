@@ -14,12 +14,9 @@ from kivy.core.text import LabelBase
 from ctypes import windll
 from kivy.config import Config
 
-from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty
+from kivy.properties import ObjectProperty
 
 from kivy.uix.widget import Widget
-from kivy.uix.button import Button
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.boxlayout import BoxLayout
 
 from rendering.custom_uix.custom_button import CustomButton
 from rendering.custom_uix.custom_navbar import CustomNavbar
@@ -28,6 +25,8 @@ from rendering.custom_uix.custom_sidebar import CustomSidebar
 from rendering.custom_uix.named.game_menu import GameMenu
 from rendering.custom_uix.named.galaxy_navbar import GalaxyNavbar
 from rendering.custom_uix.named.galaxy_viewer import GalaxyViewer
+
+from rendering.custom_uix.named.menu_uix.industry_tab import IndustryTab
 
 from rendering.styles.css_manager import CSSManager
 
@@ -57,17 +56,21 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
         """
         super(ConstellationWidget, self).__init__(**kwargs)
         self.css = CSSManager(self, True)
-        # TODO after spits it back out to other widgets defind from here.
-        self.ui_events = {
-            'toggle_GameMenu': self.game_menu.toggle_menu
-        }
-
 
 class ConstellationApp(App):
     """
     A singleton class that is the app for the entire kivy project.
     """
     constellation_widget = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
+        """
+        The base init function, to create properties for the app
+
+        :param kwargs: Keyword args to pass into super function
+        """
+        super(ConstellationApp, self).__init__(**kwargs)
+        self.ui_events = dict()
 
     def build(self):
         """
@@ -93,6 +96,9 @@ class ConstellationApp(App):
         self.update_and_apply_styles()
         self.widget_on_load()
         Clock.schedule_once(self.delayed_on_load, 0)
+
+        self.ui_events['toggle_game_menu'] = self.constellation_widget.game_menu.toggle_menu
+
         print('Completed On Load')
 
     def delayed_on_load(self, *args):
@@ -169,7 +175,7 @@ class ConstellationApp(App):
         for child in widget.children:
             self.resize_widgets(child)
         try:
-            widget.resize(Window, Window.size[0], Window.size[1])
+            widget.resize()
         except AttributeError:
             pass
 

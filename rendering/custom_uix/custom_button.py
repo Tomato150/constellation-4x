@@ -15,7 +15,8 @@ class CustomButton(Button):
     """
     local_styles = {
         'button': {
-
+            'background_color': colors['jet_black'],
+            'color': 'inherit'
         },
         'link': {
             'background_color': colors['opaque'],

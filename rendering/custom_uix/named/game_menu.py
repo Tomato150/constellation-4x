@@ -5,6 +5,7 @@ The game_menu file, hosts the relevant class.
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.core.window import Window
+from kivy.clock import Clock
 
 
 class GameMenu(BoxLayout):
@@ -34,7 +35,6 @@ class GameMenu(BoxLayout):
         self.resize(window)
         window.bind(on_resize=self.resize)
 
-    # TODO which is then recived from the base widgets here.
     def toggle_menu(self, window=Window, *args):
         """
         Toggles the visibility of the widget, and recursively for all it's children.
@@ -47,22 +47,25 @@ class GameMenu(BoxLayout):
         else:
             self.visible = True
 
-        for child in self.children:
-            self.children_visibility_loop(child)
         self.resize(window)
+        Clock.schedule_once(self.run_children_loop, -1)
 
-    def resize(self, window, *args):
+    def resize(self, *args):
         """
         Resizes the widget appropriately for it's needs
 
         :param args: Deals with any arguments handed by the kivy binding.
         """
-        self.size = window.width - self.border * 2, window.height - (self.border * 2 + self.navbar_height)
+        self.size = Window.width - self.border * 2, Window.height - (self.border * 2 + self.navbar_height)
 
         if self.visible:
             self.pos = self.border, self.border
         else:
-            self.pos = window.size
+            self.pos = Window.size
+
+    def run_children_loop(self, *args):
+        for child in self.children:
+            self.children_visibility_loop(child)
 
     def children_visibility_loop(self, widget):
         """
@@ -74,5 +77,4 @@ class GameMenu(BoxLayout):
             widget.toggle_visibility(self.visible)
         except AttributeError as e:
             print(e)
-        for child in widget.children:
-            self.children_visibility_loop(child)
+        self.run_children_loop()

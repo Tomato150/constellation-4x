@@ -1,5 +1,13 @@
 #:import math math
 # Custom Styles of default Widgets
+<Widget>:
+    canvas.after:
+        Color:
+            rgba: (0,1,0,1)
+        Line:
+            rectangle: self.x+1,self.y+1,self.width-1,self.height-1
+            dash_offset: 5
+            dash_length: 3
 
 
 
@@ -49,7 +57,7 @@
         text: 'Open/Close Menu'
         style_classes: ["link", "link_nav_header", "primary"]
 
-        on_press: root.ui_events['toggle_GameMenu']()
+        on_press: app.ui_events['toggle_game_menu']()
 
     CustomButton:
         id: empire_menu
@@ -85,7 +93,7 @@
 
 <GameMenu>:
     custom_navbar_game_menu: custom_navbar_game_menu
-    orientation: 'vertical'
+    orientation: 'horizontal'
 
     canvas:
         Color:
@@ -94,53 +102,94 @@
             pos: self.pos
             size: self.size
 
-    CustomNavbar:
-        name: 'Game Menu Navbar'
-        id: custom_navbar_game_menu
-        style_classes: ['navbar_light']
-        size_hint_y: None
-
+    CustomSidebar:
+        style_classes: ['sidebar_dark']
         CustomButton:
-            text: 'Dank'
-            name: 'Button1'
+            text: 'Sidebar link 1'
+            name: 'but1'
             style_classes: ["link", "link_nav_header", "primary"]
-
         CustomButton:
-            text: 'Buttons'
-            name: 'Button2'
-            style_classes: ["link"]
-
-        CustomButton:
-            text: 'Are'
-            name: 'Button3'
-            style_classes: ["link"]
-
-        Widget:
-            id: gap_widget
-            name: 'gap_widget'
-            size: 0, 50
-            size_hint_x: None
-            gap_widget: True
-
-        CustomButton:
-            text: 'Dank'
-            name: 'Button4'
-            style_classes: ["link"]
+            text: 'Sidebar link 2'
+            name: 'but2'
+            style_classes: ['link']
 
     BoxLayout:
-        orientation: 'horizontal'
-        CustomSidebar:
-            style_classes: ['sidebar_dark']
+        orientation: 'vertical'
+        CustomNavbar:
+            name: 'Game Menu Navbar'
+            id: custom_navbar_game_menu
+            style_classes: ['navbar_dark']
+            size_hint_y: None
+
             CustomButton:
-                name: 'but1'
-                text: 'Sidebar link 1'
-                style_classes: ["link", "link_nav_header", "primary"]
+                text: 'Overview'
+                name: 'overview'
+                style_classes: ["link"]
+
             CustomButton:
-                name: 'but2'
-                text: 'Sidebar link 2'
-                style_classes: ['link']
-        Button
-            text: 'Game Content'
+                text: 'Economy'
+                name: 'economy'
+                style_classes: ["link"]
+
+            CustomButton:
+                text: 'Industry'
+                name: 'industry'
+                style_classes: ["link"]
+
+            CustomButton:
+                text: 'Fleets'
+                name: 'fleets'
+                style_classes: ["link"]
+
+            CustomButton:
+                text: 'Population'
+                name: 'population'
+                style_classes: ["link"]
+
+            CustomButton:
+                text: 'Politics'
+                name: 'politics'
+                style_classes: ["link"]
+
+            CustomButton:
+                text: 'Diplomacy'
+                name: 'diplomacy'
+                style_classes: ["link"]
+
+            CustomButton:
+                text: 'Research'
+                name: 'research'
+                style_classes: ["link"]
+
+        IndustryTab:
+            size_hint: [None, None]
+            orientation: 'vertical'
+            BoxLayout:
+                size_hint: [None, None]
+                orientation: 'horizontal'
+                CustomButton:
+                    text: 'Dank memes'
+                    name: 'dank memes'
+                    style_classes: ["button"]
+
+                CustomButton:
+                    text: 'Dank memes'
+                    name: 'dank memes'
+                    style_classes: ["button"]
+
+            BoxLayout:
+                size_hint: [None, None]
+                orientation: 'horizontal'
+                CustomButton:
+                    text: 'Dank memes'
+                    name: 'dank memes'
+                    style_classes: ["button"]
+
+                CustomButton:
+                    text: 'Dank memes'
+                    name: 'dank memes'
+                    style_classes: ["button"]
+
 
 <ConstellationWidget>:
     galaxy_viewer: galaxy_viewer_widget

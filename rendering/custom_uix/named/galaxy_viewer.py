@@ -55,7 +55,8 @@ class GalaxyViewer(ScatterLayout):
             'Red Giant': [Image(source='sources/images/stars/R_G_1.png').texture],
             'Red Main': [Image(source='sources/images/stars/R_M_1.png').texture],
             'Red Super Giant': [Image(source='sources/images/stars/R_SG_1.png').texture],
-            'Yellow Main': [Image(source='sources/images/stars/Y_M_1.png').texture]
+            'Yellow Main': [Image(source='sources/images/stars/Y_M_1.png').texture],
+            'Star Blur': [Image(source='sources/images/experiment.png').texture]
         }
         with self.canvas.before:
             for star in self.galaxy.world_objects['stars'].values():
@@ -76,7 +77,7 @@ class GalaxyViewer(ScatterLayout):
         :param touch: A Kivy touch object.
         """
         self.old = touch.pos
-        if touch.device == 'mouse' and self.load_complete:
+        if touch.device == 'mouse' and self.load_complete and not self.parent.game_menu.visible:
             if touch.button == 'scrollup':
                 self.scroll_on_galaxy('zoom_out', touch)
             elif touch.button == 'scrolldown':
@@ -131,7 +132,7 @@ class GalaxyViewer(ScatterLayout):
 
         :param touch: A kivy touch object, allows for tracking the mouse
         """
-        if touch.device == 'mouse':
+        if touch.device == 'mouse' and self.load_complete and not self.parent.game_menu.visible:
             if touch.button == 'middle':
                 self.middle_mouse_drag(touch)
 

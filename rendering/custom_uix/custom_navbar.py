@@ -2,6 +2,7 @@
 The CustomNavbar file. Hosts the CustomNavbar class.
 """
 
+from kivy.clock import Clock
 from kivy.uix.stacklayout import StackLayout
 from kivy.graphics import Color, Rectangle
 from rendering.styles.css_manager import CSSManager
@@ -51,8 +52,8 @@ class CustomNavbar(StackLayout):
 
         :param args: Deals with any arguments handed by the kivy binding.
         """
-        self.background_canvas.size = self.size = self.parent.width, 50
-        self.background_canvas.pos = self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
+        self.size = self.parent.width, 50
+        self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
         widget_sizes = 0
         gap_widget = None
         for child in self.children:
@@ -64,11 +65,12 @@ class CustomNavbar(StackLayout):
                 widget_sizes += child.width
 
         gap_widget_size = self.width - widget_sizes
-        if gap_widget_size >= 0:
+        if gap_widget_size >= 0 and gap_widget:
             gap_widget.width = gap_widget_size
         else:
             # TODO Make the thing here for that drop down navbar
             pass
+        Clock.schedule_once(self.background_canvas_refresh, 0)
 
     def toggle_visibility(self, visibility):
         """
@@ -77,8 +79,11 @@ class CustomNavbar(StackLayout):
         :param visibility: What state the visibility is in from the parent widget.
         """
         if visibility:
-            self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
+            self.resize()
         else:
             self.pos = 5000, 5000
         self.background_canvas.pos = self.pos
 
+    def background_canvas_refresh(self, *args):
+        self.background_canvas.pos = self.pos
+        self.background_canvas.size = self.size

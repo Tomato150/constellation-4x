@@ -25,7 +25,6 @@ class GalaxyNavbar(CustomNavbar):
         :param kwargs: Any keyword args to pass back to the parent class.
         """
         super(GalaxyNavbar, self).__init__(**kwargs)
-        self.ui_events = dict()
 
     def on_load(self, app, window):
         """
@@ -35,7 +34,3 @@ class GalaxyNavbar(CustomNavbar):
         :param window: Kivy Window object
         """
         super(GalaxyNavbar, self).on_load(app, window)
-        # TODO Implement this into every class, for communication to the base widget.
-        self.ui_events = {
-            'toggle_GameMenu': self.parent.ui_events['toggle_GameMenu']
-        }
