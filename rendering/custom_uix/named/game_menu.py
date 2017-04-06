@@ -25,17 +25,17 @@ class GameMenu(BoxLayout):
         self.navbar_height = 50
         self.visible = True
 
-    def on_load(self, app, window):
+    def on_load(self):
         """
         Creates necessary bindings and other information that couldn't be created during init due to the .KV file
 
         :param app: Kivy App
         :param window: Kivy Window object
         """
-        self.resize(window)
-        window.bind(on_resize=self.resize)
+        self.resize(Window)
+        Window.bind(on_resize=self.resize)
 
-    def toggle_menu(self, window=Window, *args):
+    def toggle_menu(self, *args):
         """
         Toggles the visibility of the widget, and recursively for all it's children.
 
@@ -47,7 +47,7 @@ class GameMenu(BoxLayout):
         else:
             self.visible = True
 
-        self.resize(window)
+        self.resize(Window)
         Clock.schedule_once(self.run_children_loop, -1)
 
     def resize(self, *args):

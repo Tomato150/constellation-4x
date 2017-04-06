@@ -178,7 +178,7 @@ class Galaxy:
     def create_new_construction_project(self, project_building, project_runs, num_of_factories, colony_instance):
         construction_project_instance = construction_project.ConstructionProject(
             str(self.world_objects_id['construction_projects']), project_building, project_runs, num_of_factories,
-            colony_instance, self);
+            colony_instance, self)
         self.world_objects_id['construction_projects'] += 1
         return construction_project_instance
 

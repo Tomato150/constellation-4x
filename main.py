@@ -2,20 +2,14 @@
 The main file to host the Kivy app.
 """
 
-import player_world
+import player_world as pw
 
 from kivy.app import App
-import os
-import math
-
-from kivy.core.window import Window
 from kivy.clock import Clock
-from kivy.core.text import LabelBase
-from ctypes import windll
 from kivy.config import Config
-
+from kivy.core.text import LabelBase
+from kivy.core.window import Window
 from kivy.properties import ObjectProperty
-
 from kivy.uix.widget import Widget
 
 from rendering.custom_uix.custom_button import CustomButton
@@ -30,10 +24,9 @@ from rendering.custom_uix.named.menu_uix.industry_tab import IndustryTab
 
 from rendering.styles.css_manager import CSSManager
 
-
 # Window.size = windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)
 
-player_world = player_world.PlayerWorld()
+player_world = pw.PlayerWorld()
 player_world.generate_mock_game()
 
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
@@ -56,6 +49,7 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
         """
         super(ConstellationWidget, self).__init__(**kwargs)
         self.css = CSSManager(self, True)
+
 
 class ConstellationApp(App):
     """
@@ -126,7 +120,7 @@ class ConstellationApp(App):
             print(e)
         for child in widget.children:
             self.load_styles(child)
-            
+
     def update_and_apply_styles(self, widget=None):
         """
         recursive function to reload any special keywords (inherit, etc.) with their actual values, and then applies all
@@ -144,7 +138,7 @@ class ConstellationApp(App):
             print(e)
         for child in widget.children:
             self.update_and_apply_styles(child)
-            
+
     def widget_on_load(self, widget=None):
         """
         recursive function to fire the widget's on_load functions.
@@ -156,12 +150,12 @@ class ConstellationApp(App):
             self.widget_on_load(self.constellation_widget)
             return
         try:
-            widget.on_load(self, Window)
+            widget.on_load()
         except AttributeError:
             pass
         for child in widget.children:
             self.widget_on_load(child)
-            
+
     def resize_widgets(self, widget=None):
         """
         Recursive function to allow for resizing widgets in a correct manner

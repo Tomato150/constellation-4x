@@ -2,13 +2,16 @@
 The GalaxyViewer file, hosts the class
 """
 
-from kivy.uix.scatterlayout import ScatterLayout
-from kivy.graphics import Rectangle
-from kivy.uix.image import Image
-from kivy.properties import ObjectProperty
-
 import random
 import math
+
+from kivy.core.window import Window
+from kivy.graphics import Rectangle
+from kivy.properties import ObjectProperty
+
+from kivy.uix.image import Image
+from kivy.uix.scatterlayout import ScatterLayout
+
 
 
 class GalaxyViewer(ScatterLayout):
@@ -28,16 +31,15 @@ class GalaxyViewer(ScatterLayout):
         self.old = None
         self.load_complete = False
 
-    def on_load(self, app, window):
+    def on_load(self):
         """
         Creates necessary bindings and other information that couldn't be created during init due to the .KV file
 
         :param app: Kivy App
-        :param window: Kivy Window object
+        :param Window: Kivy Window object
         """
         self.size = (6000*32), (6000*32)
-        self.center = [window.size[0]/2, window.size[1]/2]
-        window.bind(on_resize=self.resize)
+        self.center = [Window.size[0] / 2, Window.size[1] / 2]
 
     def load_stars(self, galaxy):
         """

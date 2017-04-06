@@ -17,20 +17,3 @@ class GalaxyNavbar(CustomNavbar):
     gap_widget = ObjectProperty()
     galaxy_view = ObjectProperty()
     system_view = ObjectProperty()
-
-    def __init__(self, **kwargs):
-        """
-        initialisation for the widget, creating components necessary for it.
-
-        :param kwargs: Any keyword args to pass back to the parent class.
-        """
-        super(GalaxyNavbar, self).__init__(**kwargs)
-
-    def on_load(self, app, window):
-        """
-        Creates necessary bindings and other information that couldn't be created during init due to the .KV file
-
-        :param app: Kivy App
-        :param window: Kivy Window object
-        """
-        super(GalaxyNavbar, self).on_load(app, window)

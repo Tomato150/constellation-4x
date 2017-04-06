@@ -3,8 +3,12 @@ The CustomNavbar file. Hosts the CustomNavbar class.
 """
 
 from kivy.clock import Clock
-from kivy.uix.stacklayout import StackLayout
+from kivy.core.window import Window
 from kivy.graphics import Color, Rectangle
+
+from kivy.uix.stacklayout import StackLayout
+
+from rendering.helper_classes import background_canvas_resize, handle_visibility
 from rendering.styles.css_manager import CSSManager
 
 
@@ -34,14 +38,14 @@ class CustomNavbar(StackLayout):
         self.css = CSSManager(self)
         self.background_canvas = None
 
-    def on_load(self, app, window):
+    def on_load(self):
         """
         Creates necessary bindings and other information that couldn't be created during init due to the .KV file
 
         :param app: Kivy App
         :param window: Kivy Window object
         """
-        window.bind(on_resize=self.resize)
+        Window.bind(on_resize=self.resize)
         with self.canvas.before:
             Color(*self.canvas_color)
             self.background_canvas = Rectangle(size=self.size, pos=self.pos)
@@ -54,6 +58,7 @@ class CustomNavbar(StackLayout):
         """
         self.size = self.parent.width, 50
         self.pos = self.parent.pos[0], self.parent.height - self.height + self.parent.pos[1]
+
         widget_sizes = 0
         gap_widget = None
         for child in self.children:
@@ -67,10 +72,8 @@ class CustomNavbar(StackLayout):
         gap_widget_size = self.width - widget_sizes
         if gap_widget_size >= 0 and gap_widget:
             gap_widget.width = gap_widget_size
-        else:
-            # TODO Make the thing here for that drop down navbar
-            pass
-        Clock.schedule_once(self.background_canvas_refresh, 0)
+
+        Clock.schedule_once(self.background_canvas_resize, 0)
 
     def toggle_visibility(self, visibility):
         """
@@ -81,9 +84,8 @@ class CustomNavbar(StackLayout):
         if visibility:
             self.resize()
         else:
-            self.pos = 5000, 5000
-        self.background_canvas.pos = self.pos
+            self.pos = Window.size
 
-    def background_canvas_refresh(self, *args):
-        self.background_canvas.pos = self.pos
-        self.background_canvas.size = self.size
+        Clock.schedule_once(self.background_canvas_resize, 0)
+
+CustomNavbar.background_canvas_resize = background_canvas_resize

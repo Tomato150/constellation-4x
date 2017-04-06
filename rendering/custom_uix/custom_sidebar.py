@@ -2,8 +2,13 @@
 The CustomSidebar file, hosts the CustomSidebar class.
 """
 
-from kivy.uix.stacklayout import StackLayout
+from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.graphics import Color, Rectangle
+
+from kivy.uix.stacklayout import StackLayout
+
+from rendering.helper_classes import background_canvas_resize, handle_visibility
 from rendering.styles.css_manager import CSSManager
 
 
@@ -34,14 +39,14 @@ class CustomSidebar(StackLayout):
         self.background_canvas = None
         self.visibility = True
 
-    def on_load(self, app, window):
+    def on_load(self):
         """
         Creates necessary bindings and other information that couldn't be created during init due to the .KV file
 
         :param app: Kivy App
         :param window: Kivy Window object
         """
-        window.bind(on_resize=self.resize)
+        Window.bind(on_resize=self.resize)
         self.background_canvas = Rectangle(size=self.size, pos=self.pos)
         with self.canvas.before:
             Color(*self.canvas_color)
@@ -55,8 +60,8 @@ class CustomSidebar(StackLayout):
         """
         self.height = self.parent.height
         self.pos = self.parent.pos
-        self.background_canvas.size = self.size
-        self.background_canvas.pos = self.pos
+
+        Clock.schedule_once(self.background_canvas_resize, 0)
 
     def toggle_visibility(self, visibility):
         """
@@ -68,3 +73,5 @@ class CustomSidebar(StackLayout):
             self.resize()
         else:
             self.background_canvas.pos = self.pos = 5000, 5000
+
+CustomSidebar.background_canvas_resize = background_canvas_resize

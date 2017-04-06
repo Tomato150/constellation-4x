@@ -2,11 +2,14 @@
 The custom_button file, hosts the relevant class.
 """
 
-from kivy.uix.button import Button
 import math
 
-from rendering.styles.global_styles import colors, fonts
+from kivy.core.window import Window
+
+from kivy.uix.button import Button
+
 from rendering.styles.css_manager import CSSManager
+from rendering.styles.global_styles import colors, fonts
 
 
 class CustomButton(Button):
@@ -37,14 +40,14 @@ class CustomButton(Button):
         self.css = CSSManager(self)
         self.up = True
 
-    def on_load(self, app, window):
+    def on_load(self):
         """
         Creates necessary bindings and other information that couldn't be created during init due to the .KV file
 
         :param app: Kivy App
         :param window: Kivy Window object
         """
-        window.bind(on_resize=self.resize)
+        Window.bind(on_resize=self.resize)
 
     def resize(self, *args):
         """
@@ -53,9 +56,10 @@ class CustomButton(Button):
         :param args: Deals with any arguments handed by the kivy binding.
         """
         self.texture_update()
-        height = 50
         if self.parent.__class__.__name__ == 'CustomSidebar':
             height = self.texture_size[1] + 16
+        else:
+            height = 50
         self.size = self.texture_size[0] + 16, height
 
     def button_pressed(self):
