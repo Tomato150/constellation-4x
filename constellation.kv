@@ -114,12 +114,15 @@
             style_classes: ['link']
 
     BoxLayout:
+        id: game_menu_content
         orientation: 'vertical'
         CustomNavbar:
             name: 'Game Menu Navbar'
             id: custom_navbar_game_menu
             style_classes: ['navbar_dark']
             size_hint_y: None
+            right: game_menu_content.right
+            top: game_menu_content.top
 
             CustomButton:
                 text: 'Overview'
@@ -162,7 +165,6 @@
                 style_classes: ["link"]
 
         IndustryTab:
-            size_hint: [None, None]
             orientation: 'vertical'
             BoxLayout:
                 size_hint: [None, None]

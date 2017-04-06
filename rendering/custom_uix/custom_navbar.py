@@ -46,9 +46,7 @@ class CustomNavbar(StackLayout, CanvasEnabled):
         :param window: Kivy Window object
         """
         Window.bind(on_resize=self.resize)
-        with self.canvas.before:
-            Color(*self.canvas_color)
-            self.background_canvas = Rectangle(size=self.size, pos=self.pos)
+        super(CustomNavbar, self).on_load()
 
     def resize(self, *args):
         """
@@ -58,9 +56,6 @@ class CustomNavbar(StackLayout, CanvasEnabled):
         """
         # TODO fix the resizing.
         self.size = self.parent.width, 50
-        self.pos = self.parent.top - self.height, self.parent.pos[1]
-
-        print('Resized')
 
         widget_sizes = 0
         gap_widget = None
@@ -75,5 +70,7 @@ class CustomNavbar(StackLayout, CanvasEnabled):
         gap_widget_size = self.width - widget_sizes
         if gap_widget_size >= 0 and gap_widget:
             gap_widget.width = gap_widget_size
+        elif gap_widget:
+            gap_widget.width = 0
 
         Clock.schedule_once(self.background_canvas_resize, 0)

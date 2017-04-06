@@ -1,5 +1,6 @@
 from kivy.clock import Clock
 from kivy.core.window import Window
+from kivy.graphics import Color, Rectangle
 
 
 class CanvasEnabled:
@@ -11,6 +12,11 @@ class CanvasEnabled:
         Sets up a property for the canvas to reside in 
         """
         self.background_canvas = None
+
+    def on_load(self):
+        with self.canvas.before:
+            Color(*self.canvas_color)
+            self.background_canvas = Rectangle(size=self.size, pos=self.pos)
 
     def toggle_visibility(self, visibility):
         """

@@ -45,11 +45,8 @@ class CustomSidebar(StackLayout, CanvasEnabled):
         :param app: Kivy App
         :param window: Kivy Window object
         """
+        super(CustomSidebar, self).on_load()
         Window.bind(on_resize=self.resize)
-        self.background_canvas = Rectangle(size=self.size, pos=self.pos)
-        with self.canvas.before:
-            Color(*self.canvas_color)
-            self.background_canvas = Rectangle(size=self.size, pos=self.pos)
 
     def resize(self, *args):
         """
