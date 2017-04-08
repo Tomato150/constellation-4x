@@ -13,7 +13,6 @@ from kivy.uix.image import Image
 from kivy.uix.scatterlayout import ScatterLayout
 
 
-
 class GalaxyViewer(ScatterLayout):
     """
     A named widget, the GalaxyViewer hosts all the stars from the game world, and handles events from it.

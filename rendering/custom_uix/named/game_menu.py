@@ -21,6 +21,7 @@ class GameMenu(BoxLayout):
         :param kwargs: Any keyword args to pass back to the parent class.
         """
         super(GameMenu, self).__init__(**kwargs)
+
         self.border = 20
         self.navbar_height = 50
         self.visible = True
@@ -29,7 +30,6 @@ class GameMenu(BoxLayout):
         """
         Creates necessary bindings and other information that couldn't be created during init due to the .KV file
 
-        :param app: Kivy App
         :param window: Kivy Window object
         """
         self.resize(Window)
@@ -39,7 +39,6 @@ class GameMenu(BoxLayout):
         """
         Toggles the visibility of the widget, and recursively for all it's children.
 
-        :param window: = Window, The kivy window object
         :param args: Present to deal with anything kivy throws at it.
         """
         if self.visible:
