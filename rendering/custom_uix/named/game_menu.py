@@ -47,7 +47,8 @@ class GameMenu(BoxLayout):
             self.visible = True
 
         self.resize(Window)
-        Clock.schedule_once(self.run_children_loop, -1)
+
+        Clock.schedule_once(self.toggle_children_visibility, -1)
 
     def resize(self, *args):
         """
@@ -57,23 +58,32 @@ class GameMenu(BoxLayout):
         """
         self.size = Window.width - self.border * 2, Window.height - (self.border * 2 + self.navbar_height)
 
+
         if self.visible:
             self.pos = self.border, self.border
         else:
             self.pos = Window.size
 
-    def run_children_loop(self, *args):
-        for child in self.children:
-            self.children_visibility_loop(child)
-
-    def children_visibility_loop(self, widget):
+    def toggle_children_visibility(self, *args):
         """
-        Recursive function to hide the widget and all it's children
-
-        :param widget: The widget it is currently looping over.
+        the beginning function for a recursive function that loops through all children and hides them.
+        
+        :param args: Handles Kivy clock args.
         """
+        self.__toggle_children_visibility()
+
+    def __toggle_children_visibility(self, widget=None):
+        """
+        A recursive function that toggles the visibility of every child widget.
+        
+        :param widget: = None, clean method for starting on self.
+        :return: 
+        """
+        if widget is None:
+            widget = self
         try:
             widget.toggle_visibility(self.visible)
         except AttributeError as e:
             print(e)
-        self.run_children_loop()
+        for child in widget.children:
+            self.__toggle_children_visibility(child)

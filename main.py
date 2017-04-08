@@ -89,6 +89,7 @@ class ConstellationApp(App):
         self.widgets_on_load()
         Clock.schedule_once(self.delayed_on_load, 0)
 
+        # Must be defined here, I think.
         self.ui_events['toggle_game_menu'] = self.constellation_widget.game_menu.toggle_menu
 
         print('Completed On Load')
@@ -110,7 +111,7 @@ class ConstellationApp(App):
         constellation_widget if not otherwise specified.
         """
         if widget is None:
-            self.load_styles(self.constellation_widget)
+            self.widgets_on_load(self.constellation_widget)
             return
 
         try:
@@ -119,7 +120,7 @@ class ConstellationApp(App):
             print(e)
 
         for child in widget.children:
-            self.load_styles(child)
+            self.widgets_on_load(child)
 
     def resize_widgets(self, widget=None):
         """

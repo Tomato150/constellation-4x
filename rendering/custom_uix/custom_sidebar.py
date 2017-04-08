@@ -59,17 +59,17 @@ class CustomSidebar(StackLayout):
         """
         self.height = self.parent.height
 
-        Clock.schedule_once(self.__background_canvas.background_canvas_resize, 0)
+        Clock.schedule_once(self.__background_canvas.background_canvas_resize, -1)
 
-    def toggle_visibility(self, visibility):
+    def toggle_visibility(self, visible):
         """
         Toggles the visibility of the widget.
         
         :param visibility: What visibility is to be set
         """
-        if visibility:
+        if visible:
             self.resize()
         else:
             self.pos = Window.size
 
-        Clock.schedule_once(self.__background_canvas.background_canvas_resize, 0)
+        Clock.schedule_once(self.__background_canvas.background_canvas_resize, -1)

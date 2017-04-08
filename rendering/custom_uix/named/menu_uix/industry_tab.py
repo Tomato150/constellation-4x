@@ -24,8 +24,8 @@ class IndustryTab(BoxLayout):
     def resize(self, *args):
         pass
 
-    def toggle_visibility(self, visibility):
-        if visibility:
+    def toggle_visibility(self, visible):
+        if visible:
             self.resize()
         else:
             self.pos = Window.size
