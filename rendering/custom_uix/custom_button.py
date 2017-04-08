@@ -73,4 +73,4 @@ class CustomButton(Button):
             self.color = min(1, self.color[0] + 0.2), min(1, self.color[1] + 0.2), min(1, self.color[2] + 0.2), self.color[3]
         else:
             self.up = True
-            self.color = self.css.styles['color']
+            self.color = self.__css.styles['color']
