@@ -86,9 +86,7 @@ class ConstellationApp(App):
 
         :param args: Handles any args given by the Kivy Clock scheduling.
         """
-        self.load_styles()
-        self.update_and_apply_styles()
-        self.widget_on_load()
+        self.widgets_on_load()
         Clock.schedule_once(self.delayed_on_load, 0)
 
         self.ui_events['toggle_game_menu'] = self.constellation_widget.game_menu.toggle_menu
@@ -104,7 +102,7 @@ class ConstellationApp(App):
         self.resize_widgets()
         self.constellation_widget.galaxy_viewer.load_stars(player_world.galaxy)
 
-    def load_styles(self, widget=None):
+    def widgets_on_load(self, widget=None):
         """
         recursive function to load all the styles into each widget's CSS component.
 
@@ -114,47 +112,14 @@ class ConstellationApp(App):
         if widget is None:
             self.load_styles(self.constellation_widget)
             return
-        try:
-            widget.css.load_styles()
-        except AttributeError as e:
-            print(e)
-        for child in widget.children:
-            self.load_styles(child)
 
-    def update_and_apply_styles(self, widget=None):
-        """
-        recursive function to reload any special keywords (inherit, etc.) with their actual values, and then applies all
-        the data needed.
-
-        :param widget: = None, allows for recursion through widgets, and also set to none to allow for targeting the
-        constellation_widget if not otherwise specified.
-        """
-        if widget is None:
-            self.update_and_apply_styles(self.constellation_widget)
-            return
-        try:
-            widget.css.apply_styles()
-        except AttributeError as e:
-            print(e)
-        for child in widget.children:
-            self.update_and_apply_styles(child)
-
-    def widget_on_load(self, widget=None):
-        """
-        recursive function to fire the widget's on_load functions.
-
-        :param widget: = None, allows for recursion through widgets, and also set to none to allow for targeting the
-        constellation_widget if not otherwise specified.
-        """
-        if widget is None:
-            self.widget_on_load(self.constellation_widget)
-            return
         try:
             widget.on_load()
-        except AttributeError:
-            pass
+        except AttributeError as e:
+            print(e)
+
         for child in widget.children:
-            self.widget_on_load(child)
+            self.load_styles(child)
 
     def resize_widgets(self, widget=None):
         """
