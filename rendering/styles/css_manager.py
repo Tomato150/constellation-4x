@@ -13,17 +13,17 @@ class CSSManager:
         if base_object:
             self.styles = global_styles
 
-    def load_styles(self):
+    def __load_styles(self):
         for style_class in self.container.style_classes:
             for style, value in self.container.local_styles[style_class].items():
                 self.styles[style] = value
 
-    def apply_styles(self):
-        self.update_styles()
+    def __apply_styles(self):
+        self.__update_styles()
         for style, value in self.styles.items():
             self.container.__setattr__(style, value)
 
-    def update_styles(self):
+    def __update_styles(self):
         try:
             for style, value in self.styles.items():
                 if value == 'inherit':
@@ -44,3 +44,7 @@ class CSSManager:
         except Exception as e:
             print('ERROR ENCOUNTERED')
             print(e)
+
+    def on_load(self):
+        self.__load_styles()
+        self.__apply_styles()

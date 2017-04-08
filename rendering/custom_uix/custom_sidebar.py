@@ -12,7 +12,7 @@ from rendering.helper_classes import CanvasEnabled
 from rendering.styles.css_manager import CSSManager
 
 
-class CustomSidebar(StackLayout, CanvasEnabled):
+class CustomSidebar(StackLayout):
     """
     A custom sidebar widget, for use in any other parent widget
     """
@@ -35,8 +35,10 @@ class CustomSidebar(StackLayout, CanvasEnabled):
         """
         super(CustomSidebar, self).__init__(**kwargs)
         self.style_classes = []
-        self.css = CSSManager(self)
-        self.visibility = True
+
+        # Components.
+        self.__css = CSSManager(self)
+        self.__background_canvas = CanvasEnabled(self)
 
     def on_load(self):
         """
@@ -45,8 +47,9 @@ class CustomSidebar(StackLayout, CanvasEnabled):
         :param app: Kivy App
         :param window: Kivy Window object
         """
-        super(CustomSidebar, self).on_load()
         Window.bind(on_resize=self.resize)
+        self.__css.on_load()
+        self.__background_canvas.on_load()
 
     def resize(self, *args):
         """
@@ -55,7 +58,18 @@ class CustomSidebar(StackLayout, CanvasEnabled):
         :param args: Deals with any arguments handed by the kivy binding.
         """
         self.height = self.parent.height
-        self.pos = self.parent.pos
 
-        Clock.schedule_once(self.background_canvas_resize, 0)
+        Clock.schedule_once(self.__background_canvas.background_canvas_resize, 0)
 
+    def toggle_visibility(self, visibility):
+        """
+        Toggles the visibility of the widget.
+        
+        :param visibility: What visibility is to be set
+        """
+        if visibility:
+            self.resize()
+        else:
+            self.pos = Window.size
+
+        Clock.schedule_once(self.__background_canvas.background_canvas_resize, 0)

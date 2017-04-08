@@ -12,7 +12,7 @@ from rendering.helper_classes import CanvasEnabled
 from rendering.styles.css_manager import CSSManager
 
 
-class CustomNavbar(StackLayout, CanvasEnabled):
+class CustomNavbar(StackLayout):
     """
     A custom navbar widget for use in any other parent widget.
     """
@@ -35,18 +35,20 @@ class CustomNavbar(StackLayout, CanvasEnabled):
         """
         super(CustomNavbar, self).__init__(**kwargs)
         self.style_classes = []
-        self.css = CSSManager(self)
-        self.background_canvas = None
+
+        # Components
+        self.__css = CSSManager(self)
+        self.__background_canvas = CanvasEnabled(self)
 
     def on_load(self):
         """
         Creates necessary bindings and other information that couldn't be created during init due to the .KV file
 
-        :param app: Kivy App
         :param window: Kivy Window object
         """
         Window.bind(on_resize=self.resize)
-        super(CustomNavbar, self).on_load()
+        self.__css.on_load()
+        self.__background_canvas.on_load()
 
     def resize(self, *args):
         """
@@ -73,4 +75,17 @@ class CustomNavbar(StackLayout, CanvasEnabled):
         elif gap_widget:
             gap_widget.width = 0
 
-        Clock.schedule_once(self.background_canvas_resize, -1)
+        Clock.schedule_once(self.__background_canvas.background_canvas_resize, 0)
+
+    def toggle_visibility(self, visibility):
+        """
+        Toggles the visibility of the widget.
+        
+        :param visibility: What visibility is to be set
+        """
+        if visibility:
+            self.resize()
+        else:
+            self.pos = Window.size
+
+        Clock.schedule_once(self.__background_canvas.background_canvas_resize, 0)

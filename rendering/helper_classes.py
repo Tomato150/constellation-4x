@@ -7,29 +7,17 @@ class CanvasEnabled:
     """
     An abstract class that allows for implementation of a 'background canvas' to any widget.
     """
-    def __init__(self):
+    def __init__(self, widget):
         """
         Sets up a property for the canvas to reside in 
         """
         self.background_canvas = None
+        self.widget = widget
 
     def on_load(self):
-        with self.canvas.before:
-            Color(*self.canvas_color)
-            self.background_canvas = Rectangle(size=self.size, pos=self.pos)
-
-    def toggle_visibility(self, visibility):
-        """
-        Switches the visibility of the object.
-        
-        :param visibility: What state of visibility it should take.
-        """
-        if visibility:
-            self.resize()
-        else:
-            self.pos = Window.size
-
-        Clock.schedule_once(self.background_canvas_resize, 0)
+        with self.widget.canvas.before:
+            Color(*self.widget.canvas_color)
+            self.background_canvas = Rectangle(size=self.widget.size, pos=self.widget.pos)
 
     def background_canvas_resize(self, *args):
         """
@@ -37,5 +25,5 @@ class CanvasEnabled:
         
         :param args: Deals with the arguments given from the Clock scheduling.
         """
-        self.background_canvas.pos = self.pos
-        self.background_canvas.size = self.size
+        self.background_canvas.pos = self.widget.pos
+        self.background_canvas.size = self.widget.size

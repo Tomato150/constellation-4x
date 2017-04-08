@@ -37,16 +37,18 @@ class CustomButton(Button):
         :param kwargs: Any keyword args to pass back to the parent class.
         """
         super(CustomButton, self).__init__(**kwargs)
-        self.css = CSSManager(self)
         self.up = True
+
+        # Components.
+        self.__css = CSSManager(self)
 
     def on_load(self):
         """
         Creates necessary bindings and other information that couldn't be created during init due to the .KV file
 
-        :param app: Kivy App
         :param window: Kivy Window object
         """
+        self.__css.on_load()
         Window.bind(on_resize=self.resize)
 
     def resize(self, *args):
