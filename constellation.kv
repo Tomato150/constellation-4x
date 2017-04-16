@@ -10,6 +10,11 @@
             dash_length: 3
 
 
+<CustomLabel@Label>:
+    size: self.texture_size  # For some reason this and the one below make it work.
+    size_hint: None, None
+    font_size: 16
+
 
 <CustomButton@Button>:
     font_name: "Roboto"
@@ -117,6 +122,7 @@
     BoxLayout:
         id: game_menu_content
         orientation: 'vertical'
+
         CustomNavbar:
             name: 'Game Menu Navbar'
             id: custom_navbar_game_menu
@@ -166,32 +172,21 @@
                 style_classes: ["link"]
 
         IndustryTab:
+            id: industry_tab
+
             orientation: 'vertical'
             BoxLayout:
-                size_hint: [None, None]
-                orientation: 'horizontal'
-                CustomButton:
-                    text: 'Dank memes'
-                    name: 'dank memes'
-                    style_classes: ["button"]
-
-                CustomButton:
-                    text: 'Dank memes'
-                    name: 'dank memes'
-                    style_classes: ["button"]
-
-            BoxLayout:
-                size_hint: [None, None]
-                orientation: 'horizontal'
-                CustomButton:
-                    text: 'Dank memes'
-                    name: 'dank memes'
-                    style_classes: ["button"]
-
-                CustomButton:
-                    text: 'Dank memes'
-                    name: 'dank memes'
-                    style_classes: ["button"]
+                orientation: 'vertical'
+                size_hint: None, None
+                CustomLabel
+                    text: 'Wowee'
+                    color: 0, 0, 0, 1
+                Button:
+                    size_hint: [None, None]
+                    text: str(self.pos)
+                Button:
+                    size_hint: [None, None]
+                    text: 'Instead of here'
 
 
 <ConstellationWidget>:

@@ -85,8 +85,8 @@ class GalaxyViewer(ScatterLayout):
                 self.scroll_on_galaxy('zoom_in', touch)
             elif touch.button == 'left':
                 mouse_pos = [
-                    math.floor((-self.pos[0] + touch.pos[0]) / 32) - 3000,
-                    math.floor((-self.pos[1] + touch.pos[1]) / 32) - 3000
+                    math.floor((-self.pos[0] + touch.pos[0]) / 32 / self.scale) - 3000,
+                    math.floor((-self.pos[1] + touch.pos[1]) / 32 / self.scale) - 3000
                 ]
                 found_star = False
                 for star in self.galaxy.world_objects['stars'].values():
