@@ -40,6 +40,7 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
     galaxy_viewer = ObjectProperty(None)
     galaxy_navbar = ObjectProperty(None)
     game_menu = ObjectProperty(None)
+    screen_manager_constellation_widget = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         """
@@ -49,6 +50,13 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
         """
         super(ConstellationWidget, self).__init__(**kwargs)
         self.css = CSSManager(self, True)
+        self.screen_manager_constellation_widget.current = 'game_menu'
+
+    def transition_screen(self):
+        if self.screen_manager_constellation_widget.current == 'game_menu':
+            self.screen_manager_constellation_widget.current = 'blank_screen'
+        else:
+            self.screen_manager_constellation_widget.current = 'game_menu'
 
 
 class ConstellationApp(App):
@@ -90,7 +98,7 @@ class ConstellationApp(App):
         Clock.schedule_once(self.delayed_on_load, 0)
 
         # Must be defined here, I think.
-        self.ui_events['toggle_game_menu'] = self.constellation_widget.game_menu.toggle_menu
+        self.ui_events['toggle_game_menu'] = self.constellation_widget.transition_screen
 
         print('Completed On Load')
 

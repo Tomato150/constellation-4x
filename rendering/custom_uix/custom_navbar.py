@@ -76,16 +76,3 @@ class CustomNavbar(StackLayout):
             gap_widget.width = 0
 
         Clock.schedule_once(self.__background_canvas.background_canvas_resize, -1)
-
-    def toggle_visibility(self, visible):
-        """
-        Toggles the visibility of the widget.
-        
-        :param visibile: What visibility is to be set
-        """
-        if visible:
-            self.resize()
-        else:
-            self.pos = Window.size
-
-        Clock.schedule_once(self.__background_canvas.background_canvas_resize, -1)

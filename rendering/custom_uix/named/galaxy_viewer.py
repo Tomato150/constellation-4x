@@ -78,7 +78,7 @@ class GalaxyViewer(ScatterLayout):
         :param touch: A Kivy touch object.
         """
         self.old = touch.pos
-        if touch.device == 'mouse' and self.load_complete and not self.parent.game_menu.visible:
+        if touch.device == 'mouse' and self.load_complete:
             if touch.button == 'scrollup':
                 self.scroll_on_galaxy('zoom_out', touch)
             elif touch.button == 'scrolldown':
@@ -133,7 +133,7 @@ class GalaxyViewer(ScatterLayout):
 
         :param touch: A kivy touch object, allows for tracking the mouse
         """
-        if touch.device == 'mouse' and self.load_complete and not self.parent.game_menu.visible:
+        if touch.device == 'mouse' and self.load_complete:
             if touch.button == 'middle':
                 self.middle_mouse_drag(touch)
 
