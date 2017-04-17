@@ -26,8 +26,11 @@ from rendering.styles.css_manager import CSSManager
 
 # Window.size = windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)
 
-player_world = pw.PlayerWorld()
-player_world.generate_mock_game()
+g_app = None
+
+
+def get_app():
+    return g_app
 
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
 Config.update()
@@ -73,6 +76,11 @@ class ConstellationApp(App):
         """
         super(ConstellationApp, self).__init__(**kwargs)
         self.ui_events = dict()
+        self.constellation_widget = None
+        self.player_world = pw.PlayerWorld()
+        self.player_world.generate_mock_game()
+
+        g_app = self
 
     def build(self):
         """
@@ -109,7 +117,7 @@ class ConstellationApp(App):
         :param args:
         """
         self.resize_widgets()
-        self.constellation_widget.galaxy_viewer.load_stars(player_world.galaxy)
+        self.constellation_widget.galaxy_viewer.load_stars(self.player_world.galaxy)
 
     def widgets_on_load(self, widget=None):
         """
