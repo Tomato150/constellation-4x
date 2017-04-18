@@ -4,11 +4,12 @@ The main file to host the Kivy app.
 
 import player_world as pw
 
+from ctypes import windll
+
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.text import LabelBase
-from kivy.core.window import Window
 from kivy.properties import ObjectProperty
 from kivy.uix.widget import Widget
 
@@ -20,11 +21,9 @@ from rendering.custom_uix.named.game_menu import GameMenu
 from rendering.custom_uix.named.galaxy_navbar import GalaxyNavbar
 from rendering.custom_uix.named.galaxy_viewer import GalaxyViewer
 
-from rendering.custom_uix.named.menu_uix.industry_tab import IndustryTab
+from rendering.custom_uix.named.menu_uix.industry_window import IndustryWindow
 
 from rendering.styles.css_manager import CSSManager
-
-# Window.size = windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)
 
 g_app = None
 
@@ -32,8 +31,20 @@ g_app = None
 def get_app():
     return g_app
 
+# Config.set('graphics', 'width', windll.user32.GetSystemMetrics(0))
+# Config.set('graphics', 'height', windll.user32.GetSystemMetrics(1))
+
+# Config.set('graphics', 'position', 'custom')
+# Config.set('graphics', 'left', 0)
+# Config.set('graphics', 'top', 0)
+
+# Config.set('graphics', 'borderless', 0)
+# Config.set('graphics', 'resizeable', 0)
+
+Config.set('graphics', 'fullscreen', 'auto')
+
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
-Config.update()
+Config.write()
 
 
 class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
@@ -51,7 +62,7 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
 
         :param kwargs: Any keyword args to pass back to the parent class.
         """
-        super(ConstellationWidget, self).__init__(**kwargs)
+        super(ConstellationWidget, self).__init__()
         self.css = CSSManager(self, True)
         self.screen_manager_constellation_widget.current = 'game_menu'
 
@@ -104,7 +115,7 @@ class ConstellationApp(App):
         :param args: Handles any args given by the Kivy Clock scheduling.
         """
         self.widgets_on_load()
-        Clock.schedule_once(self.delayed_on_load, 0)
+        Clock.schedule_once(self.delayed_on_load, -1)
 
         # Must be defined here, I think.
         self.ui_events['toggle_game_menu'] = self.constellation_widget.transition_screen
@@ -140,6 +151,7 @@ class ConstellationApp(App):
             self.widgets_on_load(child)
 
     def resize_widgets(self, widget=None):
+        # TODO add a thing for screens in this.
         """
         Recursive function to allow for resizing widgets in a correct manner
 
