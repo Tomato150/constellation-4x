@@ -75,4 +75,4 @@ class CustomNavbar(StackLayout):
         elif gap_widget:
             gap_widget.width = 0
 
-        Clock.schedule_once(self.__background_canvas.background_canvas_resize, -1)
+        Clock.schedule_once(self.__background_canvas.background_canvas_resize, 0)

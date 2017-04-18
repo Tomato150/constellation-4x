@@ -12,7 +12,7 @@ class Galaxy:
     def __init__(self):
         # Constants to change to fuck with the shape of the galaxy
         self.galaxy_creation_parameters = {
-            'num_of_stars': 50000,
+            'num_of_stars': 5000,
             'num_of_arms': 6,
             'arms_offset_max': 0.5,
             'rotation_factor': 3,

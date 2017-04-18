@@ -57,4 +57,4 @@ class CustomSidebar(StackLayout):
 
         :param args: Deals with any arguments handed by the kivy binding.
         """
-        Clock.schedule_once(self.__background_canvas.background_canvas_resize, -1)
+        Clock.schedule_once(self.__background_canvas.background_canvas_resize, 0)
