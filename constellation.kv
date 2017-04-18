@@ -53,51 +53,44 @@
 
 <IndustryTab@BoxLayout>:
     id: industry_tab
-    orientation: 'vertical'
-
-    BoxLayout:
-        orientation: 'vertical'
-        size_hint: None, None
-        CustomLabel
-            text: 'Industry Tab'
-            font_size: 96
-        TextInputGroup:
-            CustomLabel:
-                size: self.size[0], self.parent.height
-                text: 'Building Type: '
-            TextInput:
-                size_hint: None, None
-                size: self.size[0], 28
-                id: building_type
-                text: ''
-        TextInputGroup:
-            CustomLabel:
-                size: self.size[0], self.parent.height
-                text: 'Runs: '
-            TextInput:
-                size_hint: None, None
-                size: self.size[0], 28
-                id: building_runs
-                text: ''
-        TextInputGroup:
-            CustomLabel:
-                size: self.size[0], self.parent.height
-                text: 'Factories: '
-            TextInput:
-                size_hint: None, None
-                size: self.size[0], 28
-                id: building_factories
-                text: ''
-        CustomButton:
-            text: 'Submit'
-            id: submit_construction_project
-            style_classes: ['button']
-            on_press: industry_tab.submit_construction_project_details(building_type.text.strip(), building_runs.text.strip(), building_factories.text.strip())
+    CustomLabel
+        text: 'Industry Tab'
+        font_size: 96
+    TextInputGroup:
+        CustomLabel:
+            size: self.size[0], self.parent.height
+            text: 'Building Type: '
+        TextInput:
+            size_hint: None, None
+            size: self.size[0], 28
+            id: building_type
+            text: ''
+    TextInputGroup:
+        CustomLabel:
+            size: self.size[0], self.parent.height
+            text: 'Runs: '
+        TextInput:
+            size_hint: None, None
+            size: self.size[0], 28
+            id: building_runs
+            text: ''
+    TextInputGroup:
+        CustomLabel:
+            size: self.size[0], self.parent.height
+            text: 'Factories: '
+        TextInput:
+            size_hint: None, None
+            size: self.size[0], 28
+            id: building_factories
+            text: ''
+    CustomButton:
+        text: 'Submit'
+        id: submit_construction_project
+        style_classes: ['button']
+        on_press: industry_tab.submit_construction_project_details(building_type.text.strip(), building_runs.text.strip(), building_factories.text.strip())
 
 
-
-
-<GalaxyViewer>
+<GalaxyViewer>:
 
 
 <GalaxyNavbar>:
@@ -199,11 +192,15 @@
                 text: 'Industry'
                 name: 'industry'
                 style_classes: ["link"]
+                on_press:
+                    screen_manager_game_menu.current = self.name
 
             CustomButton:
                 text: 'Fleets'
                 name: 'fleets'
                 style_classes: ["link"]
+                on_press:
+                    screen_manager_game_menu.current = self.name
 
             CustomButton:
                 text: 'Population'
@@ -225,9 +222,57 @@
                 name: 'research'
                 style_classes: ["link"]
 
-        IndustryTab:
-            visible: False
-            pos: self.parent.pos
+        ScreenManager:
+            id: screen_manager_game_menu
+            Screen:
+                size: self.parent.size
+                pos: self.parent.pos
+                name: "industry"
+                BoxLayout:
+                    size_hint: None, None
+                    top: self.parent.top
+                    orientation: "vertical"
+                    id: industry_tab
+                    CustomLabel
+                        text: 'Industry Tab'
+                        font_size: 96
+                    TextInputGroup:
+                        CustomLabel:
+                            size: self.size[0], self.parent.height
+                            text: 'Building Type: '
+                        TextInput:
+                            size_hint: None, None
+                            size: self.size[0], 28
+                            id: building_type
+                            text: ''
+                    TextInputGroup:
+                        CustomLabel:
+                            size: self.size[0], self.parent.height
+                            text: 'Runs: '
+                        TextInput:
+                            size_hint: None, None
+                            size: self.size[0], 28
+                            id: building_runs
+                            text: ''
+                    TextInputGroup:
+                        CustomLabel:
+                            size: self.size[0], self.parent.height
+                            text: 'Factories: '
+                        TextInput:
+                            size_hint: None, None
+                            size: self.size[0], 28
+                            id: building_factories
+                            text: ''
+                    CustomButton:
+                        text: 'Submit'
+                        id: submit_construction_project
+                        style_classes: ['button']
+                        on_press: industry_tab.submit_construction_project_details(building_type.text.strip(), building_runs.text.strip(), building_factories.text.strip())
+
+            Screen:
+                name: "fleets"
+                Button:
+                    text: "Dank"
 
 <ConstellationWidget>:
     galaxy_viewer: galaxy_viewer_widget

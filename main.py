@@ -56,10 +56,11 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
         self.screen_manager_constellation_widget.current = 'game_menu'
 
     def transition_screen(self):
-        if self.screen_manager_constellation_widget.current == 'game_menu':
-            self.screen_manager_constellation_widget.current = 'blank_screen'
+        screen_manager = self.screen_manager_constellation_widget
+        if screen_manager.current == 'game_menu':
+            screen_manager.current = 'blank_screen'
         else:
-            self.screen_manager_constellation_widget.current = 'game_menu'
+            screen_manager.current = 'game_menu'
 
 
 class ConstellationApp(App):
