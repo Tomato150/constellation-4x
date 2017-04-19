@@ -46,49 +46,160 @@
     size: 350, self.parent.height
     pos: self.parent.pos
 
-<IndustryWindow@BoxLayout>:
+
+# Named Widgets
+<ColonyMenu@BoxLayout>:
+    screen_manager_colony_menu: screen_manager_colony_menu
+    id: game_menu_content
+
     orientation: 'vertical'
-    size_hint: None, None
-    CustomLabel:
-        text: 'Industry Tab'
-        font_size: 96
-    TextInputGroup:
+
+    CustomNavbar:
+        name: 'Game Menu Navbar'
+        id: custom_navbar_game_menu
+        style_classes: ['navbar_dark']
+        size_hint_y: None
+        right: game_menu_content.right
+        top: game_menu_content.top
+
+        CustomButton:
+            text: 'Overview'
+            name: 'overview'
+            style_classes: ["link"]
+            on_press:
+                ScrMan_colony_menu.transition.direction = "right"
+                ScrMan_colony_menu.current = self.name
+
+        CustomButton:
+            text: 'Economy'
+            name: 'economy'
+            style_classes: ["link"]
+            on_press: root.handle_transition(self.name)
+
+        CustomButton:
+            text: 'Industry'
+            name: 'industry'
+            style_classes: ["link"]
+            on_press: root.handle_transition(self.name)
+
+        CustomButton:
+            text: 'Fleets'
+            name: 'fleets'
+            style_classes: ["link"]
+            on_press: root.handle_transition(self.name)
+
+        CustomButton:
+            text: 'Population'
+            name: 'population'
+            style_classes: ["link"]
+            on_press: root.handle_transition(self.name)
+
+        CustomButton:
+            text: 'Politics'
+            name: 'politics'
+            style_classes: ["link"]
+            on_press: root.handle_transition(self.name)
+
+        CustomButton:
+            text: 'Diplomacy'
+            name: 'diplomacy'
+            style_classes: ["link"]
+            on_press: root.handle_transition(self.name)
+
+        CustomButton:
+            text: 'Research'
+            name: 'research'
+            style_classes: ["link"]
+            on_press:
+                ScrMan_colony_menu.transition.direction = "left"
+                ScrMan_colony_menu.current = self.name
+
+    ScreenManager:
+        size: self.parent.size[0], self.parent.size[1] - 50
+        id: screen_manager_colony_menu
+        Screen:
+            name: "overview"
+            Button:
+                text: "Overview"
+        Screen:
+            name: "economy"
+            Button:
+                text: "Economy"
+        IndustryWindow:
+        Screen:
+            name: "fleets"
+            Button:
+                text: "Fleets"
+        Screen:
+            name: "population"
+            Button:
+                text: "Population"
+        Screen:
+            name: "politics"
+            Button:
+                text: "Politics"
+        Screen:
+            name: "diplomacy"
+            Button:
+                text: "Diplomacy"
+        Screen:
+            name: "research"
+            Button:
+                text: "Research"
+
+
+<IndustryWindow@Screen>:
+    name: "industry"
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: None, None
+        size:
+            self.size[0], title.size[1] + \
+            building_type_form.height + \
+            building_runs_form.height + \
+            building_factories_form.height + \
+            submit_construction_project.height
         CustomLabel:
-            size: self.size[0], self.parent.height
-            text: 'Building Type: '
-        TextInput:
-            size_hint: None, None
-            size: self.size[0], 28
-            id: building_type
-            text: ''
-    TextInputGroup:
-        CustomLabel:
-            size: self.size[0], self.parent.height
-            text: 'Runs: '
-        TextInput:
-            size_hint: None, None
-            size: self.size[0], 28
-            id: building_runs
-            text: ''
-    TextInputGroup:
-        CustomLabel:
-            size: self.size[0], self.parent.height
-            text: 'Factories: '
-        TextInput:
-            size_hint: None, None
-            size: self.size[0], 28
-            id: building_factories
-            text: ''
-    CustomButton:
-        text: 'Submit'
-        id: submit_construction_project
-        style_classes: ['button']
-        on_press: root.dank()
+            id: title
+            text: 'Industry Tab'
+            font_size: 96
+        TextInputGroup:
+            id: building_type_form
+            CustomLabel:
+                size: self.size[0], self.parent.height
+                text: 'Building Type: '
+            TextInput:
+                size_hint: None, None
+                size: self.size[0], 28
+                id: building_type
+                text: ''
+        TextInputGroup:
+            id: building_runs_form
+            CustomLabel:
+                size: self.size[0], self.parent.height
+                text: 'Runs: '
+            TextInput:
+                size_hint: None, None
+                size: self.size[0], 28
+                id: building_runs
+                text: ''
+        TextInputGroup:
+            id: building_factories_form
+            CustomLabel:
+                size: self.size[0], self.parent.height
+                text: 'Factories: '
+            TextInput:
+                size_hint: None, None
+                size: self.size[0], 28
+                id: building_factories
+                text: ''
+        CustomButton:
+            id: submit_construction_project
+            text: 'Submit'
+            style_classes: ['button']
+            on_press: root.dank()
 
-
-<GalaxyViewer>:
-
-
+# Global Widgets
 <GalaxyNavbar>:
     name: 'Global Navbar'
     open_close_menu: open_close_menu
@@ -112,12 +223,20 @@
         name: 'empire_menu'
         text: 'Empire Overview'
         style_classes: ["link"]
+        on_press: root.handle_menu_transition(self.name)
 
     CustomButton:
         id: system_menu
         name: 'system_menu'
         text: 'System Overview'
         style_classes: ["link"]
+        on_press: root.handle_menu_transition(self.name)
+
+    CustomButton:
+        name: 'colony_overview'
+        text: 'Colony Menu'
+        style_classes: ['link']
+        on_press: root.handle_menu_transition(self.name)
 
     Widget:
         id: gap_widget
@@ -138,9 +257,7 @@
         text: 'System View'
         style_classes: ["link"]
 
-
 <GameMenu>:
-    custom_navbar_game_menu: custom_navbar_game_menu
     orientation: 'horizontal'
 
     canvas:
@@ -162,99 +279,21 @@
             name: 'but2'
             style_classes: ['link']
 
-    BoxLayout:
-        id: game_menu_content
-        orientation: 'vertical'
+    ScreenManager:
+        Screen:
+            name: "empire_menu"
+            Button:
+                text: "EMPIRE MENU"
 
-        CustomNavbar:
-            name: 'Game Menu Navbar'
-            id: custom_navbar_game_menu
-            style_classes: ['navbar_dark']
-            size_hint_y: None
-            right: game_menu_content.right
-            top: game_menu_content.top
+        Screen:
+            name: "system_menu"
+            Button:
+                text: "SYSTEM MENU"
 
-            CustomButton:
-                text: 'Overview'
-                name: 'overview'
-                style_classes: ["link"]
-                on_press: screen_manager_game_menu.current = self.name
+        Screen:
+            name: "colony_menu"
+            ColonyMenu:
 
-            CustomButton:
-                text: 'Economy'
-                name: 'economy'
-                style_classes: ["link"]
-                on_press: screen_manager_game_menu.current = self.name
-
-            CustomButton:
-                text: 'Industry'
-                name: 'industry'
-                style_classes: ["link"]
-                on_press: screen_manager_game_menu.current = self.name
-
-            CustomButton:
-                text: 'Fleets'
-                name: 'fleets'
-                style_classes: ["link"]
-                on_press: screen_manager_game_menu.current = self.name
-
-            CustomButton:
-                text: 'Population'
-                name: 'population'
-                style_classes: ["link"]
-                on_press: screen_manager_game_menu.current = self.name
-
-            CustomButton:
-                text: 'Politics'
-                name: 'politics'
-                style_classes: ["link"]
-                on_press: screen_manager_game_menu.current = self.name
-
-            CustomButton:
-                text: 'Diplomacy'
-                name: 'diplomacy'
-                style_classes: ["link"]
-                on_press: screen_manager_game_menu.current = self.name
-
-            CustomButton:
-                text: 'Research'
-                name: 'research'
-                style_classes: ["link"]
-                on_press: screen_manager_game_menu.current = self.name
-
-        ScreenManager:
-            id: screen_manager_game_menu
-            Screen:
-                name: "overview"
-                Button:
-                    text: "Overview"
-            Screen:
-                name: "economy"
-                Button:
-                    text: "Economy"
-            Screen:
-                name: "industry"
-                IndustryWindow:
-            Screen:
-                name: "fleets"
-                Button:
-                    text: "Fleets"
-            Screen:
-                name: "population"
-                Button:
-                    text: "Population"
-            Screen:
-                name: "politics"
-                Button:
-                    text: "Politics"
-            Screen:
-                name: "diplomacy"
-                Button:
-                    text: "Diplomacy"
-            Screen:
-                name: "research"
-                Button:
-                    text: "Research"
 
 
 <ConstellationWidget>:

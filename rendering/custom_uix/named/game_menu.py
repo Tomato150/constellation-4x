@@ -10,4 +10,3 @@ class GameMenu(BoxLayout):
     """
     A named widget, the GameMenu hosts the game's main menu, and handles all relevant events to it.
     """
-    custom_navbar_game_menu = ObjectProperty(None)

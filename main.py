@@ -21,7 +21,7 @@ from rendering.custom_uix.named.game_menu import GameMenu
 from rendering.custom_uix.named.galaxy_navbar import GalaxyNavbar
 from rendering.custom_uix.named.galaxy_viewer import GalaxyViewer
 
-from rendering.custom_uix.named.menu_uix.industry_window import IndustryWindow
+from rendering.custom_uix.named.colony_menu_uix.industry_window import IndustryWindow
 
 from rendering.styles.css_manager import CSSManager
 
@@ -41,7 +41,7 @@ def get_app():
 # Config.set('graphics', 'borderless', 0)
 # Config.set('graphics', 'resizeable', 0)
 
-Config.set('graphics', 'fullscreen', 'auto')
+Config.set('graphics', 'fullscreen', '0')
 
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
 Config.write()
@@ -91,8 +91,6 @@ class ConstellationApp(App):
         self.constellation_widget = None
         self.player_world = pw.PlayerWorld()
         self.player_world.generate_mock_game()
-
-        g_app = self
 
     def build(self):
         """
