@@ -30,7 +30,10 @@ class CSSManager:
                     widget = self.container
                     parent_css = None
                     while parent_css is None:
-                        widget = widget.parent
+                        if widget.parent is None:
+                            widget = widget.manager
+                        else:
+                            widget = widget.parent
                         try:
                             parent_css = widget.css
                             if parent_css.styles[style] != 'inherit':
@@ -42,8 +45,8 @@ class CSSManager:
                         except NameError:
                             parent_css = None
         except Exception as e:
-            print('ERROR ENCOUNTERED')
-            print(e)
+            print('ERROR ENCOUNTERED IN CSS:', e)
+
 
     def on_load(self):
         self.__load_styles()
