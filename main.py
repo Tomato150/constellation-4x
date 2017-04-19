@@ -164,8 +164,14 @@ class ConstellationApp(App):
         if widget is None:
             self.resize_widgets(self.constellation_widget)
             return
-        for child in widget.children:
-            self.resize_widgets(child)
+
+        if hasattr(widget, 'screens'):
+            for child in widget.screens:
+                self.resize_widgets(child)
+        else:
+            for child in widget.children:
+                self.resize_widgets(child)
+
         try:
             widget.resize()
         except AttributeError:
