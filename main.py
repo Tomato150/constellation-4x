@@ -21,6 +21,7 @@ from rendering.custom_uix.named.game_menu import GameMenu
 from rendering.custom_uix.named.galaxy_navbar import GalaxyNavbar
 from rendering.custom_uix.named.galaxy_viewer import GalaxyViewer
 
+from rendering.custom_uix.named.colony_menu_uix.colony_menu import ColonyMenu
 from rendering.custom_uix.named.colony_menu_uix.industry_window import IndustryWindow
 
 from rendering.styles.css_manager import CSSManager
@@ -145,8 +146,12 @@ class ConstellationApp(App):
         except AttributeError as e:
             print(e)
 
-        for child in widget.children:
-            self.widgets_on_load(child)
+        if hasattr(widget, 'screens'):
+            for child in widget.screens:
+                self.widgets_on_load(child)
+        else:
+            for child in widget.children:
+                self.widgets_on_load(child)
 
     def resize_widgets(self, widget=None):
         # TODO add a thing for screens in this.

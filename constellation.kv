@@ -31,7 +31,7 @@
     # Each button will contain a 'style_classes' property, which will then be called upon in the init
     style_classes: []
 
-    on_state: self.button_pressed()
+    on_state: root.button_pressed()
 
 # Custom Widgets
 <CustomNavbar@StackLayout>:
@@ -48,104 +48,105 @@
 
 
 # Named Widgets
-<ColonyMenu@BoxLayout>:
+<ColonyMenu@Screen>:
     screen_manager_colony_menu: screen_manager_colony_menu
-    id: game_menu_content
+    BoxLayout:
+        id: game_menu_content
 
-    orientation: 'vertical'
+        orientation: 'vertical'
 
-    CustomNavbar:
-        name: 'Game Menu Navbar'
-        id: custom_navbar_game_menu
-        style_classes: ['navbar_dark']
-        size_hint_y: None
-        right: game_menu_content.right
-        top: game_menu_content.top
+        CustomNavbar:
+            name: 'Game Menu Navbar'
+            id: custom_navbar_game_menu
+            style_classes: ['navbar_dark']
+            size_hint_y: None
+            right: game_menu_content.right
+            top: game_menu_content.top
 
-        CustomButton:
-            text: 'Overview'
-            name: 'overview'
-            style_classes: ["link"]
-            on_press:
-                ScrMan_colony_menu.transition.direction = "right"
-                ScrMan_colony_menu.current = self.name
+            CustomButton:
+                text: 'Overview'
+                name: 'overview'
+                style_classes: ["link"]
+                on_press:
+                    screen_manager_colony_menu.transition.direction = "right"
+                    screen_manager_colony_menu.current = self.name
 
-        CustomButton:
-            text: 'Economy'
-            name: 'economy'
-            style_classes: ["link"]
-            on_press: root.handle_transition(self.name)
+            CustomButton:
+                text: 'Economy'
+                name: 'economy'
+                style_classes: ["link"]
+                on_press: root.handle_transition(self.name)
 
-        CustomButton:
-            text: 'Industry'
-            name: 'industry'
-            style_classes: ["link"]
-            on_press: root.handle_transition(self.name)
+            CustomButton:
+                text: 'Industry'
+                name: 'industry'
+                style_classes: ["link"]
+                on_press: root.handle_transition(self.name)
 
-        CustomButton:
-            text: 'Fleets'
-            name: 'fleets'
-            style_classes: ["link"]
-            on_press: root.handle_transition(self.name)
+            CustomButton:
+                text: 'Fleets'
+                name: 'fleets'
+                style_classes: ["link"]
+                on_press: root.handle_transition(self.name)
 
-        CustomButton:
-            text: 'Population'
-            name: 'population'
-            style_classes: ["link"]
-            on_press: root.handle_transition(self.name)
+            CustomButton:
+                text: 'Population'
+                name: 'population'
+                style_classes: ["link"]
+                on_press: root.handle_transition(self.name)
 
-        CustomButton:
-            text: 'Politics'
-            name: 'politics'
-            style_classes: ["link"]
-            on_press: root.handle_transition(self.name)
+            CustomButton:
+                text: 'Politics'
+                name: 'politics'
+                style_classes: ["link"]
+                on_press: root.handle_transition(self.name)
 
-        CustomButton:
-            text: 'Diplomacy'
-            name: 'diplomacy'
-            style_classes: ["link"]
-            on_press: root.handle_transition(self.name)
+            CustomButton:
+                text: 'Diplomacy'
+                name: 'diplomacy'
+                style_classes: ["link"]
+                on_press: root.handle_transition(self.name)
 
-        CustomButton:
-            text: 'Research'
-            name: 'research'
-            style_classes: ["link"]
-            on_press:
-                ScrMan_colony_menu.transition.direction = "left"
-                ScrMan_colony_menu.current = self.name
+            CustomButton:
+                text: 'Research'
+                name: 'research'
+                style_classes: ["link"]
+                on_press:
+                    screen_manager_colony_menu.transition.direction = "left"
+                    screen_manager_colony_menu.current = self.name
 
-    ScreenManager:
-        size: self.parent.size[0], self.parent.size[1] - 50
-        id: screen_manager_colony_menu
-        Screen:
-            name: "overview"
-            Button:
-                text: "Overview"
-        Screen:
-            name: "economy"
-            Button:
-                text: "Economy"
-        IndustryWindow:
-        Screen:
-            name: "fleets"
-            Button:
-                text: "Fleets"
-        Screen:
-            name: "population"
-            Button:
-                text: "Population"
-        Screen:
-            name: "politics"
-            Button:
-                text: "Politics"
-        Screen:
-            name: "diplomacy"
-            Button:
-                text: "Diplomacy"
-        Screen:
-            name: "research"
-            Button:
-                text: "Research"
+        ScreenManager:
+            size: self.parent.size[0], self.parent.size[1] - 50
+            id: screen_manager_colony_menu
+            Screen:
+                name: "overview"
+                Button:
+                    text: "Overview"
+            Screen:
+                name: "economy"
+                Button:
+                    text: "Economy"
+            IndustryWindow:
+            Screen:
+                name: "fleets"
+                Button:
+                    text: "Fleets"
+            Screen:
+                name: "population"
+                Button:
+                    text: "Population"
+            Screen:
+                name: "politics"
+                Button:
+                    text: "Politics"
+            Screen:
+                name: "diplomacy"
+                Button:
+                    text: "Diplomacy"
+            Screen:
+                name: "research"
+                Button:
+                    text: "Research"
 
 
 <IndustryWindow@Screen>:
@@ -282,6 +283,8 @@
 
     ScreenManager:
         id: screen_manager_game_menu
+        pos: self.parent.pos
+        size: self.parent.size
         Screen:
             name: "empire_menu"
             Button:
