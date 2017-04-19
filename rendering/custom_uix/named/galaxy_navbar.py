@@ -19,6 +19,4 @@ class GalaxyNavbar(CustomNavbar):
     system_view = ObjectProperty()
 
     def handle_menu_transition(self, menu_name):
-        from main import get_app
-        app = get_app()
-        # TODO need to get this set up
+        self.parent.game_menu.screen_manager_game_menu.current = menu_name
