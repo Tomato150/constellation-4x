@@ -21,8 +21,6 @@ class Empire:
         galaxy.world_objects['empires'][self.ids['self']] = self
 
     def serialize(self):
-        dictionary = dict(self.__dict__)
-        dictionary['colonies'] = dict()
-        dictionary['fleets'] = dict()
+        dictionary = self.__dict__.copy()
         del dictionary['galaxy']
         return dictionary

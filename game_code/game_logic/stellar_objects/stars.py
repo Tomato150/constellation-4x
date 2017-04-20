@@ -32,8 +32,7 @@ class Star:
         for i in range(0, amount):
             galaxy.create_new_planet(self, self.name, len(self.planets))
 
-    def serialize(self):
-        dictionary = dict(self.__dict__)
-        dictionary['planets'] = dict()
+    def __getstate__(self):
+        dictionary = self.__dict__.copy()
         del dictionary['galaxy']
         return dictionary
