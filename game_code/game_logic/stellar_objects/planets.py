@@ -39,9 +39,8 @@ class TerrestrialBody:
 
         star_instance.planets[self.ids['self']] = self
 
-    def serialize(self):
-        dictionary = dict(self.__dict__)
-        dictionary['colonies'] = dict()
+    def __getstate__(self):
+        dictionary = self.__dict__.copy()
         del dictionary['galaxy']
         del dictionary['parent_star']
         return dictionary

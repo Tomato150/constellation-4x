@@ -130,8 +130,8 @@ class ConstructionProject:
             }
         }
 
-    def serialize(self):
-        dictionary = dict(self.__dict__)
+    def __getstate__(self):
+        dictionary = self.__dict__.copy()
         del dictionary['galaxy']
         del dictionary['parent_colony']
         return dictionary

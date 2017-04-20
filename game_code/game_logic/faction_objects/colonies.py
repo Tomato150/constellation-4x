@@ -55,7 +55,7 @@ class Colony:
             self.galaxy.add_objects({'installations': building})
             self.installations[building.name] = building.id
 
-    def serialize(self):
+    def __getstate__(self):
         dictionary = dict(self.__dict__)
         dictionary['construction_projects'] = dict()
         dictionary['installations'] = dict()
@@ -73,7 +73,7 @@ class Installation:
         self.stats = {}
 
     def serialize(self):
-        dictionary = dict(self.__dict__)
+        dictionary = self.__dict__.copy()
         del dictionary['galaxy']
         del dictionary['parent_empire']
         del dictionary['parent_planet']

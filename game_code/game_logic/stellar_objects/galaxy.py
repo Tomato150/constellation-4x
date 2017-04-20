@@ -12,7 +12,7 @@ class Galaxy:
     def __init__(self):
         # Constants to change to fuck with the shape of the galaxy
         self.galaxy_creation_parameters = {
-            'num_of_stars': 5000,
+            'num_of_stars': 50000,
             'num_of_arms': 6,
             'arms_offset_max': 0.5,
             'rotation_factor': 3,
@@ -40,12 +40,14 @@ class Galaxy:
             'ships': 0
         }
 
+        self.bounds = []
+
     def generate_galaxy(self):
-        bounds = [int(self.galaxy_creation_parameters['size_of_canvas'] / 20 * -1),
+        self.bounds = [int(self.galaxy_creation_parameters['size_of_canvas'] / 20 * -1),
                   int(self.galaxy_creation_parameters['size_of_canvas'] / 20)]
-        for x in range(bounds[0], bounds[1]):
+        for x in range(self.bounds[0], self.bounds[1]):
             self.star_quadrants[str(x)] = {}
-            for y in range(bounds[0], bounds[1]):
+            for y in range(self.bounds[0], self.bounds[1]):
                 self.star_quadrants[str(x)][str(y)] = {}
         arm_separation = (2 * math.pi) / self.galaxy_creation_parameters['num_of_arms']
         while True:
@@ -121,10 +123,10 @@ class Galaxy:
                 if -200 <= quadrant_x < 200 and -200 <= quadrant_y < 200 and not star_collision:
 
                     for quad_x in range(quadrant_x - 1, quadrant_x + 2):
-                        if quad_x in range(bounds[0], bounds[1]) and not star_collision:
+                        if quad_x in range(self.bounds[0], self.bounds[1]) and not star_collision:
 
                             for quad_y in range(quadrant_y - 1, quadrant_y + 2):
-                                if quad_y in range(bounds[0], bounds[1]) and not star_collision:
+                                if quad_y in range(self.bounds[0], self.bounds[1]) and not star_collision:
 
                                     for star_id, star in self.star_quadrants[str(quad_x)][str(quad_y)].items():
                                         coordinates = star.coordinates
@@ -155,6 +157,22 @@ class Galaxy:
                         break
         print('Done: Galaxy Generation')
         print('Count: ' + str(self.world_objects_id['stars']))
+
+        self.remove_empty_sectors()
+
+    def remove_empty_sectors(self):
+         for x in range(self.bounds[0], self.bounds[1]):
+            for y in range(self.bounds[0], self.bounds[1]):
+                if self.star_quadrants[str(x)][str(y)] == {}:
+                    try:
+                        del self.star_quadrants[str(x)][str(y)]
+                    except Exception as e:
+                        print(e)
+            if self.star_quadrants[str(x)] == {}:
+                try:
+                    del self.star_quadrants[str(x)]
+                except Exception as e:
+                    print(e)
 
     # All will map the instance to the desired object/dict.
     def create_new_planet(self, star_instance, star_name, orbit_index):
@@ -229,6 +247,11 @@ class Galaxy:
                     objects[empire_id] = empire_instance
 
         return objects
+
+    def __getstate__(self):
+        dictionary = self.__dict__.copy()
+        del dictionary['star_quadrants']
+        return dictionary
 
     # GETTERS
     def get_galaxy_creation_parameters(self, objects='all'):
