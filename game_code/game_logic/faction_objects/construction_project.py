@@ -37,6 +37,12 @@ class ConstructionProject:
 
         colony_instance.construction_projects[self.ids['self']] = self
 
+    def __getstate__(self):
+        dictionary = self.__dict__.copy()
+        del dictionary['galaxy']
+        del dictionary['parent_colony']
+        return dictionary
+
     def _assign_build_points(self, material, cp_allocated):
         cp_to_finish = self.project_cost[material] - self.currently_completed[material]
         colony_resource = self.parent_colony.resource_storage[material]
@@ -123,15 +129,3 @@ class ConstructionProject:
                 if extra:
                     new_available_for_extra_CP.append(material)
             available_for_extra_CP = new_available_for_extra_CP
-
-        return {
-            'update': {
-                'colonies': {self.ids['colony']: self.parent_colony}
-            }
-        }
-
-    def __getstate__(self):
-        dictionary = self.__dict__.copy()
-        del dictionary['galaxy']
-        del dictionary['parent_colony']
-        return dictionary

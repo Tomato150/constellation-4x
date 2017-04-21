@@ -48,6 +48,7 @@ class CustomButton(Button):
 
         :param window: Kivy Window object
         """
+        Window.bind(on_resize=self.resize)
         self.__css.on_load()
 
     def resize(self, *args):

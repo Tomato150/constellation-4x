@@ -4,7 +4,7 @@ The main file to host the Kivy app.
 
 import player_world as pw
 
-from ctypes import windll
+import glob
 import json
 import jsonpickle
 
@@ -29,6 +29,7 @@ from rendering.custom_uix.named.colony_menu_uix.industry_window import IndustryW
 from rendering.styles.css_manager import CSSManager
 
 g_app = None
+save_file_path = "savegames/%s.sav"
 
 
 def get_app():
@@ -44,7 +45,7 @@ def get_app():
 # Config.set('graphics', 'borderless', 0)
 # Config.set('graphics', 'resizeable', 0)
 
-Config.set('graphics', 'fullscreen', '0')
+Config.set('graphics', 'fullscreen', 'auto')
 
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
 Config.write()
@@ -94,6 +95,8 @@ class ConstellationApp(App):
         self.constellation_widget = None
         self.player_world = pw.PlayerWorld()
         self.player_world.generate_mock_game()
+        self.save_game('trial1')
+        self.load_game('trial1')
 
     def build(self):
         """
@@ -116,7 +119,7 @@ class ConstellationApp(App):
         :param args: Handles any args given by the Kivy Clock scheduling.
         """
         self.widgets_on_load()
-        Clock.schedule_once(self.delayed_on_load, -1)
+        Clock.schedule_once(self.delayed_on_load, 0)
 
         # Must be defined here, I think.
         self.ui_events['toggle_game_menu'] = self.constellation_widget.transition_screen
@@ -179,6 +182,20 @@ class ConstellationApp(App):
         except AttributeError:
             pass
 
+    # TODO need to patch these up for implementation.
+    def load_game(self, save_name):
+        save_file = save_file_path % save_name
+        with open(save_file, 'r') as savefile:
+            unpickled_world = jsonpickle.decode(''.join(line.rstrip() for line in savefile))
+        self.player_world = unpickled_world
+        print("Game loaded")
+
+    def save_game(self, save_name):
+        pickled_world = jsonpickle.encode(self.player_world)
+        save_file = save_file_path % save_name
+        with open(save_file, 'w') as savefile:
+            savefile.write(pickled_world)
+        print("Save Completed, File Name:", save_file)
 
 if __name__ == '__main__':
     LabelBase.register(

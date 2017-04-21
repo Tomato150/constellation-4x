@@ -1,8 +1,7 @@
-from game_code.game_logic import utility_functions
-
-from game_code.game_data.constants import galaxy_generation_constants as constants, general_constants
-
 import random
+
+from game_code.game_data.constants import galaxy_generation_constants as constants
+from game_code.game_logic import utility_functions
 
 
 class Star:
@@ -26,11 +25,11 @@ class Star:
 
         galaxy.world_objects['stars'][self.ids['self']] = self
 
-    def generate_planets(self, galaxy, amount='random'):
-        if amount == 'random':
+    def generate_planets(self, amount=-1):
+        if amount < 0:
             amount = random.randint(3, 8)
         for i in range(0, amount):
-            galaxy.create_new_planet(self, self.name, len(self.planets))
+            self.galaxy.create_new_planet(self, self.name, len(self.planets))
 
     def __getstate__(self):
         dictionary = self.__dict__.copy()

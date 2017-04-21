@@ -67,9 +67,7 @@
                 text: 'Overview'
                 name: 'overview'
                 style_classes: ["link"]
-                on_press:
-                    screen_manager_colony_menu.transition.direction = "right"
-                    screen_manager_colony_menu.current = self.name
+                on_press: root.handle_transition(self.name)
 
             CustomButton:
                 text: 'Economy'
@@ -111,9 +109,7 @@
                 text: 'Research'
                 name: 'research'
                 style_classes: ["link"]
-                on_press:
-                    screen_manager_colony_menu.transition.direction = "left"
-                    screen_manager_colony_menu.current = self.name
+                on_press: root.handle_transition(self.name)
 
         ScreenManager:
             size: self.parent.size[0], self.parent.size[1] - 50
@@ -154,6 +150,7 @@
     BoxLayout:
         orientation: 'vertical'
         size_hint: None, None
+        top: self.parent.top
         size:
             self.size[0], title.size[1] + \
             building_type_form.height + \
@@ -295,11 +292,8 @@
             Button:
                 text: "SYSTEM MENU"
 
-        Screen:
+        ColonyMenu:
             name: "colony_menu"
-            ColonyMenu:
-
-
 
 <ConstellationWidget>:
     galaxy_viewer: galaxy_viewer_widget

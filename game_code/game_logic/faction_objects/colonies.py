@@ -43,6 +43,11 @@ class Colony:
         empire_instance.colonies[self.ids['self']] = self
         planet_instance.colonies[self.ids['self']] = self
 
+    def __getstate__(self):
+        dictionary = self.__dict__.copy()
+        del dictionary['galaxy']
+        return dictionary
+
     def update_construction(self, galaxy, empire):
         for construction_project in self.construction_projects:
             galaxy.construction_projects[construction_project].tick_construction(empire, self)
@@ -55,12 +60,6 @@ class Colony:
             self.galaxy.add_objects({'installations': building})
             self.installations[building.name] = building.id
 
-    def __getstate__(self):
-        dictionary = dict(self.__dict__)
-        dictionary['construction_projects'] = dict()
-        dictionary['installations'] = dict()
-        del dictionary['galaxy']
-        return dictionary
 
 
 class Installation:
