@@ -25,13 +25,13 @@ class Star:
 
         galaxy.world_objects['stars'][self.ids['self']] = self
 
+    def __getstate__(self):
+        dictionary = self.__dict__.copy()
+        del dictionary['galaxy']
+        return dictionary
+
     def generate_planets(self, amount=-1):
         if amount < 0:
             amount = random.randint(3, 8)
         for i in range(0, amount):
             self.galaxy.create_new_planet(self, self.name, len(self.planets))
-
-    def __getstate__(self):
-        dictionary = self.__dict__.copy()
-        del dictionary['galaxy']
-        return dictionary

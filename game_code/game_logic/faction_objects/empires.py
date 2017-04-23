@@ -20,7 +20,7 @@ class Empire:
 
         galaxy.world_objects['empires'][self.ids['self']] = self
 
-    def serialize(self):
+    def __getstate__(self):
         dictionary = self.__dict__.copy()
         del dictionary['galaxy']
         return dictionary

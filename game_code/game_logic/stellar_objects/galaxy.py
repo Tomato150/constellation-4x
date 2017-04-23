@@ -42,6 +42,11 @@ class Galaxy:
 
         self.bounds = []
 
+    def __getstate__(self):
+        dictionary = self.__dict__.copy()
+        del dictionary['star_quadrants']
+        return dictionary
+
     def generate_galaxy(self):
         self.bounds = [int(self.galaxy_creation_parameters['size_of_canvas'] / 20 * -1),
                   int(self.galaxy_creation_parameters['size_of_canvas'] / 20)]
@@ -211,9 +216,8 @@ class Galaxy:
             elif object_type == 'colony':
                 return self.world_objects['empires'][object_ids['empire']].colonies[object_ids['self']]
             elif object_type == 'construction_project':
-                return \
-                self.world_objects['empires'][object_ids['empire']].colonies[object_ids['self']].construction_projects[
-                    object_ids['self']]
+                return self.world_objects['empires'][object_ids['empire']].colonies[object_ids['self']]\
+                    .construction_projects[object_ids['self']]
         elif not is_self:
             if object_type == 'star':
                 return self.world_objects['stars'][object_ids['star']]
@@ -247,11 +251,6 @@ class Galaxy:
                     objects[empire_id] = empire_instance
 
         return objects
-
-    def __getstate__(self):
-        dictionary = self.__dict__.copy()
-        del dictionary['star_quadrants']
-        return dictionary
 
     # GETTERS
     def get_galaxy_creation_parameters(self, objects='all'):

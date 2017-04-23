@@ -46,8 +46,19 @@
     size: 350, self.parent.height
     pos: self.parent.pos
 
+# Empire Widgets
+<EmpireMenu@Screen>
+    BoxLayout:
+        Button:
+            text: "EMPIRE"
 
-# Named Widgets
+# System Widgets
+<SystemMenu@Screen>
+    BoxLayout:
+        Button:
+            text: "SYSTEM"
+
+# Colony Widgets
 <ColonyMenu@Screen>:
     screen_manager_colony_menu: screen_manager_colony_menu
     BoxLayout:
@@ -282,15 +293,11 @@
         id: screen_manager_game_menu
         pos: self.parent.pos
         size: self.parent.size
-        Screen:
+        EmpireMenu:
             name: "empire_menu"
-            Button:
-                text: "EMPIRE MENU"
 
-        Screen:
+        SystemMenu:
             name: "system_menu"
-            Button:
-                text: "SYSTEM MENU"
 
         ColonyMenu:
             name: "colony_menu"

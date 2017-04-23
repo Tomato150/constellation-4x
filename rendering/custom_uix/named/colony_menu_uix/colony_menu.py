@@ -24,6 +24,3 @@ class ColonyMenu(Screen):
         else:
             self.screen_manager_colony_menu.transition.direction = "left"
         self.screen_manager_colony_menu.current = screen_name
-
-    def on_load(self):
-        print("CALLED AS FUCK")

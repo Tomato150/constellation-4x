@@ -4,9 +4,9 @@ The main file to host the Kivy app.
 
 import player_world as pw
 
-import glob
-import json
 import jsonpickle
+
+import widget_states
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -22,6 +22,10 @@ from rendering.custom_uix.custom_sidebar import CustomSidebar
 from rendering.custom_uix.named.game_menu import GameMenu
 from rendering.custom_uix.named.galaxy_navbar import GalaxyNavbar
 from rendering.custom_uix.named.galaxy_viewer import GalaxyViewer
+
+from rendering.custom_uix.named.empire_menu_uix.empire_menu import EmpireMenu
+
+from rendering.custom_uix.named.system_menu_uix.system_menu import SystemMenu
 
 from rendering.custom_uix.named.colony_menu_uix.colony_menu import ColonyMenu
 from rendering.custom_uix.named.colony_menu_uix.industry_window import IndustryWindow
@@ -67,6 +71,7 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
         :param kwargs: Any keyword args to pass back to the parent class.
         """
         super(ConstellationWidget, self).__init__()
+        self.menu_visible = True
         self.css = CSSManager(self, True)
         self.screen_manager_constellation_widget.current = 'game_menu'
 
@@ -74,8 +79,10 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
         screen_manager = self.screen_manager_constellation_widget
         if screen_manager.current == 'game_menu':
             screen_manager.current = 'blank_screen'
+            self.menu_visible = False
         else:
             screen_manager.current = 'game_menu'
+            self.menu_visible = True
 
 
 class ConstellationApp(App):
@@ -95,8 +102,6 @@ class ConstellationApp(App):
         self.constellation_widget = None
         self.player_world = pw.PlayerWorld()
         self.player_world.generate_mock_game()
-        self.save_game('trial1')
-        self.load_game('trial1')
 
     def build(self):
         """
@@ -159,7 +164,6 @@ class ConstellationApp(App):
                 self.widgets_on_load(child)
 
     def resize_widgets(self, widget=None):
-        # TODO add a thing for screens in this.
         """
         Recursive function to allow for resizing widgets in a correct manner
 
@@ -184,15 +188,15 @@ class ConstellationApp(App):
 
     # TODO need to patch these up for implementation.
     def load_game(self, save_name):
-        save_file = save_file_path % save_name
+        save_file = save_name + '.sav'
         with open(save_file, 'r') as savefile:
             unpickled_world = jsonpickle.decode(''.join(line.rstrip() for line in savefile))
         self.player_world = unpickled_world
         print("Game loaded")
 
     def save_game(self, save_name):
-        pickled_world = jsonpickle.encode(self.player_world)
-        save_file = save_file_path % save_name
+        pickled_world = jsonpickle.encode(self)
+        save_file = save_name + '.sav'
         with open(save_file, 'w') as savefile:
             savefile.write(pickled_world)
         print("Save Completed, File Name:", save_file)

@@ -77,7 +77,7 @@ class GalaxyViewer(ScatterLayout):
         :param touch: A Kivy touch object.
         """
         self.old = touch.pos
-        if touch.device == 'mouse' and self.load_complete:
+        if touch.device == 'mouse' and self.load_complete and not self.parent.menu_visible:
             if touch.button == 'scrollup':
                 self.scroll_on_galaxy('zoom_out', touch)
             elif touch.button == 'scrolldown':
@@ -104,27 +104,28 @@ class GalaxyViewer(ScatterLayout):
         :param scroll_type: 'zoom_in' or 'zoom_out', depending on the necessary choice for the method
         :param touch: A Kivy touch object, allows to track the position of the mouse.
         """
-        old_scale = self.scale
+        if not self.parent.menu_visible:
+            old_scale = self.scale
 
-        percent_from_edge_x = ((-self.pos[0] + touch.pos[0]) - (-self.pos[0] + self.center[0])) / (3200 * self.scale)
-        percent_from_edge_y = ((-self.pos[1] + touch.pos[1]) - (-self.pos[1] + self.center[1])) / (3200 * self.scale)
+            percent_from_edge_x = ((-self.pos[0] + touch.pos[0]) - (-self.pos[0] + self.center[0])) / (3200 * self.scale)
+            percent_from_edge_y = ((-self.pos[1] + touch.pos[1]) - (-self.pos[1] + self.center[1])) / (3200 * self.scale)
 
-        if scroll_type == 'zoom_in':
-            self.scale = min(2, self.scale + 0.1)
-        elif scroll_type == 'zoom_out':
-            self.scale = max(0.1, self.scale - 0.1)
-
-        if not -0.05 < (self.scale - old_scale) < 0.05:  # I.E., If it has changed.
             if scroll_type == 'zoom_in':
-                self.center = [
-                    self.center_x - (percent_from_edge_x * 320),
-                    self.center_y - (percent_from_edge_y * 320)
-                ]
+                self.scale = min(2, self.scale + 0.1)
             elif scroll_type == 'zoom_out':
-                self.center = [
-                    self.center_x + (percent_from_edge_x * 320),
-                    self.center_y + (percent_from_edge_y * 320)
-                ]
+                self.scale = max(0.1, self.scale - 0.1)
+
+            if not -0.05 < (self.scale - old_scale) < 0.05:  # I.E., If it has changed.
+                if scroll_type == 'zoom_in':
+                    self.center = [
+                        self.center_x - (percent_from_edge_x * 320),
+                        self.center_y - (percent_from_edge_y * 320)
+                    ]
+                elif scroll_type == 'zoom_out':
+                    self.center = [
+                        self.center_x + (percent_from_edge_x * 320),
+                        self.center_y + (percent_from_edge_y * 320)
+                    ]
 
     def on_touch_move(self, touch):
         """
@@ -132,7 +133,7 @@ class GalaxyViewer(ScatterLayout):
 
         :param touch: A kivy touch object, allows for tracking the mouse
         """
-        if touch.device == 'mouse' and self.load_complete:
+        if touch.device == 'mouse' and self.load_complete and not self.parent.menu_visible:
             if touch.button == 'middle':
                 self.middle_mouse_drag(touch)
 
@@ -142,17 +143,18 @@ class GalaxyViewer(ScatterLayout):
 
         :param touch: A Kivy touch event, allows for tracking the mouse.
         """
-        if self.old is None:
+        if not self.parent.menu_visible:
+            if self.old is None and not self.parent.menu_visible:
+                self.old = touch.pos
+            change = (
+                (touch.pos[0] - self.old[0]),
+                (touch.pos[1] - self.old[1])
+            )
+            self.pos = (
+                (self.pos[0] + change[0]),
+                (self.pos[1] + change[1])
+            )
             self.old = touch.pos
-        change = (
-            (touch.pos[0] - self.old[0]),
-            (touch.pos[1] - self.old[1])
-        )
-        self.pos = (
-            (self.pos[0] + change[0]),
-            (self.pos[1] + change[1])
-        )
-        self.old = touch.pos
 
     def on_touch_up(self, touch):
         """
