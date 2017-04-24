@@ -5,11 +5,16 @@ from game_code.game_logic import utility_functions
 
 
 class Star:
-    def __init__(self, star_id, x, y, galaxy, **kwargs):
+    def __init__(self, star_id, flags, x, y, galaxy, **kwargs):
         # System General information
         self.galaxy = galaxy
-        self.ids = {'self': star_id}
         self.name = utility_functions.name_creator(random.randint(2, 3), random.randint(3, 5), random.randint(1, 2))
+
+        #Parents
+        self.ids = {
+            'self': star_id
+        }
+        self.flags = dict() if flags is None else flags
 
         # System Location Information
         self.coordinates = [int(x), int(y)]
@@ -35,3 +40,4 @@ class Star:
             amount = random.randint(3, 8)
         for i in range(0, amount):
             self.galaxy.create_new_planet(self, self.name, len(self.planets))
+        return self.planets

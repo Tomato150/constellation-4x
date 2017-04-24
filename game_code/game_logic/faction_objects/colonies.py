@@ -1,5 +1,5 @@
 class Colony:
-    def __init__(self, colony_id, name, planet_instance, empire_instance, galaxy, **kwargs):
+    def __init__(self, colony_id, name, flags, planet_instance, empire_instance, galaxy, **kwargs):
         # Colony Location and General information
         self.galaxy = galaxy
         self.name = name
@@ -15,6 +15,7 @@ class Colony:
 
             'empire': empire_instance.ids['self']
         }
+        self.flags = dict() if flags is None else flags
 
         # Colony Type information
         self.colony_type = 'mixed'  # Military, Mixed, Civilian

@@ -1,9 +1,13 @@
 class Empire:
-    def __init__(self, empire_id, name, galaxy, **kwargs):
+    def __init__(self, empire_id, flags, name, galaxy, **kwargs):
         # Empire name and identification
         self.galaxy = galaxy
-        self.ids = {'self': empire_id}
         self.name = name
+
+        self.ids = {
+            'self': empire_id
+        }
+        self.flags = dict() if flags is None else flags
 
         # Empire modifiers and stats
         self.modifiers = {
@@ -13,7 +17,7 @@ class Empire:
         }
 
         # Empire entities
-        self.colonies = {}  # A dict of {ids: instances} for colonies.
+        self.colonies = {}  # A dict of {ids: instances} for colonies. Colony '0' should always be the player's capital colony.
         self.fleets = {}  # See above for fleets.
 
         self.__dict__.update(kwargs)

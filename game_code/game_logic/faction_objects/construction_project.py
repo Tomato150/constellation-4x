@@ -2,12 +2,12 @@ from game_code.game_data.constants import construction_constants
 
 
 class ConstructionProject:
-    def __init__(self, project_id, project_building, project_runs, num_of_factories, colony_instance, galaxy_instance,
+    def __init__(self, project_id, flags, project_building, project_runs, num_of_factories, colony_instance, galaxy,
                  **kwargs):
-        # Parents
-        self.galaxy = galaxy_instance
-        self.parent_colony = colony_instance
+        self.galaxy = galaxy
 
+        # Parents
+        self.parent_colony = colony_instance
         self.ids = {
             'self': project_id,
             'star': colony_instance.parent_ids['star'],
@@ -16,6 +16,7 @@ class ConstructionProject:
             'empire': colony_instance.parent_ids['empire'],
             'colony': colony_instance.id
         }
+        self.flags = dict() if flags is None else flags
 
         # Project Info
         self.project_building = project_building  # What you are building

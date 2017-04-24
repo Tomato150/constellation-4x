@@ -49,7 +49,7 @@ def get_app():
 # Config.set('graphics', 'borderless', 0)
 # Config.set('graphics', 'resizeable', 0)
 
-Config.set('graphics', 'fullscreen', 'auto')
+Config.set('graphics', 'fullscreen', '0')
 
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
 Config.write()
@@ -103,12 +103,14 @@ class ConstellationApp(App):
         self.player_world = pw.PlayerWorld()
         self.player_world.generate_mock_game()
 
+        # Game UI info
+        self.current_system, self.current_colony = self.player_world.get_capitals()
+
     def build(self):
         """
         Builds the app, loading the window. Fires the local on_start method
         """
         self.constellation_widget = ConstellationWidget()
-
         return self.constellation_widget
 
     def on_start(self):
@@ -200,6 +202,14 @@ class ConstellationApp(App):
         with open(save_file, 'w') as savefile:
             savefile.write(pickled_world)
         print("Save Completed, File Name:", save_file)
+
+    # TODO Decorate these with necessary functions to allow for UI handling.
+    def update_selected_system(self, system):
+        self.current_system = system
+        self.current_colony = None
+
+    def update_selected_colony(self, colony):
+        self.current_colony = colony
 
 if __name__ == '__main__':
     LabelBase.register(

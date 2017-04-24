@@ -12,7 +12,7 @@ class Galaxy:
     def __init__(self):
         # Constants to change to fuck with the shape of the galaxy
         self.galaxy_creation_parameters = {
-            'num_of_stars': 50000,
+            'num_of_stars': 5000,
             'num_of_arms': 6,
             'arms_offset_max': 0.5,
             'rotation_factor': 3,
@@ -147,11 +147,17 @@ class Galaxy:
                 # Appending to right dictionary
                 if not star_collision:
                     if star_x == 0 and star_y == 0:
-                        star_object = stars.Star(str(self.world_objects_id['stars']), star_x, star_y, self, name='Sol')
+                        star_object = self.create_new_star(
+                            star_x=star_x,
+                            star_y=star_y,
+                            name="Sol"
+                        )
                     else:
-                        star_object = stars.Star(str(self.world_objects_id['stars']), star_x, star_y, self)
-                    self.star_quadrants[str(quadrant_x)][str(quadrant_y)][
-                        str(self.world_objects_id['stars'])] = star_object
+                        star_object = self.create_new_star(
+                            star_x=star_x,
+                            star_y=star_y
+                        )
+                    self.star_quadrants[str(quadrant_x)][str(quadrant_y)][str(self.world_objects_id['stars'])] = star_object
                     self.world_objects['stars'][str(self.world_objects_id['stars'])] = star_object
 
                     self.world_objects_id['stars'] += 1
@@ -180,28 +186,65 @@ class Galaxy:
                     print(e)
 
     # All will map the instance to the desired object/dict.
-    def create_new_planet(self, star_instance, star_name, orbit_index):
+    def create_new_star(self, star_x, star_y, flags=None, **kwargs):
+        star = stars.Star(
+            star_id=str(self.world_objects_id['stars']),
+            flags=flags,
+            x=star_x,
+            y=star_y,
+            galaxy=self,
+            kwargs=kwargs
+        )
+        self.world_objects_id['stars'] += 1
+        return star
+
+    def create_new_planet(self, star_instance, star_name, flags=None, **kwargs):
+        orbit_index = len(star_instance.planets) + 1
         planet_name = star_name + ' ' + utility_functions.toRoman(orbit_index + 1)
-        planet = planets.TerrestrialBody(str(self.world_objects_id['planets']), planet_name, orbit_index, star_instance,
-                                         self)
+        planet = planets.TerrestrialBody(
+            planet_id=str(self.world_objects_id['planets']),
+            name=planet_name,
+            flags=flags,
+            orbit_index=orbit_index,
+            star_instance=star_instance,
+            galaxy=self,
+            kwargs=kwargs
+        )
         self.world_objects_id['planets'] += 1
         return planet
 
-    def create_new_empire(self, name):
-        empire = empires.Empire(str(self.world_objects_id['empires']), name, self)
+    def create_new_empire(self, name, flags=None):
+        empire = empires.Empire(
+            empire_id=str(self.world_objects_id['empires']),
+            name=name,
+            flags=flags,
+            galaxy=self
+        )
         self.world_objects_id['empires'] += 1
-        self.world_objects['empires'][empire.ids['self']] = empire
         return empire
 
-    def create_new_colony(self, name, planet_instance, empire_instance):
-        colony = colonies.Colony(str(self.world_objects_id['colonies']), name, planet_instance, empire_instance, self)
+    def create_new_colony(self, name, planet_instance, empire_instance, flags=None):
+        colony = colonies.Colony(
+            colony_id=str(self.world_objects_id['colonies']),
+            name=name,
+            flags=flags,
+            planet_instance=planet_instance,
+            empire_instance=empire_instance,
+            galaxy=self
+        )
         self.world_objects_id['colonies'] += 1
         return colony
 
-    def create_new_construction_project(self, project_building, project_runs, num_of_factories, colony_instance):
+    def create_new_construction_project(self, flags, project_building, project_runs, num_of_factories, colony_instance):
         construction_project_instance = construction_project.ConstructionProject(
-            str(self.world_objects_id['construction_projects']), project_building, project_runs, num_of_factories,
-            colony_instance, self)
+            project_id=str(self.world_objects_id['construction_projects']),
+            flags=flags,
+            project_building=project_building,
+            project_runs=project_runs,
+            num_of_factories=num_of_factories,
+            colony_instance=colony_instance,
+            galaxy=self
+        )
         self.world_objects_id['construction_projects'] += 1
         return construction_project_instance
 
