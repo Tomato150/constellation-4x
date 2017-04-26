@@ -12,10 +12,18 @@ class IndustryWindow(Screen):
             int_runs = int(building_runs)
             int_factories = int(factories)
         except ValueError:
-            self.alert_user("Field Submission Error", "Invalid numbers given for runs/factories")
+            create_alert(
+                title="Field Submission Error",
+                message="Invalid numbers given for runs/factories",
+                separator_color=[0.851, 0.325, 0.31, 1]  # Warning
+            )
             print("ERROR: IndustryWindow|submit_construction_project Error: Ints not given for runs/factories")
         except Exception:
-            self.alert_user("Field Submission Error", "Invalid building name given.")
+            create_alert(
+                title="Field Submission Error",
+                message="Invalid building name given.",
+                separator_color=[0.851, 0.325, 0.31, 1]  # Warning
+            )
             print("ERROR: IndustryWindow|submit_construction_project Error: Invalid building name given.")
         else:
             self.app.player_world.galaxy.create_new_construction_project(
@@ -25,10 +33,3 @@ class IndustryWindow(Screen):
                 num_of_factories=int_factories,
                 colony_instance=self.app.current_colony
             )
-
-    def alert_user(self, title, message):
-        create_alert(
-            title=title,
-            message=message,
-            separator_color=[0.851, 0.325, 0.31, 1]
-        )

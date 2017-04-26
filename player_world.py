@@ -1,7 +1,7 @@
 # The file for the handling of game code.
 import json
 import jsonpickle
-import datetime
+from datetime import datetime
 
 from game_code.game_logic import player_event_handlers
 
@@ -40,3 +40,7 @@ class PlayerWorld:
         self.player_empire = self.galaxy.world_objects['empires']['0']
 
         print(self.galaxy.world_objects['stars']['0'].planets)
+
+    def game_loop(self):
+        current = datetime.now()
+        
