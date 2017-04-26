@@ -8,8 +8,9 @@ import math
 
 
 class Galaxy:
-    # Note; Don't think of this as just the stars, but everything inside the galaxy.
-    def __init__(self):
+    # Note; Don't think of this as just the stars, but everything inside the galaxy. It's basically the 'game'
+    def __init__(self, player_world):
+        self.player_world = player_world
         # Constants to change to fuck with the shape of the galaxy
         self.galaxy_creation_parameters = {
             'num_of_stars': 5000,
@@ -172,7 +173,7 @@ class Galaxy:
         self.remove_empty_sectors()
 
     def remove_empty_sectors(self):
-         for x in range(self.bounds[0], self.bounds[1]):
+        for x in range(self.bounds[0], self.bounds[1]):
             for y in range(self.bounds[0], self.bounds[1]):
                 if self.star_quadrants[str(x)][str(y)] == {}:
                     try:
@@ -198,9 +199,9 @@ class Galaxy:
         self.world_objects_id['stars'] += 1
         return star
 
-    def create_new_planet(self, star_instance, star_name, flags=None, **kwargs):
+    def create_new_planet(self, star_instance, flags=None, **kwargs):
         orbit_index = len(star_instance.planets) + 1
-        planet_name = star_name + ' ' + utility_functions.toRoman(orbit_index + 1)
+        planet_name = star_instance.name + ' ' + utility_functions.toRoman(orbit_index + 1)
         planet = planets.TerrestrialBody(
             planet_id=str(self.world_objects_id['planets']),
             name=planet_name,
@@ -213,29 +214,32 @@ class Galaxy:
         self.world_objects_id['planets'] += 1
         return planet
 
-    def create_new_empire(self, name, flags=None):
+    def create_new_empire(self, name, flags=None, **kwargs):
         empire = empires.Empire(
             empire_id=str(self.world_objects_id['empires']),
             name=name,
             flags=flags,
-            galaxy=self
+            galaxy=self,
+            kwargs=kwargs
         )
         self.world_objects_id['empires'] += 1
         return empire
 
-    def create_new_colony(self, name, planet_instance, empire_instance, flags=None):
+    def create_new_colony(self, name, planet_instance, empire_instance, flags=None, **kwargs):
         colony = colonies.Colony(
             colony_id=str(self.world_objects_id['colonies']),
             name=name,
             flags=flags,
             planet_instance=planet_instance,
             empire_instance=empire_instance,
-            galaxy=self
+            galaxy=self,
+            kwargs=kwargs
         )
         self.world_objects_id['colonies'] += 1
         return colony
 
-    def create_new_construction_project(self, flags, project_building, project_runs, num_of_factories, colony_instance):
+    def create_new_construction_project(self, flags, project_building, project_runs, num_of_factories, colony_instance,
+                                        **kwargs):
         construction_project_instance = construction_project.ConstructionProject(
             project_id=str(self.world_objects_id['construction_projects']),
             flags=flags,
@@ -243,7 +247,8 @@ class Galaxy:
             project_runs=project_runs,
             num_of_factories=num_of_factories,
             colony_instance=colony_instance,
-            galaxy=self
+            galaxy=self,
+            kwargs=kwargs
         )
         self.world_objects_id['construction_projects'] += 1
         return construction_project_instance

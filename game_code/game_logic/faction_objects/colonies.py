@@ -1,3 +1,8 @@
+colony_flags = {
+    'capital': False
+}
+
+
 class Colony:
     def __init__(self, colony_id, name, flags, planet_instance, empire_instance, galaxy, **kwargs):
         # Colony Location and General information
@@ -15,7 +20,11 @@ class Colony:
 
             'empire': empire_instance.ids['self']
         }
-        self.flags = dict() if flags is None else flags
+
+        # Flags
+        self.flags = colony_flags.copy()
+        if flags is not None:
+            self.flags.update(flags)
 
         # Colony Type information
         self.colony_type = 'mixed'  # Military, Mixed, Civilian
@@ -41,7 +50,11 @@ class Colony:
 
         self.__dict__.update(kwargs)
 
-        empire_instance.colonies[self.ids['self']] = self
+        if self.flags['capital'] == True:
+            empire_instance.colonies['capital'] = self
+        else:
+            empire_instance.colonies[self.ids['self']] = self
+
         planet_instance.colonies[self.ids['self']] = self
 
     def __getstate__(self):
@@ -60,21 +73,3 @@ class Colony:
         else:
             self.galaxy.add_objects({'installations': building})
             self.installations[building.name] = building.id
-
-
-
-class Installation:
-    def __init__(self, name, installation_id, galaxy):
-        # General information and identification of the installation.
-        self.galaxy = galaxy
-        self.name = name
-        self.id = installation_id
-
-        self.stats = {}
-
-    def serialize(self):
-        dictionary = self.__dict__.copy()
-        del dictionary['galaxy']
-        del dictionary['parent_empire']
-        del dictionary['parent_planet']
-        return dictionary

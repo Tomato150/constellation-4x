@@ -1,3 +1,8 @@
+planet_flags = {
+    'anomoly': False
+}
+
+
 class TerrestrialBody:
     def __init__(self, planet_id, name, flags, orbit_index, star_instance, galaxy, **kwargs):
         # Planet Location and General Information
@@ -11,7 +16,9 @@ class TerrestrialBody:
 
             'star': star_instance.ids['self']
         }
-        self.flags = dict() if flags is None else flags
+        self.flags = planet_flags.copy()
+        if flags is not None:
+            self.flags.update(flags)
 
         self.orbit_index = orbit_index  # 0, 1, 2 ... n
         self.orbital_distance = 1.4  # Radius from the center.
@@ -39,14 +46,11 @@ class TerrestrialBody:
 
         star_instance.planets[self.ids['self']] = self
 
-    def __str__(self):
-        return "Planet name: " + self.name + ", ID: " + self.ids['self']
-
     def __repr__(self):
-        return "'Planet Name: {self_name}, ID: {self_id}, Type: {self_type}'".format(
+        return "'Planet Name: {self_name}, ID: {self_id}, Type: {self_type}'\n".format(
             self_name=self.name,
             self_id=self.ids['self'],
-            self_type=self.planet_type + " " + self.file_path
+            self_type=self.planet_type + "|" + self.file_path
         )
 
     def __getstate__(self):

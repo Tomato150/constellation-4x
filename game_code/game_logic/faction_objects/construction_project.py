@@ -1,5 +1,9 @@
 from game_code.game_data.constants import construction_constants
 
+construction_project_flags = {
+
+}
+
 
 class ConstructionProject:
     def __init__(self, project_id, flags, project_building, project_runs, num_of_factories, colony_instance, galaxy,
@@ -10,13 +14,15 @@ class ConstructionProject:
         self.parent_colony = colony_instance
         self.ids = {
             'self': project_id,
-            'star': colony_instance.parent_ids['star'],
-            'planet': colony_instance.parent_ids['planet'],
+            'star': colony_instance.ids['star'],
+            'planet': colony_instance.ids['planet'],
 
-            'empire': colony_instance.parent_ids['empire'],
-            'colony': colony_instance.id
+            'empire': colony_instance.ids['empire'],
+            'colony': colony_instance.ids['self']
         }
-        self.flags = dict() if flags is None else flags
+        self.flags = construction_project_flags.copy()
+        if flags is not None:
+            self.flags.update(flags)
 
         # Project Info
         self.project_building = project_building  # What you are building

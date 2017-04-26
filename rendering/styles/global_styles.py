@@ -5,7 +5,7 @@ colors = {
     'success': (0.361, 0.722, 0.361, 1),
     'info': (0.192, 0.69, 0.835, 1),
     'warning': (0.941, 0.678, 0.306, 1),
-    'danger': (0.851, 0.325, 0.31),
+    'danger': (0.851, 0.325, 0.31, 1),
 
     'black': get_color_from_hex('#000000'),
     'jet_black': get_color_from_hex('#232324'),

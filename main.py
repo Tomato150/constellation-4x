@@ -32,12 +32,9 @@ from rendering.custom_uix.named.colony_menu_uix.industry_window import IndustryW
 
 from rendering.styles.css_manager import CSSManager
 
-g_app = None
+
 save_file_path = "savegames/%s.sav"
 
-
-def get_app():
-    return g_app
 
 # Config.set('graphics', 'width', windll.user32.GetSystemMetrics(0))
 # Config.set('graphics', 'height', windll.user32.GetSystemMetrics(1))
@@ -104,7 +101,8 @@ class ConstellationApp(App):
         self.player_world.generate_mock_game()
 
         # Game UI info
-        self.current_system, self.current_colony = self.player_world.get_capitals()
+        self.current_colony = self.player_world.player_empire.colonies['capital']
+        self.current_system = self.current_colony.parent_planet.parent_star
 
     def build(self):
         """

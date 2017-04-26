@@ -3,6 +3,10 @@ import random
 from game_code.game_data.constants import galaxy_generation_constants as constants
 from game_code.game_logic import utility_functions
 
+star_flags = {
+
+}
+
 
 class Star:
     def __init__(self, star_id, flags, x, y, galaxy, **kwargs):
@@ -14,7 +18,9 @@ class Star:
         self.ids = {
             'self': star_id
         }
-        self.flags = dict() if flags is None else flags
+        self.flags = star_flags.copy()
+        if flags is not None:
+            self.flags.update(flags)
 
         # System Location Information
         self.coordinates = [int(x), int(y)]
@@ -39,5 +45,5 @@ class Star:
         if amount < 0:
             amount = random.randint(3, 8)
         for i in range(0, amount):
-            self.galaxy.create_new_planet(self, self.name, len(self.planets))
+            self.galaxy.create_new_planet(self)
         return self.planets
