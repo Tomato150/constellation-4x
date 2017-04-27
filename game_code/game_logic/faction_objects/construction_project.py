@@ -1,4 +1,6 @@
 from game_code.game_data.constants import construction_constants
+from utils import observers
+
 
 construction_project_flags = {
 
@@ -20,6 +22,9 @@ class ConstructionProject:
             'empire': colony_instance.ids['empire'],
             'colony': colony_instance.ids['self']
         }
+
+        # Flags and Subjects
+        self.construction_changed = observers.Subject('construction_project_change')
         self.flags = construction_project_flags.copy()
         if flags is not None:
             self.flags.update(flags)
@@ -136,3 +141,5 @@ class ConstructionProject:
                 if extra:
                     new_available_for_extra_CP.append(material)
             available_for_extra_CP = new_available_for_extra_CP
+
+        self.construction_changed.notify()

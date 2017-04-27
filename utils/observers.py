@@ -10,8 +10,9 @@ class Observer:
 
 
 class Subject:
-    def __init__(self):
+    def __init__(self, default_notify):
         self.__observers = []
+        self.__default_notify = default_notify
 
     def add_observer(self, observer):
         """
@@ -29,11 +30,13 @@ class Subject:
         """
         self.__observers.remove(observer)
 
-    def notify(self, event):
+    def notify(self, event='default'):
         """
         Sends out an event to all Observers watching this bad boy
         
         :param event: The event message to be sent out
         """
+        if event == 'default':
+            event = self.__default_notify
         for observer in self.__observers:
             observer.on_notify(self, event)
