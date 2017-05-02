@@ -1,5 +1,5 @@
 class Observer:
-    def on_notify(self, object, event):
+    def on_notify(self, object, event, data):
         """
         Abstract event for the sake of the class. This gets called whenever one of it's subjects fires an event
         
@@ -30,13 +30,20 @@ class Subject:
         """
         self.__observers.remove(observer)
 
-    def notify(self, event='default'):
+    def remove_all(self):
+        """
+        removes all observers from the observer list.
+        """
+        self.__observers = []
+
+    def notify(self, event='default', data=None):
         """
         Sends out an event to all Observers watching this bad boy
         
         :param event: The event message to be sent out
+        :param data: Contains a dictionary of any additional data needed.
         """
         if event == 'default':
             event = self.__default_notify
         for observer in self.__observers:
-            observer.on_notify(self, event)
+            observer.on_notify(self, event, data)

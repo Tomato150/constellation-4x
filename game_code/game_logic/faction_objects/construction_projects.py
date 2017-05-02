@@ -25,6 +25,7 @@ class ConstructionProject:
 
         # Flags and Subjects
         self.construction_changed = observers.Subject('construction_project_change')
+
         self.flags = construction_project_flags.copy()
         if flags is not None:
             self.flags.update(flags)
@@ -34,7 +35,7 @@ class ConstructionProject:
         self.project_cost = construction_constants.building_costs[
             project_building]  # Individual resource cost per resource
         self.project_runs = project_runs  # How many copies are to be made.
-        self.num_of_factories = num_of_factories
+        self._num_of_factories = num_of_factories
 
         currently_completed = {}
         for key in self.project_cost:
@@ -55,27 +56,42 @@ class ConstructionProject:
         del dictionary['parent_colony']
         return dictionary
 
+    @property
+    def num_of_factories(self):
+        return self._num_of_factories
+
+    @num_of_factories.setter
+    def num_of_factories(self, value):
+        if value != self._num_of_factories:
+            self._num_of_factories = value
+            self.set_construction_per_tick()
+
+    def unhook_all(self):
+        self.construction_changed.remove_all()
+
     def _assign_build_points(self, material, cp_allocated):
         cp_to_finish = self.project_cost[material] - self.currently_completed[material]
         colony_resource = self.parent_colony.resource_storage[material]
+
+        min_value = min(cp_allocated, colony_resource, cp_to_finish)
 
         remainder_CP = 0
         available_for_extra = False
 
         # CP_allocated = Limiting
-        if colony_resource > cp_allocated and cp_to_finish > cp_allocated:
+        if min_value == cp_allocated:
             self.currently_completed[material] += cp_allocated
             self.parent_colony.resource_storage[material] -= cp_allocated
             available_for_extra = True
 
         # Resource = Limiting
-        elif cp_allocated > colony_resource and cp_to_finish > colony_resource:
+        elif min_value == colony_resource:
             self.currently_completed[material] += colony_resource
             self.parent_colony.resource_storage[material] = 0
             remainder_CP += cp_allocated - colony_resource
 
         # CP_to_finish = Limiting
-        elif cp_allocated >= cp_to_finish and colony_resource >= cp_to_finish:
+        elif min_value == cp_to_finish:
             self.currently_completed[material] += cp_to_finish
             self.parent_colony.resource_storage[material] -= cp_to_finish
             remainder_CP += cp_allocated - cp_to_finish
@@ -108,15 +124,12 @@ class ConstructionProject:
 
         self.construction_per_tick = construction_per_tick
 
-    def construction_tick(self):
-        self.set_construction_per_tick()
-
-        colony_has_resources = False
+    def construction_tick(self, game_time_dela):
         for material in self.project_cost:
             if self.parent_colony.resource_storage[material] != 0:
-                colony_has_resources = True
-        if not colony_has_resources:
-            return None
+                break
+        else:
+            return
 
         available_for_extra_CP = []
         remainder = 0

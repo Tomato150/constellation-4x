@@ -92,7 +92,7 @@ class GalaxyViewer(ScatterLayout):
                     if star.coordinates == mouse_pos:
                         found_star = True
                         print('Found Star:', star.name, star.coordinates)
-                        # Do stuff with star
+                        self.app.current_system = star
                         break
                 if not found_star:
                     print('Not found star')

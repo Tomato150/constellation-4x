@@ -41,6 +41,9 @@ class Star:
         del dictionary['galaxy']
         return dictionary
 
+    def unhook_all(self):
+        pass
+
     def generate_planets(self, amount=-1):
         if amount < 0:
             amount = random.randint(3, 8)

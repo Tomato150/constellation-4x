@@ -30,6 +30,8 @@ from rendering.custom_uix.named.system_menu_uix.system_menu import SystemMenu
 from rendering.custom_uix.named.colony_menu_uix.colony_menu import ColonyMenu
 from rendering.custom_uix.named.colony_menu_uix.industry_window import IndustryWindow
 
+from utils import observers
+
 from rendering.styles.css_manager import CSSManager
 
 
@@ -101,8 +103,37 @@ class ConstellationApp(App):
         self.player_world.generate_mock_game()
 
         # Game UI info
-        self.current_colony = self.player_world.player_empire.colonies['capital']
-        self.current_system = self.current_colony.parent_planet.parent_star
+        self._current_colony = self.player_world.player_empire.colonies['capital']
+        self.current_colony_changed = observers.Subject('current_colony_changed')
+
+        self._current_system = self._current_colony.parent_planet.parent_star
+        self.current_system_changed = observers.Subject('current_system_changed')
+
+    @property
+    def current_colony(self):
+        return self._current_colony
+
+    @current_colony.setter
+    def current_colony(self, value):
+        if value != self._current_colony:
+            self._current_colony.unhook_all()
+            self._current_colony = value
+            self.current_colony_changed.notify(data={'current_colony': self._current_colony})
+
+    @property
+    def current_system(self):
+        return self._current_system
+
+    @current_system.setter
+    def current_system(self, value):
+        if value != self._current_system:
+            self._current_system.unhook_all()
+            self._current_colony.unhook_all()
+
+            self._current_system = value
+            self._current_colony = None
+
+            self.current_system_changed.notify(data={'current_system': self._current_system})
 
     def build(self):
         """
@@ -139,6 +170,11 @@ class ConstellationApp(App):
         """
         self.resize_widgets()
         self.constellation_widget.galaxy_viewer.load_stars(self.player_world.galaxy)
+        Clock.schedule_once(self.game_loop, 0)
+
+    def game_loop(self, time_delta):
+        self.player_world.update_game_state(time_delta)
+        Clock.schedule_once(self.game_loop, 0)
 
     def widgets_on_load(self, widget=None):
         """
@@ -200,14 +236,6 @@ class ConstellationApp(App):
         with open(save_file, 'w') as savefile:
             savefile.write(pickled_world)
         print("Save Completed, File Name:", save_file)
-
-    # TODO Decorate these with necessary functions to allow for UI handling.
-    def update_selected_system(self, system):
-        self.current_system = system
-        self.current_colony = None
-
-    def update_selected_colony(self, colony):
-        self.current_colony = colony
 
 if __name__ == '__main__':
     LabelBase.register(

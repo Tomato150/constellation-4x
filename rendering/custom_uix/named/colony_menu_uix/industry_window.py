@@ -7,9 +7,24 @@ import game_code.game_data.constants.construction_constants as construction_cons
 
 
 class IndustryWindow(Screen, observers.Observer):
-    def on_notify(self, object, event):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def on_load(self, *args):
+        self.app.current_colony_changed.add_observer(self)
+        self.app.current_system_changed.add_observer(self)
+
+    def on_notify(self, object, event, data):
+        # GAME EVENTS
         if event == "construction_project_change":
-            # TODO Grab which has changed from object, find in table, and update stats.
+            pass
+
+        # APP EVENTS
+        elif event == "current_colony_changed":
+            colony = self.app.current_colony
+            for construction_project in colony.construction_projects.items():
+                construction_project.construction_changed.add_observer(self)
+        elif event == "current_system_changed":
             pass
 
     def submit_construction_project(self, building_type, building_runs, factories):

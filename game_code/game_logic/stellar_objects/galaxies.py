@@ -1,7 +1,8 @@
 from game_code.game_logic.stellar_objects import stars, planets
-from game_code.game_logic.faction_objects import empires, colonies, construction_project
+from game_code.game_logic.faction_objects import empires, colonies, construction_projects
 
 from game_code.game_logic import utility_functions
+from utils import observers
 
 import random
 import math
@@ -42,6 +43,11 @@ class Galaxy:
         }
 
         self.bounds = []
+
+        # Subjects for notification of observers
+        self.empire_created = observers.Subject('empire_created')
+        self.colony_created = observers.Subject('colony_created')
+        self.construction_project_created = observers.Subject('construction_project_created')
 
     def __getstate__(self):
         dictionary = self.__dict__.copy()
@@ -223,6 +229,7 @@ class Galaxy:
             kwargs=kwargs
         )
         self.world_objects_id['empires'] += 1
+        self.empire_created.notify(data={'empire': empire})
         return empire
 
     def create_new_colony(self, name, planet_instance, empire_instance, flags=None, **kwargs):
@@ -235,12 +242,13 @@ class Galaxy:
             galaxy=self,
             kwargs=kwargs
         )
+        self.colony_created.notify(data={'colony': colony})
         self.world_objects_id['colonies'] += 1
         return colony
 
     def create_new_construction_project(self, flags, project_building, project_runs, num_of_factories, colony_instance,
                                         **kwargs):
-        construction_project_instance = construction_project.ConstructionProject(
+        construction_project = construction_projects.ConstructionProject(
             project_id=str(self.world_objects_id['construction_projects']),
             flags=flags,
             project_building=project_building,
@@ -251,7 +259,8 @@ class Galaxy:
             kwargs=kwargs
         )
         self.world_objects_id['construction_projects'] += 1
-        return construction_project_instance
+        self.construction_project_created.notify(data={'construction_project': construction_project})
+        return construction_project
 
     def get_object_by_id(self, object_type, object_ids, is_self=False):
         if is_self:
