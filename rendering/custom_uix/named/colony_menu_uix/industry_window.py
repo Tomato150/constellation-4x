@@ -55,3 +55,5 @@ class IndustryWindow(Screen, observers.Observer):
                 num_of_factories=int_factories,
                 colony_instance=self.app.current_colony
             )
+
+
