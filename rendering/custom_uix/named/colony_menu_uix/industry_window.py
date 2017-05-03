@@ -1,5 +1,8 @@
+from kivy.properties import ObjectProperty
+
 from kivy.uix.screenmanager import Screen
 from rendering.custom_uix.custom_alert import create_alert
+from game_code.game_logic.faction_objects.construction_projects import ConstructionProject
 
 from utils import observers
 
@@ -7,15 +10,31 @@ import game_code.game_data.constants.construction_constants as construction_cons
 
 
 class IndustryWindow(Screen, observers.Observer):
+    construction_project_table = ObjectProperty(None)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def on_load(self, *args):
-        self.app.current_colony_changed.add_observer(self)
-        self.app.current_system_changed.add_observer(self)
+        print("ON LOAD FOR THE INDUSTRY TAB")
+        app = self.app
+        app.current_colony_changed.add_observer(self)
+        app.current_system_changed.add_observer(self)
+
+        app.current_colony.construction_project_created.add_observer(self)
+
+        self.construction_project_table.update_metadata(ConstructionProject.get_metadata_for_table())
+        if bool(app.current_colony.construction_projects):  # If construction projects are present.
+            for construction_project in app.current_colony.construction_projects.values():
+                self.construction_project_table.add_data(construction_project)
+        self.construction_project_table.redraw_table()
 
     def on_notify(self, object, event, data):
         # GAME EVENTS
+        if event == "construction_project_created":
+            self.construction_project_table.add_data(data['construction_project'])
+            self.construction_project_table.redraw_table()
+
         if event == "construction_project_change":
             pass
 

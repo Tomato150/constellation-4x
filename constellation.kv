@@ -47,6 +47,11 @@
     size: 350, self.parent.height
     pos: self.parent.pos
 
+<CustomTable@GridLayout>:
+    size_hint: None, None
+    size: 400, 400
+    spacing: 10
+
 # Empire Widgets
 <EmpireMenu@Screen>
     BoxLayout:
@@ -158,6 +163,7 @@
 
 
 <IndustryWindow@Screen>:
+    construction_project_table: construction_project_table
     name: "industry"
     BoxLayout:
         orientation: 'vertical'
@@ -165,6 +171,7 @@
         top: self.parent.top
         size:
             self.size[0], title.size[1] + \
+            construction_project_table.height + \
             building_type_form.height + \
             building_runs_form.height + \
             building_factories_form.height + \
@@ -173,9 +180,9 @@
             id: title
             text: 'Industry Tab'
             font_size: 96
-        GridLayout:
-            # Cols: Project, Factories, Runs, Completion, Resources
-            cols: 5
+        CustomTable:
+            size: self.size[0], 200
+            id: construction_project_table
         TextInputGroup:
             id: building_type_form
             CustomLabel:

@@ -1,3 +1,6 @@
+from utils import observers
+
+
 colony_flags = {
     'capital': False
 }
@@ -21,7 +24,9 @@ class Colony:
             'empire': empire_instance.ids['self']
         }
 
-        # Flags
+        # Flags and Subjects
+        self.construction_project_created = observers.Subject('construction_project_created')
+
         self.flags = colony_flags.copy()
         if flags is not None:
             self.flags.update(flags)
@@ -42,8 +47,8 @@ class Colony:
         }
 
         # Instance list
-        self.installations = {}
-        self.construction_projects = {}
+        self.installations = dict()
+        self.construction_projects = dict()
 
         self.__dict__.update(kwargs)
 
@@ -64,6 +69,7 @@ class Colony:
             galaxy.construction_projects[construction_project].tick_construction(empire, self)
 
     def unhook_all(self):
+        self.construction_project_created.remove_all()
         for construction_project in self.construction_projects.items():
             construction_project.unhook_all()
 

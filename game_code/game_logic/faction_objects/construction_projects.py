@@ -44,11 +44,13 @@ class ConstructionProject:
         self.currently_completed = currently_completed  # What and how much of a material has been completed.
 
         self.construction_per_tick = {}
-        self.set_construction_per_tick()
+        self._set_construction_per_tick()
 
         self.__dict__.update(kwargs)
 
         colony_instance.construction_projects[self.ids['self']] = self
+
+        colony_instance.construction_project_created.notify(data={'construction_project': self})
 
     def __getstate__(self):
         dictionary = self.__dict__.copy()
@@ -64,10 +66,40 @@ class ConstructionProject:
     def num_of_factories(self, value):
         if value != self._num_of_factories:
             self._num_of_factories = value
-            self.set_construction_per_tick()
+            self._set_construction_per_tick()
 
     def unhook_all(self):
         self.construction_changed.remove_all()
+
+    @staticmethod
+    def get_metadata_for_table():
+        return [
+            'project_building',
+            'project_runs',
+            'num_of_factories',
+            'construction_per_tick',
+            'project_cost'
+        ]
+
+    def get_data_for_table(self):
+        return {
+            'project_building': self.project_building,
+            'project_runs': self.project_runs,
+            'num_of_factories': self.num_of_factories,
+            'construction_per_tick': self.project_cost['total'],
+            'project_cost': self.project_cost
+        }
+
+    def _set_construction_per_tick(self):
+        parent_empire = self.parent_colony.parent_empire
+
+        total_cp_per_day = self.num_of_factories * parent_empire.modifiers['building_modifiers']['build_points'] / 365
+
+        for material, cost in self.project_cost.items():
+            if material == 'total':
+                self.construction_per_tick['total'] = total_cp_per_day
+            else:
+                self.construction_per_tick[material] = (cost * total_cp_per_day) / self.project_cost['total']
 
     def _assign_build_points(self, material, cp_allocated):
         cp_to_finish = self.project_cost[material] - self.currently_completed[material]
@@ -82,19 +114,19 @@ class ConstructionProject:
         if min_value == cp_allocated:
             self.currently_completed[material] += cp_allocated
             self.parent_colony.resource_storage[material] -= cp_allocated
-            available_for_extra = True
+            return 0, True
 
         # Resource = Limiting
         elif min_value == colony_resource:
             self.currently_completed[material] += colony_resource
             self.parent_colony.resource_storage[material] = 0
-            remainder_CP += cp_allocated - colony_resource
+            return cp_allocated - colony_resource, False
 
         # CP_to_finish = Limiting
         elif min_value == cp_to_finish:
             self.currently_completed[material] += cp_to_finish
             self.parent_colony.resource_storage[material] -= cp_to_finish
-            remainder_CP += cp_allocated - cp_to_finish
+            return cp_allocated - cp_to_finish, False
 
         return remainder_CP, available_for_extra
 
@@ -113,46 +145,78 @@ class ConstructionProject:
         else:
             return False
 
-    def set_construction_per_tick(self):
-        construction_per_tick = {}
+    def _assign_proportional_points(self, game_time_delta):
+        # Establishes some default variables
+        available_for_extra_CP = []
+        total_remainder = 0.0
 
-        total_CP = self.num_of_factories * self.parent_colony.parent_empire.modifiers['building_modifiers'][
-            'build_points'] / 365
-        for material, cost in self.project_cost.items():
-            if material != 'total':
-                self.currently_completed[material] = (cost * total_CP) / self.project_cost['total']
+        # While it's possible to create a building with the initial values
+        while True:
+            # Cycle through materials, and assign them their build points
+            for material in self.project_cost:
+                if material != 'total':
+                    # Grab the remainder, and if it's available for extra once build points are assigned
+                    remaining_from_material, available_for_extra = self._assign_build_points(
+                        material=material,
+                        cp_allocated=self.construction_per_tick[material] * game_time_delta
+                    )
 
-        self.construction_per_tick = construction_per_tick
+                    total_remainder += remaining_from_material
 
-    def construction_tick(self, game_time_dela):
+                    if available_for_extra:
+                        available_for_extra_CP.append(material)
+
+            # Apply available build, otherwise move to allocation of remainders
+            if not self._check_for_built():
+                break
+
+        return total_remainder, available_for_extra_CP
+
+    def _assign_even_points(self, total_remainder, available_for_extra_CP):
+        # While there's a remainder.
+        while total_remainder >= 0.0001:  # Due to rounding errors.
+            new_available_for_extra_CP = []
+            extra_cp = total_remainder / len(available_for_extra_CP)
+            # Split evenly between all that need it, and allocate it.
+            for material in available_for_extra_CP:
+                remaining_from_material, available_for_extra = self._assign_build_points(
+                    material=material,
+                    cp_allocated=extra_cp
+                )
+
+                total_remainder += remaining_from_material - extra_cp
+                if available_for_extra:
+                    new_available_for_extra_CP.append(material)
+
+            # Check to see if something's been built
+            if self._check_for_built():
+                # And if it has, make all available for rebuild
+                available_for_extra_CP = list()
+                for material in self.project_cost:
+                    if material != 'total':
+                        available_for_extra_CP.append(material)
+            else:
+                available_for_extra_CP = new_available_for_extra_CP
+
+    def construction_tick(self, game_time_delta):
+        """
+        Runs a construction tick for the specified game time delta
+        
+        :param game_time_dela: What percentage of one day has passed since the last tick.
+        :return: Breaks out of the function call. Never a value returned
+        """
+
+        # Checks to see if the construction tick can take place, otherwise returns,
+        if self.num_of_factories == 0:
+            return
         for material in self.project_cost:
             if self.parent_colony.resource_storage[material] != 0:
                 break
         else:
             return
 
-        available_for_extra_CP = []
-        remainder = 0
+        total_remainder, available_for_extra_CP = self._assign_proportional_points(game_time_delta)
 
-        while True:
-            for material in self.project_cost:
-                if material != 'total':
-                    remaining, extra = self._assign_build_points(material, self.construction_per_tick[material])
-                    remainder += remaining
-                    if extra:
-                        available_for_extra_CP.append(material)
-            if not self._check_for_built():
-                break
+        self._assign_even_points(total_remainder, available_for_extra_CP)
 
-        while remainder >= 0.0001:  # Due to rounding errors.
-            remainder_CP = remainder
-            new_available_for_extra_CP = []
-            for material in available_for_extra_CP:
-                extra_cp = remainder_CP / len(available_for_extra_CP)
-                remaining, extra = self._assign_build_points(material, extra_cp)
-                remainder = remainder - extra_cp + remaining
-                if extra:
-                    new_available_for_extra_CP.append(material)
-            available_for_extra_CP = new_available_for_extra_CP
-
-        self.construction_changed.notify()
+        self.construction_changed.notify(data={'construction_project': self})

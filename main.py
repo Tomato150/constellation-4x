@@ -2,12 +2,16 @@
 The main file to host the Kivy app.
 """
 
+# PLAYER WORLD MODULE. HOLDS THE GAME STATE
 import player_world as pw
 
+# OTHER CUSTOM MODULES
+from utils import observers
+
+# REQUIRED FOR SAVING AND LOADING
 import jsonpickle
 
-import widget_states
-
+# KIVY DEPENDENCIES
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
@@ -15,9 +19,12 @@ from kivy.core.text import LabelBase
 from kivy.properties import ObjectProperty
 from kivy.uix.widget import Widget
 
+# CUSTOM KIVY WIDGETS. INCLUDE ALL AS KIVY USES THEM TO ASSIGN CLASSES TO WIDGETS IN .KV FILE
 from rendering.custom_uix.custom_button import CustomButton
+from rendering.custom_uix.custom_label import CustomLabel
 from rendering.custom_uix.custom_navbar import CustomNavbar
 from rendering.custom_uix.custom_sidebar import CustomSidebar
+from rendering.custom_uix.custom_table import CustomTable
 
 from rendering.custom_uix.named.game_menu import GameMenu
 from rendering.custom_uix.named.galaxy_navbar import GalaxyNavbar
@@ -30,8 +37,7 @@ from rendering.custom_uix.named.system_menu_uix.system_menu import SystemMenu
 from rendering.custom_uix.named.colony_menu_uix.colony_menu import ColonyMenu
 from rendering.custom_uix.named.colony_menu_uix.industry_window import IndustryWindow
 
-from utils import observers
-
+# RENDERING CUSTOM MODULES
 from rendering.styles.css_manager import CSSManager
 
 
@@ -170,11 +176,11 @@ class ConstellationApp(App):
         """
         self.resize_widgets()
         self.constellation_widget.galaxy_viewer.load_stars(self.player_world.galaxy)
-        Clock.schedule_once(self.game_loop, 0)
+        # Clock.schedule_once(self.game_loop)
 
     def game_loop(self, time_delta):
         self.player_world.update_game_state(time_delta)
-        Clock.schedule_once(self.game_loop, 0)
+        Clock.schedule_once(self.game_loop)
 
     def widgets_on_load(self, widget=None):
         """
