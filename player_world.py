@@ -14,14 +14,14 @@ class PlayerWorld:
     """
     def __init__(self):
         """
-        Initialize the player's world.
-        
-        
+        Initialize the player's world.       
         """
         # The Galaxy Object is the base container for all other objects in the game.
         self.player_empire = None
         self.galaxy = galaxies.Galaxy(self)
         self.game_speed = 1  # Game speed in seconds, represents how long a day is currently.
+
+        self.to_delete_from_dict = list()
 
         # Change this eventually to be constructed from a load/new game
         self.set_up_world()
@@ -56,11 +56,14 @@ class PlayerWorld:
     def update_game_state(self, time_delta):
         game_time_delta = time_delta / self.game_speed  # Gives how many days have passed.
         for empire in self.galaxy.world_objects['empires'].values():
-            print('Example event for empire here')
+            # print('Example event for empire here')
             for colony in empire.colonies.values():
-                print('Example Colony event here')
+                # print('Example Colony event here')
                 for construction_project in colony.construction_projects.values():
                     construction_project.construction_tick(game_time_delta)
-                print('Example Colony event after construction project here')
-            print('Example event for empire after colony here')
+                # print('Example Colony event after construction project here')
+            # print('Example event for empire after colony here')
 
+        for obj in self.to_delete_from_dict:
+            del obj[0][obj[1]]
+            self.to_delete_from_dict.remove(obj)

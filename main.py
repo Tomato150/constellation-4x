@@ -108,6 +108,8 @@ class ConstellationApp(App):
         self.player_world = pw.PlayerWorld()
         self.player_world.generate_mock_game()
 
+        self.triggers = list()
+
         # Game UI info
         self._current_colony = self.player_world.player_empire.colonies['capital']
         self.current_colony_changed = observers.Subject('current_colony_changed')
@@ -176,10 +178,12 @@ class ConstellationApp(App):
         """
         self.resize_widgets()
         self.constellation_widget.galaxy_viewer.load_stars(self.player_world.galaxy)
-        # Clock.schedule_once(self.game_loop)
+        Clock.schedule_once(self.game_loop)
 
     def game_loop(self, time_delta):
         self.player_world.update_game_state(time_delta)
+        for trigger in self.triggers:
+            trigger()
         Clock.schedule_once(self.game_loop)
 
     def widgets_on_load(self, widget=None):

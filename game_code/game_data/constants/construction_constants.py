@@ -1,9 +1,9 @@
 building_costs = {
-    'mine': {
+    'mines': {
         'total': 100,
         'building_materials': 100
     },
-    'factory': {
+    'factories': {
         'total': 200,
         'building_materials': 100,
         'water': 100

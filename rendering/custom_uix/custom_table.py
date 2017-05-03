@@ -46,7 +46,7 @@ class CustomTable(GridLayout):
     def remove_all_data(self):
         self.data = dict()
 
-    def redraw_table(self):
+    def redraw_table(self, *args):
         self.clear_widgets()
 
         self._draw_metadata()

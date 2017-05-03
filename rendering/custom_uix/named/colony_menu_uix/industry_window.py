@@ -1,3 +1,6 @@
+import weakref
+
+from kivy.clock import Clock
 from kivy.properties import ObjectProperty
 
 from kivy.uix.screenmanager import Screen
@@ -31,12 +34,14 @@ class IndustryWindow(Screen, observers.Observer):
 
     def on_notify(self, object, event, data):
         # GAME EVENTS
-        if event == "construction_project_created":
-            self.construction_project_table.add_data(data['construction_project'])
+        if event == "construction_project_created":  # Received from Colony Object, not galaxy
+            construction_project = data['construction_project']
+            construction_project.construction_changed.add_observer(self)
+            self.construction_project_table.add_data(weakref.proxy(data['construction_project']))
             self.construction_project_table.redraw_table()
 
         if event == "construction_project_change":
-            pass
+            self.construction_project_table.redraw_table()  # TODO OPTIMIZE So it's just one call per frame instead of every event
 
         # APP EVENTS
         elif event == "current_colony_changed":
@@ -45,6 +50,8 @@ class IndustryWindow(Screen, observers.Observer):
                 construction_project.construction_changed.add_observer(self)
         elif event == "current_system_changed":
             pass
+        elif event == "render":
+            self.construction_project_table.redraw_table()
 
     def submit_construction_project(self, building_type, building_runs, factories):
         try:

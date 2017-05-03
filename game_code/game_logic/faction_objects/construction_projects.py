@@ -58,6 +58,9 @@ class ConstructionProject:
         del dictionary['parent_colony']
         return dictionary
 
+    def __del__(self):
+        print("Destructor Called")
+
     @property
     def num_of_factories(self):
         return self._num_of_factories
@@ -78,7 +81,8 @@ class ConstructionProject:
             'project_runs',
             'num_of_factories',
             'construction_per_tick',
-            'project_cost'
+            'project_cost',
+            'project_current'
         ]
 
     def get_data_for_table(self):
@@ -86,8 +90,9 @@ class ConstructionProject:
             'project_building': self.project_building,
             'project_runs': self.project_runs,
             'num_of_factories': self.num_of_factories,
-            'construction_per_tick': self.project_cost['total'],
-            'project_cost': self.project_cost
+            'construction_per_tick': self.construction_per_tick['total'],
+            'project_cost': self.project_cost,
+            'project_current': self.currently_completed
         }
 
     def _set_construction_per_tick(self):
@@ -141,6 +146,11 @@ class ConstructionProject:
                 self.currently_completed[key] = 0
             self.project_runs -= 1
             self.parent_colony.add_buildings(self.project_building)
+            if self.project_runs == 0:
+                self.galaxy.player_world.to_delete_from_dict.append(
+                    [self.parent_colony.construction_projects,
+                    self.ids['self']]
+                )
             return True
         else:
             return False
@@ -210,8 +220,9 @@ class ConstructionProject:
         if self.num_of_factories == 0:
             return
         for material in self.project_cost:
-            if self.parent_colony.resource_storage[material] != 0:
-                break
+            if material != 'total':  # TODO Make this merged with the one below
+                if self.parent_colony.resource_storage[material] != 0:
+                    break
         else:
             return
 
