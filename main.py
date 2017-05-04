@@ -108,7 +108,7 @@ class ConstellationApp(App):
         self.player_world = pw.PlayerWorld()
         self.player_world.generate_mock_game()
 
-        self.triggers = list()
+        self.render_notification = observers.Subject('render')
 
         # Game UI info
         self._current_colony = self.player_world.player_empire.colonies['capital']
@@ -182,8 +182,7 @@ class ConstellationApp(App):
 
     def game_loop(self, time_delta):
         self.player_world.update_game_state(time_delta)
-        for trigger in self.triggers:
-            trigger()
+        self.render_notification.notify()
         Clock.schedule_once(self.game_loop)
 
     def widgets_on_load(self, widget=None):

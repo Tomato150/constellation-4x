@@ -91,8 +91,8 @@ class ConstructionProject:
             'project_runs': self.project_runs,
             'num_of_factories': self.num_of_factories,
             'construction_per_tick': self.construction_per_tick['total'],
-            'project_cost': self.project_cost,
-            'project_current': self.currently_completed
+            'project_cost': self.project_cost['total'],
+            'project_current': self.currently_completed['total']
         }
 
     def _set_construction_per_tick(self):

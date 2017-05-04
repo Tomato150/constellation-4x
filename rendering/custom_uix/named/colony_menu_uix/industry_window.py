@@ -16,6 +16,7 @@ class IndustryWindow(Screen, observers.Observer):
     construction_project_table = ObjectProperty(None)
 
     def __init__(self, **kwargs):
+        self._rerender_table = False
         super().__init__(**kwargs)
 
     def on_load(self, *args):
@@ -23,6 +24,7 @@ class IndustryWindow(Screen, observers.Observer):
         app = self.app
         app.current_colony_changed.add_observer(self)
         app.current_system_changed.add_observer(self)
+        app.render_notification.add_observer(self)
 
         app.current_colony.construction_project_created.add_observer(self)
 
@@ -41,7 +43,7 @@ class IndustryWindow(Screen, observers.Observer):
             self.construction_project_table.redraw_table()
 
         if event == "construction_project_change":
-            self.construction_project_table.redraw_table()  # TODO OPTIMIZE So it's just one call per frame instead of every event
+            self._rerender_table = True
 
         # APP EVENTS
         elif event == "current_colony_changed":
@@ -51,7 +53,9 @@ class IndustryWindow(Screen, observers.Observer):
         elif event == "current_system_changed":
             pass
         elif event == "render":
-            self.construction_project_table.redraw_table()
+            if self._rerender_table:
+                self.construction_project_table.redraw_table()
+                self._rerender_table = False
 
     def submit_construction_project(self, building_type, building_runs, factories):
         try:

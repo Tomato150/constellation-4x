@@ -40,8 +40,11 @@ class CustomTable(GridLayout):
         self.redraw_table()
 
     def remove_data(self, target):
-        if target in self.data:
-            self.data.remove(target)
+        try:
+            if target in self.data:
+                self.data.remove(target)
+        except:
+            pass
 
     def remove_all_data(self):
         self.data = dict()
@@ -53,8 +56,14 @@ class CustomTable(GridLayout):
         self._draw_data()
 
     def _draw_data(self):
-        for object in self.data:
-            data = object.get_data_for_table()
-            for key in self.metadata:
-                self.add_widget(CustomLabel(text=str(data[key])))
+        for obj in self.data:
+            try:
+                data = obj.get_data_for_table()
+                for key in self.metadata:
+                    if type(data[key]) == float:
+                        self.add_widget(CustomLabel(text=str(round(data[key], 2))))
+                    else:
+                        self.add_widget(CustomLabel(text=str(data[key])))
+            except ReferenceError:
+                self.remove_data(obj)
 
