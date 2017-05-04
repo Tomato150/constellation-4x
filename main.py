@@ -108,6 +108,9 @@ class ConstellationApp(App):
         self.player_world = pw.PlayerWorld()
         self.player_world.generate_mock_game()
 
+        self.previous_timestamp = 0
+        self.counter = 0
+
         self.render_notification = observers.Subject('render')
 
         # Game UI info
@@ -181,7 +184,14 @@ class ConstellationApp(App):
         Clock.schedule_once(self.game_loop)
 
     def game_loop(self, time_delta):
-        self.player_world.update_game_state(time_delta)
+        self.previous_timestamp += time_delta
+        if self.previous_timestamp >= 1:
+            self.player_world.update_game_state_by_day()
+            self.previous_timestamp -= 1
+            print(self.counter)
+            self.counter = 0
+        else:
+            self.counter += 1
         self.render_notification.notify()
         Clock.schedule_once(self.game_loop)
 

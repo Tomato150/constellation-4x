@@ -49,6 +49,7 @@ class Colony:
         # Instance list
         self.installations = dict()
         self.construction_projects = dict()
+        self.remove_construction_project_list = list()
 
         self.__dict__.update(kwargs)
 
@@ -64,14 +65,15 @@ class Colony:
         del dictionary['galaxy']
         return dictionary
 
-    def update_construction(self, galaxy, empire):
-        for construction_project in self.construction_projects:
-            galaxy.construction_projects[construction_project].tick_construction(empire, self)
-
     def unhook_all(self):
         self.construction_project_created.remove_all()
         for construction_project in self.construction_projects.items():
             construction_project.unhook_all()
+
+    def delete_construction_projects(self):
+        for id in self.remove_construction_project_list:
+            del self.construction_projects[id]
+        self.remove_construction_project_list = list()
 
     # SETTERS
     def add_buildings(self, building):

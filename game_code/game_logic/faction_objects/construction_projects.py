@@ -147,15 +147,12 @@ class ConstructionProject:
             self.project_runs -= 1
             self.parent_colony.add_buildings(self.project_building)
             if self.project_runs == 0:
-                self.galaxy.player_world.to_delete_from_dict.append(
-                    [self.parent_colony.construction_projects,
-                    self.ids['self']]
-                )
+                self.parent_colony.remove_construction_project_list.append(self.ids['self'])
             return True
         else:
             return False
 
-    def _assign_proportional_points(self, game_time_delta):
+    def _assign_proportional_points(self):
         # Establishes some default variables
         available_for_extra_CP = []
         total_remainder = 0.0
@@ -168,7 +165,7 @@ class ConstructionProject:
                     # Grab the remainder, and if it's available for extra once build points are assigned
                     remaining_from_material, available_for_extra = self._assign_build_points(
                         material=material,
-                        cp_allocated=self.construction_per_tick[material] * game_time_delta
+                        cp_allocated=self.construction_per_tick[material]
                     )
 
                     total_remainder += remaining_from_material
@@ -208,7 +205,7 @@ class ConstructionProject:
             else:
                 available_for_extra_CP = new_available_for_extra_CP
 
-    def construction_tick(self, game_time_delta):
+    def construction_tick(self):
         """
         Runs a construction tick for the specified game time delta
         
@@ -226,7 +223,7 @@ class ConstructionProject:
         else:
             return
 
-        total_remainder, available_for_extra_CP = self._assign_proportional_points(game_time_delta)
+        total_remainder, available_for_extra_CP = self._assign_proportional_points()
 
         self._assign_even_points(total_remainder, available_for_extra_CP)
 
