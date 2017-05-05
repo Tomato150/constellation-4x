@@ -1,7 +1,7 @@
 # The file for the handling of game code.
 import json
 import jsonpickle
-from datetime import datetime
+import datetime
 
 from game_code.game_logic import player_event_handlers
 
@@ -19,7 +19,9 @@ class PlayerWorld:
         # The Galaxy Object is the base container for all other objects in the game.
         self.player_empire = None
         self.galaxy = galaxies.Galaxy(self)
+
         self.game_speed = 1  # Game speed in seconds, represents how long a day is currently.
+        self.game_time = datetime.datetime(1000, 1, 1)
 
         # Change this eventually to be constructed from a load/new game
         self.set_up_world()
@@ -51,19 +53,8 @@ class PlayerWorld:
 
         print(self.galaxy.world_objects['stars']['0'].planets)
 
-    def update_game_state(self, time_delta):
-        game_time_delta = time_delta / self.game_speed  # Gives how many days have passed.
-        for empire in self.galaxy.world_objects['empires'].values():
-            # print('Example event for empire here')
-            for colony in empire.colonies.values():
-                # print('Example Colony event here')
-                for construction_project in colony.construction_projects.values():
-                    construction_project.construction_tick(game_time_delta)
-                # print('Example Colony event after construction project here')
-                colony.delete_construction_projects()
-            # print('Example event for empire after colony here')
-
     def update_game_state_by_day(self):
+        self.game_time += datetime.timedelta(1)
         for empire in self.galaxy.world_objects['empires'].values():
             # print('Example event for empire here')
             for colony in empire.colonies.values():

@@ -119,11 +119,13 @@ class ConstructionProject:
         if min_value == cp_allocated:
             self.currently_completed[material] += cp_allocated
             self.parent_colony.resource_storage[material] -= cp_allocated
+            self.parent_colony.resource_storage['total'] -= cp_allocated
             return 0, True
 
         # Resource = Limiting
         elif min_value == colony_resource:
             self.currently_completed[material] += colony_resource
+            self.parent_colony.resource_storage['total'] -= colony_resource
             self.parent_colony.resource_storage[material] = 0
             return cp_allocated - colony_resource, False
 
@@ -131,6 +133,7 @@ class ConstructionProject:
         elif min_value == cp_to_finish:
             self.currently_completed[material] += cp_to_finish
             self.parent_colony.resource_storage[material] -= cp_to_finish
+            self.parent_colony.resource_storage['total'] -= cp_to_finish
             return cp_allocated - cp_to_finish, False
 
         return remainder_CP, available_for_extra

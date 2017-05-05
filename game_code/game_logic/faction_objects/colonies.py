@@ -1,4 +1,5 @@
 from utils import observers
+import collections
 
 
 colony_flags = {
@@ -37,18 +38,19 @@ class Colony:
         # Colony buildings information
         self.buildings = {
             'mines': 100,
-            'factories': 100,
+            'factories': [100, 100]  # TOTAL/FREE
         }
 
         # Colony Storage
         self.resource_storage = {
+            'total': 1999999998,
             'water': 999999999,
-            'building_materials': 999999999999
+            'building_materials': 999999999
         }
 
         # Instance list
         self.installations = dict()
-        self.construction_projects = dict()
+        self.construction_projects = collections.OrderedDict()
         self.remove_construction_project_list = list()
 
         self.__dict__.update(kwargs)
@@ -64,6 +66,13 @@ class Colony:
         dictionary = self.__dict__.copy()
         del dictionary['galaxy']
         return dictionary
+
+    def update(self):
+        if self.buildings['mines']:
+            self.mine_resources()
+
+    def mine_resources(self):
+        pass
 
     def unhook_all(self):
         self.construction_project_created.remove_all()

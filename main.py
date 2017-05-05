@@ -187,6 +187,7 @@ class ConstellationApp(App):
         self.previous_timestamp += time_delta
         if self.previous_timestamp >= 1:
             self.player_world.update_game_state_by_day()
+            self.constellation_widget.galaxy_navbar.update_game_time(self.player_world.game_time)
             self.previous_timestamp -= 1
             print(self.counter)
             self.counter = 0
