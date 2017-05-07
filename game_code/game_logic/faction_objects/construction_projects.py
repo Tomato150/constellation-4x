@@ -35,7 +35,10 @@ class ConstructionProject:
         self.project_cost = construction_constants.building_costs[
             project_building]  # Individual resource cost per resource
         self.project_runs = project_runs  # How many copies are to be made.
-        self._num_of_factories = num_of_factories
+        self.num_of_factories = {
+            'total': num_of_factories,
+            'current': colony_instance.get_free_factories(num_of_factories)
+        }
 
         currently_completed = {}
         for key in self.project_cost:
@@ -44,7 +47,7 @@ class ConstructionProject:
         self.currently_completed = currently_completed  # What and how much of a material has been completed.
 
         self.construction_per_tick = {}
-        self._set_construction_per_tick()
+        self.__set_construction_per_tick()
 
         self.__dict__.update(kwargs)
 
@@ -60,16 +63,6 @@ class ConstructionProject:
 
     def __del__(self):
         print("Destructor Called")
-
-    @property
-    def num_of_factories(self):
-        return self._num_of_factories
-
-    @num_of_factories.setter
-    def num_of_factories(self, value):
-        if value != self._num_of_factories:
-            self._num_of_factories = value
-            self._set_construction_per_tick()
 
     def unhook_all(self):
         self.construction_changed.remove_all()
@@ -89,16 +82,16 @@ class ConstructionProject:
         return {
             'project_building': self.project_building,
             'project_runs': self.project_runs,
-            'num_of_factories': self.num_of_factories,
+            'num_of_factories': str(self.num_of_factories['current']) + '/' + str(self.num_of_factories['total']),
             'construction_per_tick': self.construction_per_tick['total'],
             'project_cost': self.project_cost['total'],
             'project_current': self.currently_completed['total']
         }
 
-    def _set_construction_per_tick(self):
+    def __set_construction_per_tick(self):
         parent_empire = self.parent_colony.parent_empire
 
-        total_cp_per_day = self.num_of_factories * parent_empire.modifiers['building_modifiers']['build_points'] / 365
+        total_cp_per_day = self.num_of_factories['current'] * parent_empire.modifiers['building_modifiers']['build_points'] / 365
 
         for material, cost in self.project_cost.items():
             if material == 'total':

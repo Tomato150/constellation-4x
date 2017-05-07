@@ -38,7 +38,10 @@ class Colony:
         # Colony buildings information
         self.buildings = {
             'mines': 100,
-            'factories': [100, 100]  # TOTAL/FREE
+            'factories': {
+                'total': 100,
+                'free': 100
+            }
         }
 
         # Colony Storage
@@ -74,15 +77,34 @@ class Colony:
     def mine_resources(self):
         pass
 
+    def get_free_factories(self, max):
+        if max <= self.buildings['factories']['free']:
+            self.buildings['factories']['free'] -= max
+            return max
+        else:
+            amount = self.buildings['factories']['free']
+            self.buildings['factories']['free'] = 0
+            return amount
+
     def unhook_all(self):
+        """
+        Unhooks any observer from self, and from all children.
+        """
         self.construction_project_created.remove_all()
         for construction_project in self.construction_projects.items():
             construction_project.unhook_all()
 
     def delete_construction_projects(self):
-        for id in self.remove_construction_project_list:
-            del self.construction_projects[id]
+        for construction_project in self.remove_construction_project_list:
+            construction_project = self.construction_projects[construction_project]
+            """:type: game_code.game_logic.faction_objects.construction_projects.ConstructionProject"""
+            self.buildings['factories']['free'] += construction_project.num_of_factories['current']
+            del self.construction_projects[construction_project]
         self.remove_construction_project_list = list()
+
+        while self.buildings['factories']['free'] > 0:
+            for construction_project in self.construction_projects.items():
+                construction_project.get_free_factoires()
 
     # SETTERS
     def add_buildings(self, building):
