@@ -12,18 +12,17 @@ class Galaxy:
     # Note; Don't think of this as just the stars, but everything inside the galaxy. It's basically the 'game'
     def __init__(self, player_world):
         self.player_world = player_world
-        # Constants to change to fuck with the shape of the galaxy
-        self.galaxy_creation_parameters = {
-            'num_of_stars': 5000,
-            'num_of_arms': 6,
-            'arms_offset_max': 0.5,
-            'rotation_factor': 3,
-            'size_of_canvas': 6000,
-            'x_y_rand_offset': 20,
-            'galactic_center_cutoff': 0,
+        self.galaxy_creation_parameters = {  # Constants to change the shape of the galaxy
+            'num_of_stars': 5000,  # How many stars there are in the galaxy
+            'num_of_arms': 6,  # How many arms
+            'arms_offset_max': 0.5,  #
+            'rotation_factor': 3,  # How twisted the arms are
+            'size_of_canvas': 6000,  # Size of the game world.
+            'x_y_rand_offset': 20,  # Random noise
+            'galactic_center_cutoff': 0,  # Cho to limit the number of stars in the galactic center
         }
 
-        self.star_quadrants = {}
+        self.star_quadrants = dict()
 
         # Dicts of {id's: instances} for stars and empires.
         self.world_objects = {
@@ -221,13 +220,8 @@ class Galaxy:
         return planet
 
     def create_new_empire(self, name, flags=None, **kwargs):
-        empire = empires.Empire(
-            empire_id=str(self.world_objects_id['empires']),
-            name=name,
-            flags=flags,
-            galaxy=self,
-            kwargs=kwargs
-        )
+        empire = empires.Empire(empire_id=str(self.world_objects_id['empires']), name=name, flags=flags, galaxy=self,
+                                kwargs=kwargs)
         self.world_objects_id['empires'] += 1
         self.empire_created.notify(data={'empire': empire})
         return empire

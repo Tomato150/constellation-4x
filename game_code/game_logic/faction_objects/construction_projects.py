@@ -1,3 +1,9 @@
+"""
+The Construction Project File. 
+This file is used for containing all relevant code to the Construction Project,
+but not any data, which is found at 'construction_constants.py'
+"""
+
 from game_code.game_data.constants import construction_constants
 from utils import observers
 
@@ -8,60 +14,80 @@ construction_project_flags = {
 
 
 class ConstructionProject:
-    def __init__(self, project_id, flags, project_building, project_runs, num_of_factories, colony_instance, galaxy,
+    """
+    The Construction Project Object. 
+    This is the base class for a construction project, whether that be for a 
+    colony or for a shipyard.    
+    """
+    def __init__(self, project_id, flags, project_building, project_runs,num_of_factories, colony_instance, galaxy,
                  **kwargs):
-        self.galaxy = galaxy
+        """
+        Initialize the construction project.
+        
+        :param project_id: The ID of the project.
+        :param flags: Any additional flags
+        :param project_building: What the building type is 
+        :param project_runs: How many runs
+        :param num_of_factories: How many factories are assigned
+        :param colony_instance: Parent Colony
+        :param galaxy: Galaxy
+        :param kwargs: Any Kwargs for specific values
+        """
+        self.galaxy = galaxy  # A pointer to the galaxy object.
+        self.parent_colony = colony_instance  # A pointer to parent object
+        self.ids = {  # A dict containing all the ID's of objects in it's tree.
+            'self': project_id,  # ID of self
 
-        # Parents
-        self.parent_colony = colony_instance
-        self.ids = {
-            'self': project_id,
-            'star': colony_instance.ids['star'],
-            'planet': colony_instance.ids['planet'],
+            'star': colony_instance.ids['star'],  # ID of parent star
+            'planet': colony_instance.ids['planet'],  # ID of parent planet
 
-            'empire': colony_instance.ids['empire'],
-            'colony': colony_instance.ids['self']
+            'empire': colony_instance.ids['empire'],  # ID of parent empire
+            'colony': colony_instance.ids['self']  # ID of parent colony
         }
 
-        # Flags and Subjects
-        self.construction_changed = observers.Subject('construction_project_change')
-
-        self.flags = construction_project_flags.copy()
+        self.construction_changed = observers.Subject('construction_project_change')  # Construction Changed Subject
+        self.flags = construction_project_flags.copy()  # Flags for construction project
         if flags is not None:
             self.flags.update(flags)
 
-        # Project Info
         self.project_building = project_building  # What you are building
         self.project_cost = construction_constants.building_costs[
             project_building]  # Individual resource cost per resource
         self.project_runs = project_runs  # How many copies are to be made.
         self.num_of_factories = {
-            'total': num_of_factories,
-            'current': colony_instance.get_free_factories(num_of_factories)
+            'total': num_of_factories,  # Total amount of factories to be used on the project
+            'current': 0  # Currently working on the project.
         }
 
-        currently_completed = {}
+        self.currently_completed = {}  # A dictionary of resources currently used for the specific run
         for key in self.project_cost:
-            currently_completed[key] = 0
+            self.currently_completed[key] = 0
 
-        self.currently_completed = currently_completed  # What and how much of a material has been completed.
-
-        self.construction_per_tick = {}
+        self.construction_per_tick = dict()  # How much of each resource is to be consumed per tick
         self.__set_construction_per_tick()
+        self.assign_free_points()
 
-        self.__dict__.update(kwargs)
+        self.__dict__.update(kwargs)  # Update kwargs
 
-        colony_instance.construction_projects[self.ids['self']] = self
-
-        colony_instance.construction_project_created.notify(data={'construction_project': self})
+        colony_instance.construction_projects[self.ids['self']] = self  # adding self to parent colony. Only strong
+        #                                                                 reference to the object
+        colony_instance.construction_project_created.notify(data={'construction_project': self})  # Notify of creation
 
     def __getstate__(self):
+        """
+        Invoked whenever serializing self. Used to shed any issue with circularisation.
+        
+        :return: dictionary: A dict of self, without pointers to parent object
+        """
         dictionary = self.__dict__.copy()
         del dictionary['galaxy']
         del dictionary['parent_colony']
         return dictionary
 
     def __del__(self):
+        """
+        Invoked whenever destroyed
+        """
         print("Destructor Called")
 
     def unhook_all(self):
@@ -88,10 +114,24 @@ class ConstructionProject:
             'project_current': self.currently_completed['total']
         }
 
+    def assign_free_points(self, amount=-1):
+        wanted = self.num_of_factories['total'] - self.num_of_factories['current']
+        if amount == -1:
+            # Do if grabbing factories from within the construction project
+            self.num_of_factories['current'] += self.parent_colony.get_free_factories(wanted)
+        else:
+            # Do if given factories from colony
+            used = min(wanted, amount)
+            self.num_of_factories['current'] = used
+            return used
+
+        self.__set_construction_per_tick()
+
     def __set_construction_per_tick(self):
         parent_empire = self.parent_colony.parent_empire
 
-        total_cp_per_day = self.num_of_factories['current'] * parent_empire.modifiers['building_modifiers']['build_points'] / 365
+        total_cp_per_day = \
+            self.num_of_factories['current'] * parent_empire.modifiers['building_modifiers']['build_points'] / 365
 
         for material, cost in self.project_cost.items():
             if material == 'total':
@@ -107,6 +147,9 @@ class ConstructionProject:
 
         remainder_CP = 0
         available_for_extra = False
+
+        # FIXME Error when resource is used up, but is still required, and when everything else is finished
+        # construction wise. Points will not allocate, and eventually crash the game.
 
         # CP_allocated = Limiting
         if min_value == cp_allocated:

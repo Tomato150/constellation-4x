@@ -56,11 +56,4 @@ class PlayerWorld:
     def update_game_state_by_day(self):
         self.game_time += datetime.timedelta(1)
         for empire in self.galaxy.world_objects['empires'].values():
-            # print('Example event for empire here')
-            for colony in empire.colonies.values():
-                # print('Example Colony event here')
-                for construction_project in colony.construction_projects.values():
-                    construction_project.construction_tick()
-                # print('Example Colony event after construction project here')
-                colony.delete_construction_projects()
-            # print('Example event for empire after colony here')
+            empire.update()

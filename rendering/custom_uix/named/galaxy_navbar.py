@@ -41,3 +41,5 @@ class GalaxyNavbar(CustomNavbar):
 
     def update_game_time(self, game_time):
         self.game_time_widget.text = "Time: " + str(game_time.day) + '-' + months[str(game_time.month)] + '-' + str(game_time.year)
+
+        Window.dispatch("on_resize", 0, 0)
