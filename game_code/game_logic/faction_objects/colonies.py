@@ -106,21 +106,6 @@ class Colony:
             self.resource_storage['total'] += amount
             self.resource_storage[resources] += amount
 
-    def get_free_factories(self, wanted_factories):
-        """
-        Called by a child construction project, this allows it to get as many free factories as it needs.
-        
-        :param wanted_factories: The amount of factories the construction project wants
-        :return amount: The amount of factories returned to the construction project
-        """
-        if wanted_factories <= self.buildings['factories']['free']:
-            self.buildings['factories']['free'] -= wanted_factories
-            return wanted_factories
-        else:
-            amount = self.buildings['factories']['free']
-            self.buildings['factories']['free'] = 0
-            return amount
-
     def unhook_all(self):
         """
         Unhooks any observer from self, and from all children.
@@ -141,8 +126,7 @@ class Colony:
 
         while self.buildings['factories']['free'] > 0 and self.construction_projects:
             for construction_project in self.construction_projects.values():
-                used = construction_project.assign_free_points(self.buildings['factories']['free'])
-                self.buildings['factories']['free'] -= used
+                construction_project.construction_component.assign_free_factories(self.buildings['factories']['free'])
                 #  construction_project.get_free_factoires()
 
     # SETTERS
