@@ -34,6 +34,7 @@ class GalaxyNavbar(CustomNavbar):
     game_time_widget = ObjectProperty()
 
     def handle_menu_transition(self, menu_name):
+        self.parent.open_menu_screen()
         game_menu = self.parent.game_menu
         game_menu.screen_manager_game_menu.current = menu_name
 

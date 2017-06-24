@@ -172,6 +172,7 @@ class Galaxy:
 
                     if self.world_objects_id['stars'] == self.galaxy_creation_parameters['num_of_stars']:
                         break
+
         print('Done: Galaxy Generation')
         print('Count: ' + str(self.world_objects_id['stars']))
 

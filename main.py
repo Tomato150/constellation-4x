@@ -89,6 +89,9 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
             screen_manager.current = 'game_menu'
             self.menu_visible = True
 
+    def open_menu_screen(self):
+        self.screen_manager_constellation_widget.current = 'game_menu'
+        self.menu_visible = True
 
 class ConstellationApp(App):
     """
@@ -139,7 +142,8 @@ class ConstellationApp(App):
     def current_system(self, value):
         if value != self._current_system:
             self._current_system.unhook_all()
-            self._current_colony.unhook_all()
+            if self._current_colony:
+                self._current_colony.unhook_all()
 
             self._current_system = value
             self._current_colony = None

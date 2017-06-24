@@ -58,9 +58,14 @@ class Empire:
 
     def update(self):
         """Update method for the colony"""
+        self.check_colony_for_update()
         for colony_id, colony_update in self.colonies_updates.items():
             if colony_update:
                 self.colonies[colony_id].update()
 
-    def check_for_update(self):
-        pass
+    def check_colony_for_update(self):
+        for colony_id, colony in self.colonies.items():
+            if colony.get_update_status():
+                self.colonies_updates[colony_id] = True
+            else:
+                self.colonies_updates[colony_id] = False

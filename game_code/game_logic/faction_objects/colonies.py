@@ -86,6 +86,15 @@ class Colony:
         del dictionary['parent_planet']
         return dictionary
 
+    def get_update_status(self):
+        # If there is stuff to mine
+        if self.buildings['mines'] and self.parent_planet.resources['total']:
+            return True
+        # If there is construction projects that can have work done on them
+        elif self.construction_projects and self.resource_storage['total']:
+            return True
+        return False
+
     def update(self):
         """
         The update method for the colony.
@@ -111,7 +120,7 @@ class Colony:
         Unhooks any observer from self, and from all children.
         """
         self.construction_project_created.remove_all()
-        for construction_project in self.construction_projects.items():
+        for construction_project in self.construction_projects.values():
             construction_project.unhook_all()
 
     def delete_construction_projects(self):
