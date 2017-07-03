@@ -93,6 +93,7 @@ class ConstellationWidget(Widget):  # Singleton/Wrapper for all objects
         self.screen_manager_constellation_widget.current = 'game_menu'
         self.menu_visible = True
 
+
 class ConstellationApp(App):
     """
     A singleton class that is the app for the entire kivy project.
@@ -147,6 +148,8 @@ class ConstellationApp(App):
 
             self._current_system = value
             self._current_colony = None
+
+            self.constellation_widget.game_menu.update_sidebar(value)
 
             self.current_system_changed.notify(data={'current_system': self._current_system})
 
